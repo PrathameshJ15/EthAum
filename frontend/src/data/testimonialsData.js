@@ -1,0 +1,51 @@
+// Realistic patient coordination testimonials for EthAum
+export const TESTIMONIALS_DATA = [
+  {
+    id: 'test-1',
+    patientName: 'Sarah Jenkins',
+    age: 58,
+    homeCity: 'Manchester, UK',
+    treatment: 'Total Knee Replacement',
+    destination: 'New Delhi, India',
+    provider: 'Apex Orthopedic & Robotic Joint Institute',
+    quoteSaved: '£14,200',
+    waitingTimeAvoided: '18 months NHS wait',
+    rating: 5,
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+    quote:
+      'I was facing an 18-month wait on the NHS while barely able to walk up stairs. EthAum organized my MRI, matched me with Dr. Oberoi, and I had robotic knee surgery in a JCI-accredited facility within 3 weeks. Three months later, I am hiking again pain-free.',
+    keyBenefit: 'Robotic precision & immediate availability',
+  },
+  {
+    id: 'test-2',
+    patientName: 'David Miller',
+    age: 62,
+    homeCity: 'Seattle, WA, USA',
+    treatment: 'Coronary Artery Bypass (CABG)',
+    destination: 'Bangkok, Thailand',
+    provider: 'Horizon International Medical City',
+    quoteSaved: '$65,000',
+    waitingTimeAvoided: 'Avoided $78K US out-of-pocket bill',
+    rating: 5,
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    quote:
+      'As a self-employed business owner, my US insurance deductible and out-of-pocket quote for heart bypass surgery was staggering. EthAum provided transparent quotes with zero surprise fees. The care in Bangkok was genuinely superior to local private facilities.',
+    keyBenefit: 'Transparent all-inclusive quote package',
+  },
+  {
+    id: 'test-3',
+    patientName: 'Robert Vance',
+    age: 67,
+    homeCity: 'Phoenix, AZ, USA',
+    treatment: 'All-on-4 Dental Restoration',
+    destination: 'Mexico City, Mexico',
+    provider: 'Centro Medico Internacional Sur',
+    quoteSaved: '$19,500',
+    waitingTimeAvoided: '3-hour direct flight from Phoenix',
+    rating: 5,
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    quote:
+      'I flew down to Mexico City on Monday, had my 3D CBCT scan, and walked out with a full set of permanent zirconia teeth by Thursday. Having EthAum log each clinical record and coordinate the direct airport transfers gave my wife and me total peace of mind.',
+    keyBenefit: 'Same-week restoration & Mayo network trust',
+  },
+]

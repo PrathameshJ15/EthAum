@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+
+# Environment files & Secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing & Coverage
+coverage/
+.vitest/
+
+# OS / Editor
+.DS_Store
+Thumbs.db

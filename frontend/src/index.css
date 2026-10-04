@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Background Scale */
+  --color-bg-canvas: #060E09;
+  --color-bg-base: #0A1610;
+  --color-bg-card: #0E1E14;
+  --color-bg-elevated: #152A1B;
+  --color-bg-overlay: #1C3824;
+
+  /* Brand Greens */
+  --color-green-deep: #1A5C38;
+  --color-green-rich: #16A358;
+  --color-green-cta: #12D058;
+  --color-green-hover: #0EA349;
+
+  /* Copper Accent */
+  --color-copper: #A67C52;
+  --color-copper-dim: #6B4F34;
+  --color-copper-pale: rgba(166, 124, 82, 0.12);
+  --color-copper-border: rgba(166, 124, 82, 0.22);
+
+  /* Text Scale */
+  --color-text-primary: #EDE5CE;
+  --color-text-secondary: #9E8F74;
+  --color-text-muted: #526155;
+  --color-text-inverse: #060E09;
+
+  /* Border Scale */
+  --color-border-hairline: rgba(255, 255, 255, 0.05);
+  --color-border-default: rgba(255, 255, 255, 0.09);
+  --color-border-strong: rgba(255, 255, 255, 0.15);
+}
+
+:root {
+  /* Exact Design Tokens — White Mode (Matches User Screenshots Exactly) */
+  --bg-canvas: #EFE8D8;
+  --bg-base: #EFE8D8;
+  --bg-card: #FAF7EE;
+  --bg-elevated: #E5DDCB;
+  --bg-overlay: #DFD5C2;
+
+  --green-deep: #125737;
+  --green-rich: #188752;
+  --green-cta: #0FA75B;
+  --green-hover: #0C8F4D;
+
+  --copper: #8A6B48;
+  --copper-dim: #6E5334;
+  --copper-pale: #EAE2D2;
+  --copper-border: rgba(138, 107, 72, 0.25);
+
+  --text-primary: #16201B;
+  --text-secondary: #55635B;
+  --text-muted: #88948B;
+  --text-inverse: #FFFFFF;
+
+  --border-hairline: rgba(30, 40, 35, 0.08);
+  --border-default: #DFD7C5;
+  --border-strong: #CFC4AF;
+  --grid-line: rgba(140, 115, 85, 0.15);
+
+  color-scheme: light;
+}
+
+.dark, [data-theme="dark"] {
+  /* Exact Design Tokens — Dark Mode (Deep Forest Obsidian) */
+  --bg-canvas: #060E09;
+  --bg-base: #0A1610;
+  --bg-card: #0E1E14;
+  --bg-elevated: #152A1B;
+  --bg-overlay: #1C3824;
+
+  --green-deep: #1A5C38;
+  --green-rich: #16A358;
+  --green-cta: #12D058;
+  --green-hover: #0EA349;
+
+  --copper: #A67C52;
+  --copper-dim: #6B4F34;
+  --copper-pale: rgba(166, 124, 82, 0.12);
+  --copper-border: rgba(166, 124, 82, 0.22);
+
+  --text-primary: #EDE5CE;
+  --text-secondary: #9E8F74;
+  --text-muted: #526155;
+  --text-inverse: #060E09;
+
+  --border-hairline: rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --grid-line: rgba(255, 255, 255, 0.022);
+
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* Typography Hierarchy Rules */
+h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.0;
+  color: var(--text-primary);
+}
+
+h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+h4 {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+/* Subtle Grid Background (40px, adaptive var(--grid-line) lines — Hero, Medical Case, CTA only) */
+.bg-grid-ethaum {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Hero Signature Arch Portal */
+.hero-portal-arch {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px 9999px 0 0;
+  overflow: hidden;
+  background: linear-gradient(175deg, #1A6344 0%, #0F3D2A 55%, #082117 100%);
+  box-shadow: 0 24px 64px -12px rgba(18, 168, 92, 0.22);
+}
+
+.dark .hero-portal-arch, [data-theme="dark"] .hero-portal-arch {
+  background: linear-gradient(175deg, #1E704D 0%, #0D3825 50%, #05160E 100%);
+  box-shadow: 0 25px 80px -10px rgba(18, 208, 88, 0.32);
+}
+
+/* Section label pattern utility */
+.section-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-rich);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label-line {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--green-rich);
+}
+
+/* Primary Button Styling */
+.btn-primary-cta {
+  background-color: var(--green-cta);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: 3px;
+  padding: 13px 28px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+
+.btn-primary-cta:hover {
+  background-color: var(--green-hover);
+}
+
+/* Ghost / Secondary Button Styling */
+.btn-secondary-ghost {
+  background-color: transparent;
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  border-radius: 3px;
+  padding: 12px 24px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  transition: border-color 150ms ease, color 150ms ease;
+  cursor: pointer;
+}
+
+.btn-secondary-ghost:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+/* Global Card Styling Rules */
+.card-ethaum {
+  border-radius: 4px;
+  border: 1px solid var(--border-default);
+  background-color: var(--bg-card);
+  padding: 24px 32px;
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+
+.card-ethaum:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+/* Nav Link Underline on Hover */
+.nav-link-refined {
+  position: relative;
+  color: var(--text-secondary);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  transition: color 200ms ease;
+}
+
+.nav-link-refined:hover {
+  color: var(--text-primary);
+}
+
+.nav-link-refined::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--green-rich);
+  transition: width 200ms ease;
+}
+
+.nav-link-refined:hover::after,
+.nav-link-refined.active::after {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
