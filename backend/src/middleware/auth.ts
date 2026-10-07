@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { UnauthorizedError, ForbiddenError } from '../utils/apiError.js'
 import { UserRole } from '../types/index.js'
 import { supabaseAdmin, isSupabaseConfigured } from '../config/supabase.js'
-import { userService } from '../services/userService.js'
+import { userService, patientService } from '../services/userService.js'
 
 export interface AuthUser {
   id: string
@@ -87,12 +87,17 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
       const specificUserId = tokenParts[1]
       const foundUser = await userService.getUserById(specificUserId)
       if (foundUser) {
+        let patientId: string | undefined = undefined
+        if (foundUser.role === 'patient') {
+          const patient = await patientService.getPatientByUserId(foundUser.id)
+          patientId = patient?.id || foundUser.id
+        }
         req.user = {
           id: foundUser.id,
           email: foundUser.email,
           role: foundUser.role,
           name: foundUser.name,
-          patientId: foundUser.role === 'patient' ? foundUser.id : undefined,
+          patientId,
           providerId: foundUser.role === 'provider' ? 'apex-joint-delhi' : undefined,
         }
         return next()
