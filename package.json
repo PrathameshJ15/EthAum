@@ -1,0 +1,17 @@
+{
+  "name": "ethaum-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EthAum Sovereign Healthcare Platform",
+  "scripts": {
+    "dev": "concurrently -n \"backend,frontend\" -c \"cyan,green\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "start": "npm run start --prefix backend",
+    "test": "npm run test --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
