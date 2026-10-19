@@ -74,6 +74,15 @@ EthAum creates one connected **Medical Case**.
 - Cryptographic HMAC signature verification & idempotent webhooks
 - See [docs/payment-integration.md](docs/payment-integration.md) for full guide
 
+### EHR & HL7 FHIR R4 Interoperability Prototype (Phase 31)
+- Conforms to **HL7 FHIR Release 4 (v4.0.1)** (`http://hl7.org/fhir/R4/`)
+- Resources supported: `Patient`, `Condition`, `Observation`, `DiagnosticReport`, `DocumentReference`, `Encounter`, and `Bundle`
+- Bidirectional mapping with SNOMED CT (`38362002`) and LOINC (`82312-0`) clinical coding
+- Patient data sovereignty & consent-filtered provider export (`application/fhir+json`)
+- Inbound bundle staging (`PENDING_REVIEW`) with automated duplicate detection by filename
+- Interactive frontend module in Case Detail with synthetic Eleanor Vance sample loader
+- See [docs/fhir-interoperability.md](docs/fhir-interoperability.md) for complete mapping & REST API specification
+
 ### Deployment
 - Frontend: Vercel / Cloudflare Pages
 - Backend: Render / Railway / Node container

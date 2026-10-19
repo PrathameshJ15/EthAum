@@ -59,3 +59,6 @@ export { TravelAssistanceView } from './travel/TravelAssistanceView'
 // Payment Gateway Components
 export { PaymentCheckoutModal } from './payment/PaymentCheckoutModal'
 
+// FHIR Interoperability Components
+export { FhirInteroperabilityCard } from './fhir/FhirInteroperabilityCard'
+
