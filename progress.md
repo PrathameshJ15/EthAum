@@ -9,13 +9,14 @@
 
 | Metric | Status | Details |
 | :--- | :---: | :--- |
-| **Backend Test Suite** | 🟢 **178 / 178 Passing** | 17 test suites covering auth, security, CORS, AI, journeys, quotes, bookings, travel, payments |
-| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,040 modules transformed in 747ms) |
+| **Backend Test Suite** | 🟢 **201 / 201 Passing** | 18 test suites covering auth, security, BOLA/IDOR defense, CORS, AI, journeys, quotes, bookings, travel, payments |
+| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,040 modules transformed in 722ms) |
 | **Phase 24 Parallel Audits** | 🟢 **Completed** | Full-stack audit completed by Prathamesh (frontend) and Ayusha (backend) |
 | **Phase 25 Gap Analysis** | 🟢 **Completed** | Consolidated in `docs/gap-analysis.md` with P0–P2 prioritized tasks & owners |
 | **Phase 26 Core Stability** | 🟢 **Completed** | All 5 P0 and 2 P1 bugs fixed on `feature/phase-26-stability` |
 | **Phase 29 Travel & Visa** | 🟢 **Completed** | Full module on `feature/travel-assistance` with official visa resources & checklists |
 | **Phase 30 Payment Gateway**| 🟢 **Completed** | Sovereign multi-provider gateway (Razorpay/Stripe/Mock) with HMAC & idempotent webhooks |
+| **Phase 32 Security & Privacy**| 🟢 **Completed** | Full-stack audit, BOLA/IDOR remediations, 23 security tests, zero secret exposure, `docs/security-audit-report.md` |
 | **AI Clinical Boundary** | 🟢 **Compliant** | Groq Llama-3 coordination layer active with strict non-diagnostic guardrails |
 | **Patient Data Sovereignty**| 🟢 **Active** | Explicit permission grants/revocations with immutable access audit trails |
 
@@ -295,6 +296,49 @@ npm test
   * `frontend/src/components/medical/TreatmentBookingModal.jsx`
   * `frontend/src/pages/patient/CaseDetailPage.jsx`
 * **Remaining Limitations:** Live production transaction processing requires merchant KYC approval and production webhook secret provisioning with Razorpay or Stripe.
+
+### Phase 32: Security & Privacy Verification (Prathamesh — Completed on `feature/security-audit`)
+- [x] **Full-Stack Security Audit:** Inspected frontend client bundle, backend REST endpoints, Supabase PostgreSQL RLS, storage buckets, Groq AI integrations, and payment gateways.
+- [x] **Zero Credential Exposure:** Verified that frontend bundle contains zero backend secrets, API keys, or `SUPABASE_SERVICE_ROLE_KEY`. `.gitignore` blocks all `.env` files.
+- [x] **BOLA / IDOR Defense & Remediation:**
+  - `caseController`: Added ownership verification to `updateCaseStatus`, `generateSummary`, `getSummary`, `submitCorrection`, and anti-tamper `patientId` assignment in `createCase`.
+  - `appointmentController`: Enforced patient and provider ownership on appointments; restricted consultation confirmation and completion strictly to assigned providers or admins.
+  - `aftercareController`: Added `verifyAftercareAccess` across all 7 aftercare endpoints preventing cross-patient plan inspection or reminder acknowledgment.
+  - `bookingController`: Added object-level ownership checks to `getBookingById` and case verification to `createBooking`.
+  - `quoteController`: Added case ownership checks on `getQuoteById`, `acceptQuote`, `rejectQuote`, `askQuestion`, and provider checks on `answerQuestion`.
+  - `userController`: Restricted profile querying and updating to the authentic patient owner or admin.
+  - `messagingController`: Added conversation participant validation preventing unauthorized message reading or sending.
+- [x] **Medical Data Privacy & HIPAA/GDPR Compliance:**
+  - Private `medical-records` bucket with short-lived signed URLs (15m upload, 60m download).
+  - Explicit patient permission grants and instant revocations.
+  - Automated de-identification pipeline (`sanitizeMedicalText`) scrubbing emails, phone numbers, SSNs, and patient names before external AI processing.
+  - Immutable audit trail logging on every record view, upload, download, grant, and revocation.
+- [x] **Payment Anti-Tamper & Cryptographic Verification:**
+  - Enforced server-determined pricing; rejected client-supplied payment amounts.
+  - Validated HMAC signatures on webhooks with timestamp tolerance and replay protection (`payment_webhook_events`).
+- [x] **Production Error Shielding:**
+  - Masked internal errors and suppressed stack traces when `NODE_ENV === 'production'`.
+- [x] **Automated Regression Suite:** Created `backend/tests/securityVerificationPhase32.test.ts` (23 tests). All 18 test suites and 201 tests passing.
+- [x] **Audit Documentation:** Published comprehensive audit report at `docs/security-audit-report.md`.
+
+#### Phase 32 Verification Summary
+* **Backend Tests:** 18 test files passed, 201 tests passed (0 failed). Added `securityVerificationPhase32.test.ts` (23 tests).
+* **Frontend Build:** Vite v8.3.2 production build succeeded in 722ms with 2,040 modules transformed.
+* **Modified & Created Files:**
+  * `backend/tests/securityVerificationPhase32.test.ts` *(New)*
+  * `docs/security-audit-report.md` *(New)*
+  * `backend/src/controllers/caseController.ts`
+  * `backend/src/controllers/appointmentController.ts`
+  * `backend/src/controllers/aftercareController.ts`
+  * `backend/src/controllers/bookingController.ts`
+  * `backend/src/controllers/quoteController.ts`
+  * `backend/src/controllers/userController.ts`
+  * `backend/src/controllers/messagingController.ts`
+  * `backend/src/services/messagingService.ts`
+  * `backend/src/routes/patientRoutes.ts`
+  * `backend/tests/quoteManagement.test.ts`
+  * `progress.md`
+* **Remaining Limitations:** Third-party CREST penetration testing and live production webhook secrets rotation before high-volume commercial scaling.
 
 ### Phase 27: Feature Development & Specialization (Parallel Branches)
 - [ ] **P1-4 (Ayusha — `branch1`):** Video Consultation Room component & Daily.co/WebRTC integration

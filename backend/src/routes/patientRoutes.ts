@@ -5,5 +5,6 @@ import { requireAuth } from '../middleware/auth.js'
 export const patientRoutes = Router()
 
 patientRoutes.get('/profile', requireAuth, patientController.getPatientProfile)
+patientRoutes.patch('/profile', requireAuth, patientController.updatePatientProfile)
 patientRoutes.get('/:userId/profile', requireAuth, patientController.getPatientProfile)
 patientRoutes.patch('/:userId/profile', requireAuth, patientController.updatePatientProfile)

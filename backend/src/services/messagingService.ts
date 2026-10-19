@@ -40,6 +40,10 @@ export const messagingService = {
     return MOCK_CONVERSATIONS.filter((c) => c.participantIds.includes(userId))
   },
 
+  async getConversation(conversationId: string): Promise<Conversation | null> {
+    return MOCK_CONVERSATIONS.find((c) => c.id === conversationId) || null
+  },
+
   async getMessages(conversationId: string): Promise<Message[]> {
     return MOCK_MESSAGES.filter((m) => m.conversationId === conversationId).sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()

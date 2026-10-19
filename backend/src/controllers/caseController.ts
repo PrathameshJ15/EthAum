@@ -80,7 +80,17 @@ export const caseController = {
 
   async createCase(req: Request, res: Response, next: NextFunction) {
     try {
-      const newCase = await caseService.createCase(req.body)
+      const user = req.user
+      const payload = { ...req.body }
+      // Security: Enforce that authenticated patients can only create cases under their own patientId
+      if (user?.role === 'patient') {
+        payload.patientId = user.patientId || user.id
+        if (user.name && !payload.patientName) {
+          payload.patientName = user.name
+        }
+      }
+
+      const newCase = await caseService.createCase(payload)
       return sendSuccess(res, newCase, 'Medical case created successfully', 201)
     } catch (err) {
       next(err)
@@ -90,8 +100,28 @@ export const caseController = {
   async updateCaseStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const { status } = req.body
-      const userRole = (req.user?.role?.toLowerCase() || 'patient') as 'patient' | 'provider' | 'admin'
       const caseId = req.params.id as string
+      const c = await caseService.getCaseById(caseId)
+      if (!c) {
+        throw new NotFoundError(`Case #${caseId} was not found`)
+      }
+
+      const user = req.user
+      const userRole = (user?.role?.toLowerCase() || 'patient') as 'patient' | 'provider' | 'admin'
+
+      if (userRole === 'patient') {
+        const patientId = user?.patientId || user?.id
+        if (c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You are not authorized to update this case')
+        }
+      } else if (userRole === 'provider') {
+        const providerId = user?.providerId || user?.id
+        const isAuthorized = await caseService.isProviderAuthorizedForCase(caseId, providerId)
+        if (!isAuthorized) {
+          throw new ForbiddenError('Access denied: You are not authorized to update this case')
+        }
+      }
+
       const updated = await caseService.updateCaseStatus(caseId, status, userRole)
       if (!updated) {
         throw new NotFoundError(`Case #${caseId} was not found`)
@@ -109,9 +139,21 @@ export const caseController = {
       if (!c) {
         throw new NotFoundError(`Case #${caseId} was not found`)
       }
-      if (req.user?.role === 'patient' && req.user.patientId && c.patientId !== req.user.patientId) {
-        throw new ForbiddenError('You can only generate summaries for your own cases')
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const patientId = user.patientId || user.id
+        if (c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You can only generate summaries for your own cases')
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        const isAuthorized = await caseService.isProviderAuthorizedForCase(caseId, providerId)
+        if (!isAuthorized) {
+          throw new ForbiddenError('Access denied: You are not authorized for this case')
+        }
       }
+
       const result = await caseSummaryService.generateCaseSummary(caseId)
       return sendSuccess(res, result, 'Case coordination summary generated successfully')
     } catch (err) {
@@ -126,9 +168,21 @@ export const caseController = {
       if (!c) {
         throw new NotFoundError(`Case #${caseId} was not found`)
       }
-      if (req.user?.role === 'patient' && req.user.patientId && c.patientId !== req.user.patientId) {
-        throw new ForbiddenError('Access denied to this case summary')
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const patientId = user.patientId || user.id
+        if (c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied to this case summary')
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        const isAuthorized = await caseService.isProviderAuthorizedForCase(caseId, providerId)
+        if (!isAuthorized) {
+          throw new ForbiddenError('Access denied to this case summary')
+        }
       }
+
       const result = await caseSummaryService.getCaseSummary(caseId)
       return sendSuccess(res, result, 'Case coordination summary retrieved successfully')
     } catch (err) {
@@ -143,9 +197,21 @@ export const caseController = {
       if (!c) {
         throw new NotFoundError(`Case #${caseId} was not found`)
       }
-      if (req.user?.role === 'patient' && req.user.patientId && c.patientId !== req.user.patientId) {
-        throw new ForbiddenError('You can only submit corrections for your own cases')
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const patientId = user.patientId || user.id
+        if (c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You can only submit corrections for your own cases')
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        const isAuthorized = await caseService.isProviderAuthorizedForCase(caseId, providerId)
+        if (!isAuthorized) {
+          throw new ForbiddenError('Access denied: You are not authorized for this case')
+        }
       }
+
       const { sectionKey, originalValue, correctedValue, reason } = req.body
       const result = await caseSummaryService.addCorrection(caseId, {
         sectionKey,
