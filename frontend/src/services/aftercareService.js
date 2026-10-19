@@ -300,8 +300,9 @@ export const aftercareService = {
   async getAftercarePlan(caseId = 'ET-8492') {
     try {
       const res = await apiClient.get(`/aftercare/${caseId}`)
-      if (res && res.data) {
-        return res.data
+      const data = res?.data !== undefined ? res.data : res
+      if (data) {
+        return data
       }
     } catch (err) {
       console.warn('[aftercareService] API fallback for getAftercarePlan:', err.message)
@@ -345,8 +346,9 @@ export const aftercareService = {
   async acknowledgeReminder(caseId, reminderId) {
     try {
       const res = await apiClient.post(`/aftercare/${caseId}/reminders/${reminderId}/acknowledge`)
-      if (res && res.data) {
-        return res.data
+      const data = res?.data !== undefined ? res.data : res
+      if (data) {
+        return data
       }
     } catch (err) {
       console.warn('[aftercareService] API fallback for acknowledgeReminder:', err.message)
@@ -385,8 +387,9 @@ export const aftercareService = {
         senderName,
         content,
       })
-      if (res && res.data) {
-        return res.data
+      const data = res?.data !== undefined ? res.data : res
+      if (data) {
+        return data
       }
     } catch (err) {
       console.warn('[aftercareService] API fallback for sendMessage:', err.message)

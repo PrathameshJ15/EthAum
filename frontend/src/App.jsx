@@ -17,6 +17,7 @@ import { ProviderDetailPage } from './pages/ProviderDetailPage'
 import { DestinationsPage } from './pages/DestinationsPage'
 import { DestinationDetailPage } from './pages/DestinationDetailPage'
 import { HowItWorksPage } from './pages/HowItWorksPage'
+import { PrivacyPolicyPage, TermsOfServicePage } from './pages/LegalPage'
 
 // Auth Pages
 import { LoginPage } from './pages/auth/LoginPage'
@@ -85,6 +86,8 @@ function MainLayout() {
           <Route path="/destinations" element={<DestinationsPage />} />
           <Route path="/destinations/:id" element={<DestinationDetailPage onCreateCase={handleOpenCreateCase} />} />
           <Route path="/how-it-works" element={<HowItWorksPage onCreateCase={handleOpenCreateCase} />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
 
           {/* Authentication Routes */}
           <Route path="/login" element={<LoginPage />} />

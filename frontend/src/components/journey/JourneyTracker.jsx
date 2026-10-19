@@ -96,7 +96,7 @@ export function JourneyTracker({
           title: 'Clinical Qualification & Gap Detection',
           description: 'Review structured clinical synthesis facts and verify pre-procedure qualification criteria.',
           actionLabel: 'Review Summary Facts',
-          tab: 'summary',
+          tab: 'overview',
           urgent: false,
         }
       case 3: // MATCHING

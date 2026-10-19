@@ -168,4 +168,32 @@ describe('Security & Authorization Audit', () => {
       checkDir(srcDir)
     })
   })
+
+  describe('6. CORS Security & Origin Isolation', () => {
+    it('allows requests originating from the configured FRONTEND_URL', async () => {
+      const res = await request(app)
+        .get('/api/v1/health')
+        .set('Origin', 'http://localhost:5173')
+
+      expect(res.status).toBe(200)
+      expect(res.headers['access-control-allow-origin']).toBe('http://localhost:5173')
+    })
+
+    it('blocks untrusted origins in production mode', async () => {
+      const originalEnv = process.env.NODE_ENV
+      try {
+        process.env.NODE_ENV = 'production'
+        const res = await request(app)
+          .get('/api/v1/health')
+          .set('Origin', 'https://malicious-tracker-site.com')
+
+        expect(res.status).toBe(403)
+        expect(res.body.success).toBe(false)
+        expect(res.body.error.code).toBe('FORBIDDEN')
+        expect(res.body.error.message).toContain('not allowed by CORS policy')
+      } finally {
+        process.env.NODE_ENV = originalEnv
+      }
+    })
+  })
 })

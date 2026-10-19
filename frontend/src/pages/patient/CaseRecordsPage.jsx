@@ -194,6 +194,7 @@ export function CaseRecordsPage() {
         : `${Math.round(file.size / 1024)} KB`
 
     // Attempt backend registration & direct upload
+    let backendRecordId = null
     try {
       const uploadInit = await recordService.requestUploadUrl({
         caseId: medicalCase.id,
@@ -207,11 +208,15 @@ export function CaseRecordsPage() {
       if (uploadInit?.uploadUrl) {
         await recordService.uploadFileDirect(uploadInit.uploadUrl, file)
       }
+      if (uploadInit?.record?.id) {
+        backendRecordId = uploadInit.record.id
+      }
     } catch (err) {
       console.warn('[CaseRecordsPage] Backend upload fallback:', err.message)
     }
 
     const { record: newRecord, updatedCase } = caseService.addRecord(medicalCase.id, {
+      id: backendRecordId || undefined,
       name: file.name,
       category: uploadCategory,
       type: `${uploadCategory} File`,

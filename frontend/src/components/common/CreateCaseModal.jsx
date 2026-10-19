@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Shield, Sparkles, CheckCircle2 } from 'lucide-react'
 import { Modal } from '../layout/Modal'
 import { Button } from './Button'
@@ -13,6 +13,12 @@ import { caseService } from '../../services/caseService'
 export function CreateCaseModal({ isOpen, onClose, initialTreatment = '' }) {
   const { addToast } = useToast()
   const [treatment, setTreatment] = useState(initialTreatment || '')
+
+  useEffect(() => {
+    if (initialTreatment) {
+      setTreatment(initialTreatment)
+    }
+  }, [initialTreatment, isOpen])
   const [destination, setDestination] = useState('')
   const [patientName, setPatientName] = useState('')
   const [contactEmail, setContactEmail] = useState('')

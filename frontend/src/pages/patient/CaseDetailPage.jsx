@@ -698,7 +698,7 @@ export function CaseDetailPage() {
       <JourneyTracker
         medicalCase={medicalCase}
         onSelectStage={handleStageSelect}
-        onActionClick={(tab) => setActiveTab(tab)}
+        onActionClick={(tab) => setActiveTab(tab === 'summary' ? 'overview' : tab)}
         appointments={appointments}
       />
 

@@ -9,10 +9,11 @@
 
 | Metric | Status | Details |
 | :--- | :---: | :--- |
-| **Backend Test Suite** | 🟢 **144 / 144 Passing** | 15 test suites covering auth, security, AI, journeys, quotes, bookings |
-| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,035 modules transformed) |
+| **Backend Test Suite** | 🟢 **146 / 146 Passing** | 15 test suites covering auth, security, CORS, AI, journeys, quotes, bookings |
+| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,036 modules transformed in 734ms) |
 | **Phase 24 Parallel Audits** | 🟢 **Completed** | Full-stack audit completed by Prathamesh (frontend) and Ayusha (backend) |
 | **Phase 25 Gap Analysis** | 🟢 **Completed** | Consolidated in `docs/gap-analysis.md` with P0–P2 prioritized tasks & owners |
+| **Phase 26 Core Stability** | 🟢 **Completed** | All 5 P0 and 2 P1 bugs fixed on `feature/phase-26-stability` |
 | **AI Clinical Boundary** | 🟢 **Compliant** | Groq Llama-3 coordination layer active with strict non-diagnostic guardrails |
 | **Patient Data Sovereignty**| 🟢 **Active** | Explicit permission grants/revocations with immutable access audit trails |
 
@@ -187,14 +188,33 @@ npm test
 
 ## 🔮 Upcoming Engineering Roadmap (Phases 26–28)
 
-### Phase 26: Core Stability & Critical P0 Bug Fixes (Prathamesh — `main`)
-- [ ] **P0-1:** Fix API client response unpacking mismatch in `caseService.js` and `aftercareService.js`
-- [ ] **P0-2:** Fix dead links in global footer & add legal routes (`/privacy`, `/terms`) in `Footer.jsx` and `App.jsx`
-- [ ] **P0-3:** Fix Journey Tracker Stage 2 tab target from `'summary'` to `'overview'` in `JourneyTracker.jsx`
-- [ ] **P0-4:** Synchronize uploaded diagnostic record UUID between backend and local state in `CaseRecordsPage.jsx`
-- [ ] **P0-5:** Tighten CORS origin validation to reject untrusted domains in production in `backend/src/app.ts`
-- [ ] **P1-1:** Synchronize `initialTreatment` prop updates in `CreateCaseModal.jsx`
-- [ ] **P1-3:** Fix dark mode styling regressions (`bg-white` classes in `AdminDashboardPage.jsx`)
+### Phase 26: Core Stability & Critical P0 Bug Fixes (Prathamesh — Completed on `feature/phase-26-stability`)
+- [x] **P0-1:** Fix API client response unpacking mismatch in `caseService.js` and `aftercareService.js` (unwrapped data payloads preserved; local cache properly synchronizes).
+- [x] **P0-2:** Fix dead links in global footer & add legal routes (`/privacy`, `/terms`) in `Footer.jsx`, `App.jsx`, and created `LegalPage.jsx`.
+- [x] **P0-3:** Fix Journey Tracker Stage 2 tab target from `'summary'` to `'overview'` in `JourneyTracker.jsx` and added fallback alias in `CaseDetailPage.jsx`.
+- [x] **P0-4:** Synchronize uploaded diagnostic record UUID between backend and local state in `CaseRecordsPage.jsx` and `caseService.js` (prevents 404s on subsequent download URL requests).
+- [x] **P0-5:** Tighten CORS origin validation to reject untrusted domains in production in `backend/src/app.ts` + added automated test coverage in `securityAudit.test.ts`.
+- [x] **P1-1:** Synchronize `initialTreatment` prop updates via `useEffect` in `CreateCaseModal.jsx`.
+- [x] **P1-3:** Fix dark mode styling regressions (`bg-white` replaced with `bg-[var(--bg-card)]` and borders in `AdminDashboardPage.jsx`).
+
+#### Phase 26 Verification Summary
+* **Bugs Fixed:** 5 P0 (critical) bugs + 2 P1 (important) UI bugs.
+* **Backend Tests:** 15 test files passed, 146 tests passed (0 failed). Added CORS test cases in `securityAudit.test.ts`.
+* **Frontend Build:** Vite v8.3.2 production build succeeded in 734ms with 2,036 modules transformed.
+* **Modified Files:**
+  * `backend/src/app.ts`
+  * `backend/tests/securityAudit.test.ts`
+  * `frontend/src/App.jsx`
+  * `frontend/src/components/common/CreateCaseModal.jsx`
+  * `frontend/src/components/journey/JourneyTracker.jsx`
+  * `frontend/src/components/layout/Footer.jsx`
+  * `frontend/src/pages/admin/AdminDashboardPage.jsx`
+  * `frontend/src/pages/patient/CaseDetailPage.jsx`
+  * `frontend/src/pages/patient/CaseRecordsPage.jsx`
+  * `frontend/src/services/aftercareService.js`
+  * `frontend/src/services/caseService.js`
+  * `frontend/src/pages/LegalPage.jsx` *(New)*
+* **Remaining Limitations:** In-browser WebRTC video room signaling (P1-4) and multilingual i18n framework (P1-5) are queued for Phase 27 on `branch1` (Ayusha).
 
 ### Phase 27: Feature Development & Specialization (Parallel Branches)
 - [ ] **P1-4 (Ayusha — `branch1`):** Video Consultation Room component & Daily.co/WebRTC integration
