@@ -9,12 +9,13 @@
 
 | Metric | Status | Details |
 | :--- | :---: | :--- |
-| **Backend Test Suite** | 🟢 **157 / 157 Passing** | 16 test suites covering auth, security, CORS, AI, journeys, quotes, bookings, travel assistance |
-| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,038 modules transformed in 705ms) |
+| **Backend Test Suite** | 🟢 **178 / 178 Passing** | 17 test suites covering auth, security, CORS, AI, journeys, quotes, bookings, travel, payments |
+| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,040 modules transformed in 747ms) |
 | **Phase 24 Parallel Audits** | 🟢 **Completed** | Full-stack audit completed by Prathamesh (frontend) and Ayusha (backend) |
 | **Phase 25 Gap Analysis** | 🟢 **Completed** | Consolidated in `docs/gap-analysis.md` with P0–P2 prioritized tasks & owners |
 | **Phase 26 Core Stability** | 🟢 **Completed** | All 5 P0 and 2 P1 bugs fixed on `feature/phase-26-stability` |
 | **Phase 29 Travel & Visa** | 🟢 **Completed** | Full module on `feature/travel-assistance` with official visa resources & checklists |
+| **Phase 30 Payment Gateway**| 🟢 **Completed** | Sovereign multi-provider gateway (Razorpay/Stripe/Mock) with HMAC & idempotent webhooks |
 | **AI Clinical Boundary** | 🟢 **Compliant** | Groq Llama-3 coordination layer active with strict non-diagnostic guardrails |
 | **Patient Data Sovereignty**| 🟢 **Active** | Explicit permission grants/revocations with immutable access audit trails |
 
@@ -117,7 +118,7 @@ flowchart LR
 - [x] No sensitive API keys (`GROQ_API_KEY`, `SUPABASE_SERVICE_KEY`) exposed to frontend
 
 ### Phase 12: Automated Verification & Test Coverage
-- [x] **16 Test Suites (157 Tests Total)** covering:
+- [x] **17 Test Suites (178 Tests Total)** covering:
   - `auth.test.ts` — Authentication & token validation
   - `criticalPatientJourney.test.ts` — End-to-end patient journey (Rahul's complete story)
   - `groqDocumentIntelligence.test.ts` — AI parsing, fallback, error, and timeout handling
@@ -134,6 +135,7 @@ flowchart LR
   - `errorHandling.test.ts` — Graceful API failure degradation
   - `health.test.ts` — Service health and uptime monitoring
   - `travelAssistance.test.ts` — Travel planning, official visa resources, disclaimers, checklist toggling, security boundary validation
+  - `paymentGateway.test.ts` — Order generation, server price authority, HMAC signature verification, idempotent webhooks, multi-tenant history, and refund bounds
 
 ---
 
@@ -252,6 +254,48 @@ npm test
   * `frontend/src/components/journey/JourneyTracker.jsx`
 * **Remaining Limitations:** Third-party real-time flight status and live GDS/hotel booking integrations require external travel API keys and enterprise partnerships.
 
+### Phase 30: Sovereign Real Payment Gateway Integration (Prathamesh — Completed on `feature/payment-gateway`)
+- [x] **Multi-Provider Architecture:** Modular `PaymentProvider` interface supporting Razorpay, Stripe, and a Sovereign Simulation Sandbox for local/CI test suites.
+- [x] **Server-Authoritative Pricing & Anti-Tamper:** Strictly server-calculated charges ($150 for consultations, $500 for hospital admission deposits). Client-supplied price tamper attempts are rejected with HTTP 400 Bad Request.
+- [x] **Cryptographic Signature Verification:** Backend validates provider signatures:
+  - Razorpay: HMAC-SHA256 (`hash(order_id + '|' + payment_id, secret)`) with timing-safe comparison.
+  - Stripe: Header signature verification with timestamp tolerance to prevent replay attacks.
+- [x] **Idempotent Webhook Processing:** Webhooks ingested at `/api/v1/payments/webhook` with raw body HMAC verification and persistent event tracking (`payment_webhook_events`) to eliminate duplicate charges or replayed events.
+- [x] **Automated Workflow Transitions:** Verified payments automatically transition `TreatmentBooking` to `CONFIRMED`, `MedicalCase` to `BOOKED` (`journeyStage = 'Booked'`), and append immutable Journey Events.
+- [x] **Multi-Tenant Payment History & Scoping:** Patients can access only their own payment records, cases link to their payments (`/cases/:id/payments`), and administrators can inspect platform-wide records and process bounds-checked refunds.
+- [x] **Database Migrations & RLS:** Created `20261020000000_create_payments_schema.sql` defining `public.payments` and `public.payment_webhook_events` with full Row Level Security policies.
+- [x] **Frontend Payment Modal & Escrow Badging:** Interactive `PaymentCheckoutModal` with real gateway and sandbox modes, escrow assurance notices, receipt export, and responsive dark/light support.
+
+#### Phase 30 Verification Summary
+* **Backend Tests:** 17 test files passed, 178 tests passed (0 failed). Added `paymentGateway.test.ts` (21 unit/integration tests).
+* **Frontend Build:** Vite v8.3.2 production build succeeded in 747ms with 2,040 modules transformed.
+* **Modified & Created Files:**
+  * `backend/supabase/migrations/20261020000000_create_payments_schema.sql` *(New)*
+  * `backend/supabase/schema.sql`
+  * `backend/src/types/index.ts`
+  * `backend/src/config/env.ts`
+  * `backend/src/app.ts`
+  * `backend/src/services/payment/PaymentProvider.ts` *(New)*
+  * `backend/src/services/payment/RazorpayProvider.ts` *(New)*
+  * `backend/src/services/payment/StripeProvider.ts` *(New)*
+  * `backend/src/services/payment/MockPaymentProvider.ts` *(New)*
+  * `backend/src/services/payment/paymentService.ts` *(New)*
+  * `backend/src/services/paymentService.ts` *(New)*
+  * `backend/src/controllers/paymentController.ts` *(New)*
+  * `backend/src/routes/paymentRoutes.ts` *(New)*
+  * `backend/src/routes/caseRoutes.ts`
+  * `backend/src/routes/index.ts`
+  * `backend/tests/paymentGateway.test.ts` *(New)*
+  * `backend/.env.example`
+  * `frontend/.env.example`
+  * `docs/payment-integration.md` *(New)*
+  * `frontend/src/services/paymentService.js` *(New)*
+  * `frontend/src/components/payment/PaymentCheckoutModal.jsx` *(New)*
+  * `frontend/src/components/index.js`
+  * `frontend/src/components/medical/TreatmentBookingModal.jsx`
+  * `frontend/src/pages/patient/CaseDetailPage.jsx`
+* **Remaining Limitations:** Live production transaction processing requires merchant KYC approval and production webhook secret provisioning with Razorpay or Stripe.
+
 ### Phase 27: Feature Development & Specialization (Parallel Branches)
 - [ ] **P1-4 (Ayusha — `branch1`):** Video Consultation Room component & Daily.co/WebRTC integration
 - [ ] **P1-5 (Ayusha — `branch1`):** Multilingual i18n framework (English, Arabic RTL, Spanish, Thai)
@@ -262,6 +306,7 @@ npm test
 ### Phase 28: Platform Integrations & Release
 - [ ] **P2-1 (Ayusha — `branch1`):** Medical Travel & Visa Concierge intake module
 - [ ] **P2-2 (Ayusha — `branch1`):** HL7/FHIR R4 JSON export prototype for case records
-- [ ] **P2-3 (Prathamesh — `main`):** International escrow payment gateway integration (Stripe / Razorpay)
+- [x] **P2-3 (Prathamesh — `feature/payment-gateway`):** International escrow payment gateway integration (Stripe / Razorpay)
 - [ ] Joint Architecture Review of `branch1` merge into `main` and production deployment
+
 

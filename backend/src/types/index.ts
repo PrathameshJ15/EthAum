@@ -706,3 +706,83 @@ export interface TravelPlan {
   createdAt: string
 }
 
+/**
+ * Payment Gateway & Escrow Types
+ */
+export type PaymentStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'REFUNDED'
+
+export type PaymentPurpose =
+  | 'CONSULTATION_FEE'
+  | 'TREATMENT_DEPOSIT'
+  | 'HOSPITAL_ADMISSION'
+  | 'SECOND_OPINION'
+
+export type PaymentProviderName = 'razorpay' | 'stripe' | 'mock'
+
+export type RefundStatus = 'NONE' | 'PARTIAL' | 'FULL' | 'REQUESTED'
+
+export interface PaymentRecord {
+  id: string
+  paymentId: string
+  userId?: string
+  patientId: string
+  patientName?: string
+  caseId: string
+  bookingId?: string
+  appointmentId?: string
+  provider: PaymentProviderName
+  providerOrderId?: string
+  providerPaymentId?: string
+  amount: number
+  currency: string
+  status: PaymentStatus
+  purpose: PaymentPurpose
+  idempotencyKey?: string
+  receiptUrl?: string
+  failureReason?: string
+  metadata?: Record<string, any>
+  refundStatus: RefundStatus
+  refundedAmount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateOrderInput {
+  caseId: string
+  purpose: PaymentPurpose
+  bookingId?: string
+  appointmentId?: string
+  customNotes?: string
+  idempotencyKey?: string
+}
+
+export interface VerifyPaymentInput {
+  paymentId: string
+  providerOrderId: string
+  providerPaymentId: string
+  providerSignature: string
+}
+
+export interface PaymentConfigResponse {
+  enabledProvider: PaymentProviderName
+  keyId?: string
+  supportedCurrencies: string[]
+  testMode: boolean
+}
+
+export interface PaymentWebhookEventRecord {
+  id: string
+  eventId: string
+  provider: string
+  eventType: string
+  payload: Record<string, any>
+  status: 'PROCESSED' | 'IGNORED' | 'FAILED'
+  processedAt: string
+}
+

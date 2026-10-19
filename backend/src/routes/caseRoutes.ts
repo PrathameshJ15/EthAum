@@ -99,5 +99,17 @@ caseRoutes.put('/:id/travel', requireAuth, async (req, res, next) => {
   }
 })
 
+// Case Payment Records
+caseRoutes.get('/:id/payments', requireAuth, async (req, res, next) => {
+  try {
+    const { paymentController } = await import('../controllers/paymentController.js')
+    req.query.caseId = req.params.id
+    return paymentController.listPayments(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+
 
 

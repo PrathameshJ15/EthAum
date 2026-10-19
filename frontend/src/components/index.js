@@ -56,4 +56,6 @@ export { JourneyTracker } from './journey/JourneyTracker'
 export { AftercareModule } from './aftercare/AftercareModule'
 export { TravelAssistanceView } from './travel/TravelAssistanceView'
 
+// Payment Gateway Components
+export { PaymentCheckoutModal } from './payment/PaymentCheckoutModal'
 

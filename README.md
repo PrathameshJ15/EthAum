@@ -55,28 +55,35 @@ EthAum creates one connected **Medical Case**.
 - Lucide React
 
 ### Backend
-- Python
-- Django
-- Django REST Framework
+- Node.js & Express (TypeScript)
+- Zod schema validation
+- Helmet, CORS & Express Rate Limiter
+- Cryptographic HMAC-SHA256 signature verification
 
 ### Data & Infrastructure
 - Supabase PostgreSQL
-- Supabase Storage
+- Supabase Storage (medical records bucket)
 - Supabase Auth
 
-### AI
-- Grok API through the Django backend
+### AI Engine
+- Groq SDK (`llama-3.3-70b-versatile` / `llama-3.1-8b-instant`) with medical safety filters
+
+### Payment Gateway & Escrow (Phase 30)
+- Multi-provider gateway architecture: Razorpay, Stripe, and Sovereign Simulation Sandbox
+- Server-authoritative pricing (anti-tamper)
+- Cryptographic HMAC signature verification & idempotent webhooks
+- See [docs/payment-integration.md](docs/payment-integration.md) for full guide
 
 ### Deployment
-- Frontend: Vercel
-- Backend: Render/Railway
+- Frontend: Vercel / Cloudflare Pages
+- Backend: Render / Railway / Node container
 - Database, Storage and Auth: Supabase
 
 ## Core Principle
 
 The Medical Case is the center of the application.
 
-Patient → Case → Records → Providers → Quotes → Appointments → Booking → Journey → Aftercare
+Patient → Case → Records → Providers → Quotes → Appointments → Booking → Escrow Payment → Journey → Aftercare
 
 ## AI Boundary
 
@@ -111,13 +118,13 @@ Use one complete patient story for the hackathon:
 9. Patient compares quotes
 10. Patient selects a provider
 11. Patient books consultation
-12. Treatment is booked
-13. Journey tracker updates
-14. Aftercare reminders appear
+12. Treatment admission booked & escrow payment verified via gateway
+13. Journey tracker updates through travel, admission, and surgery
+14. Aftercare rehabilitation milestones appear
 
 ## Local Development
 
-### Frontend
+### 1. Frontend
 
 ```bash
 cd frontend
@@ -125,38 +132,65 @@ npm install
 npm run dev
 ```
 
-### Backend
+Runs on **http://localhost:5173**.
+
+### 2. Backend
 
 ```bash
 cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
+npm install
+npm run dev
 ```
+
+Runs on **http://localhost:8000** (Health: `http://localhost:8000/api/v1/health`).
+
+### 3. Run Automated Test Suite
+
+```bash
+cd backend
+npm test
+```
+
+Currently verifies **17 test suites (178 tests total)**.
 
 ## Environment Variables
 
-Frontend:
+### Frontend (`frontend/.env`):
 
 ```env
 VITE_API_URL=http://localhost:8000
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+VITE_PAYMENT_PROVIDER=mock
+VITE_RAZORPAY_KEY_ID=rzp_test_placeholder
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_placeholder
 ```
 
-Backend:
+### Backend (`backend/.env`):
 
 ```env
-SECRET_KEY=
-SUPABASE_URL=
-SUPABASE_SERVICE_KEY=
-XAI_API_KEY=
+PORT=8000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+SUPABASE_ANON_KEY=your-supabase-anon-key
+GROQ_API_KEY=your-groq-api-key
+
+# Payment Gateway (Phase 30)
+PAYMENT_PROVIDER=mock
+RAZORPAY_KEY_ID=rzp_test_placeholder
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+RAZORPAY_WEBHOOK_SECRET=your_razorpay_webhook_secret
+STRIPE_PUBLISHABLE_KEY=pk_test_placeholder
+STRIPE_SECRET_KEY=your_stripe_secret
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 ```
 
-Never expose `XAI_API_KEY` in the frontend.
+> [!CAUTION]
+> Never expose `GROQ_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RAZORPAY_KEY_SECRET`, or `STRIPE_SECRET_KEY` in the frontend or Git.
 
 ## Product Status
 
-This repository is intended for an MVP/hackathon implementation. Production deployment requires appropriate legal, privacy, security and healthcare-regulatory review.
+This repository provides an enterprise-ready architecture for international healthcare coordination. Full production transaction processing requires merchant KYC approval and production webhook secret provisioning with Razorpay or Stripe.
+
