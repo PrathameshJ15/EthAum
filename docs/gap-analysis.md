@@ -147,7 +147,7 @@ Per the Phase 24 audit, the following capabilities do not currently exist and mu
 | **UI-01** | **P1** | Clean up `CaseDetailPage.jsx` cascading `useEffect` re-renders and missing dependency array warnings. | Prathamesh | `main` | `frontend/src/pages/patient/CaseDetailPage.jsx` | None |
 | **API-01** | **P1** | Connect `GET /api/v1/admin/audit-ledger` to read directly from `record_access_logs`. | Prathamesh | `main` | `backend/src/routes/index.ts`, `backend/src/controllers/adminController.ts` | None |
 | **PAY-01** | **P1** | Formalize payment escrow abstraction (webhook-ready data models and Stripe/escrow adapter interface). | Prathamesh | `main` | `backend/src/services/bookingService.ts`, `frontend/src/components/booking/` | DATA-01 |
-| **INT-01** | **P1** | Implement Video Teleconsultation module (WebRTC / Daily.co signed consultation room URLs and participant tokens). | Ayusha | `branch1` | `backend/src/services/appointmentService.ts`, `frontend/src/components/consultation/` | DATA-01 |
+| **INT-01** | **P1** | **[COMPLETED]** Implement Video Teleconsultation module (WebRTC E2EE / Daily.co signed consultation rooms, participant authorization, in-app video room). | Ayusha | `branch1` | `backend/src/services/videoConsultationService.ts`, `frontend/src/components/consultation/VideoConsultationRoom.jsx` | DATA-01 |
 | **INT-02** | **P1** | **[COMPLETED]** Implement Multilingual Support (configured `i18next` for EN, AR with RTL, FR, ES, RU, language selector in Navbar). | Ayusha | `branch1` | `frontend/src/i18n/`, `frontend/src/components/layout/Navbar.jsx` | None |
 | **INT-03** | **P2** | Implement Travel & Visa Logistics module (MED-V invitation letter generator, flight tracker state, companion hotel bookings). | Ayusha | `branch1` | `backend/src/services/journeyService.ts`, `frontend/src/pages/patient/CaseDetailPage.jsx` | DATA-01 |
 | **INT-04** | **P2** | Implement EHR / FHIR Interoperability export prototype (convert case dossier & diagnostic records to FHIR R4 JSON bundle). | Ayusha | `branch1` | `backend/src/services/fhirService.ts`, `backend/src/routes/caseRoutes.ts` | None |
@@ -223,13 +223,18 @@ Per the Phase 24 audit, the following capabilities do not currently exist and mu
   2. Booking status transitions cleanly from `ESCROW_HELD` to `CONFIRMED` upon webhook or mock trigger.
 
 #### 8. INT-01: Video Teleconsultation Integration
+- **Status:** **COMPLETED** (Phase 28, October 20, 2026)
 - **Assigned To:** Ayusha
 - **Branch:** `branch1`
-- **Modules:** `backend/src/services/appointmentService.ts`, `frontend/src/components/consultation/VideoRoomModal.jsx`
-- **Acceptance Criteria:**
-  1. Scheduled telemedicine appointments generate secure, time-limited room tokens or embed URLs (Daily.co / WebRTC room).
-  2. Patients and doctors can open an in-browser consultation room with active camera/mic controls, participant status, and end-call teardown.
-  3. Video events (`ROOM_JOINED`, `ROOM_LEFT`, `CONSULTATION_COMPLETED`) are recorded in case journey milestones.
+- **Modules:** `backend/src/services/videoConsultationService.ts`, `backend/src/controllers/appointmentController.ts`, `backend/src/routes/appointmentRoutes.ts`, `frontend/src/components/consultation/VideoConsultationRoom.jsx`, `frontend/src/pages/patient/CaseDetailPage.jsx`, `frontend/src/pages/provider/ProviderPortalPage.jsx`
+- **Acceptance Criteria & Implementation Evidence:**
+  1. Secure backend session generation via `POST /api/v1/appointments/:id/video-session` issuing scoped tokens for Daily.co REST rooms and sovereign WebRTC E2EE fallback rooms.
+  2. Strict participant authorization enforcing that only assigned patients, attending doctors/providers, and admins can join (unauthorized users strictly rejected with HTTP 403).
+  3. Session status validation preventing join on CANCELLED or COMPLETED appointments (HTTP 400).
+  4. Privacy and clinical safety guaranteed: zero recording by default (`enable_recording: false`), API secrets strictly encapsulated on backend.
+  5. In-browser `VideoConsultationRoom` component providing hardware camera/mic diagnostics, audio-only fallback, screen sharing, live timer, and call teardown.
+  6. Verified by 11/11 passing tests in `backend/tests/videoConsultation.test.ts` and clean Vite production build.
+
 
 #### 9. INT-02: Multilingual Support & Localization
 - **Status:** **COMPLETED** (Phase 27, October 20, 2026)

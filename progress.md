@@ -20,6 +20,7 @@
 | **Phase 25** | Audit Consolidation & Task Planning | **Completed** | Full Team | Formulated `docs/gap-analysis.md` and prioritized task board. |
 | **Phase 26** | Security Hardening, Test Suite & Core Integrations | **In Progress** | Prathamesh & Ayusha | P0/P1 items in progress across `main` and `branch1`. |
 | **Phase 27** | Multilingual Support & RTL Localization | **Completed** | Ayusha (`branch1`) | Complete 5-language localization (EN, AR, FR, ES, RU) with RTL layout engine, `i18next`, and language selector. |
+| **Phase 28** | Video Consultation & Telemedicine Integration | **Completed** | Ayusha (`branch1`) | Fully integrated Daily.co and WebRTC E2EE video consultation with participant authorization, hardware diagnostics, and zero-recording HIPAA default. |
 
 ---
 
@@ -32,7 +33,7 @@
 
 ### Backend Audit (Ayusha)
 * **TypeScript Build:** Clean compilation (`tsc` completed with 0 errors).
-* **Test Suite:** 14 passed test suites, 1 failed test suite (142 / 144 tests passing).
+* **Test Suite:** 15 passed test suites, 1 failed test suite (153 / 155 tests passing).
 * **Failing Tests:** `tests/criticalPatientJourney.test.ts` (Steps 4 and 5–6) failing with HTTP 502 due to missing offline fallback when `GROQ_API_KEY` is invalid/placeholder.
 * **Security Findings:**
   - Mock token bypass in `auth.ts` lacking production environment guard (`SEC-01`).
@@ -55,7 +56,7 @@ Detailed specifications, dependencies, and acceptance criteria are documented in
 - [ ] **UI-01:** Resolve `CaseDetailPage.jsx` cascading render cycles and exhaustive-deps warnings (`Prathamesh` on `main`)
 - [ ] **API-01:** Connect `GET /api/v1/admin/audit-ledger` to `record_access_logs` (`Prathamesh` on `main`)
 - [ ] **PAY-01:** Structured payment escrow abstraction layer (`Prathamesh` on `main`)
-- [ ] **INT-01:** In-browser Video Teleconsultation via WebRTC / Daily.co (`Ayusha` on `branch1`)
+- [x] **INT-01:** In-browser Video Teleconsultation via WebRTC / Daily.co (`Ayusha` on `branch1` — Phase 28 Complete)
 - [x] **INT-02:** Multilingual Support with `i18next` for EN, AR (RTL), FR, ES, RU (`Ayusha` on `branch1` — Phase 27 Complete)
 
 ### P2 Tasks (Healthcare Logistics & Standards)

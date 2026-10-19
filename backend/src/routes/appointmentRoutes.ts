@@ -30,3 +30,9 @@ appointmentRoutes.post('/:id/confirm', requireAuth, appointmentController.confir
 appointmentRoutes.post('/:id/complete', requireAuth, appointmentController.completeAppointment)
 appointmentRoutes.post('/:id/cancel', requireAuth, appointmentController.cancelAppointment)
 
+// Video Consultation & Telemedicine session routes
+appointmentRoutes.post('/:id/video-session', requireAuth, appointmentController.createOrJoinVideoSession)
+appointmentRoutes.get('/:id/video-session', requireAuth, appointmentController.getVideoSession)
+appointmentRoutes.post('/:id/video-session/end', requireAuth, appointmentController.endVideoSession)
+
+

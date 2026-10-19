@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import { z } from 'zod'
 import { appointmentService } from '../services/appointmentService.js'
+import { videoConsultationService } from '../services/videoConsultationService.js'
 import { doctorService } from '../services/doctorService.js'
 import { providerService } from '../services/providerService.js'
 import { sendSuccess } from '../utils/apiResponse.js'
-import { NotFoundError, ValidationError } from '../utils/apiError.js'
+import { NotFoundError, ValidationError, UnauthorizedError } from '../utils/apiError.js'
 import { AppointmentStatus } from '../types/index.js'
 
 export const createAppointmentSchema = z.object({
@@ -195,6 +196,56 @@ export const appointmentController = {
         throw new NotFoundError(`Appointment '${req.params.id}' not found`)
       }
       return sendSuccess(res, apt, 'Consultation cancelled successfully')
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  async createOrJoinVideoSession(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedError('Authentication required to access video consultation')
+      }
+      const session = await videoConsultationService.createOrJoinVideoSession(
+        req.params.id as string,
+        req.user
+      )
+      return sendSuccess(res, session, 'Video consultation session initialized', 201)
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  async getVideoSession(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedError('Authentication required to view video session')
+      }
+      const session = await videoConsultationService.getVideoSession(
+        req.params.id as string,
+        req.user
+      )
+      if (!session) {
+        return sendSuccess(res, null, 'No active video consultation session for this appointment')
+      }
+      return sendSuccess(res, session, 'Video consultation session retrieved')
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  async endVideoSession(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedError('Authentication required to end video consultation')
+      }
+      const notes = req.body?.notes as string | undefined
+      const result = await videoConsultationService.endVideoSession(
+        req.params.id as string,
+        req.user,
+        notes
+      )
+      return sendSuccess(res, result, 'Video consultation ended and appointment marked completed')
     } catch (err) {
       next(err)
     }

@@ -11,6 +11,8 @@ export interface EnvConfig {
   SUPABASE_SERVICE_ROLE_KEY?: string
   SUPABASE_ANON_KEY?: string
   GROQ_API_KEY?: string
+  DAILY_API_KEY?: string
+  DAILY_DOMAIN?: string
 }
 
 export const env: EnvConfig = {
@@ -21,4 +23,6 @@ export const env: EnvConfig = {
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || undefined,
   SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || undefined,
   GROQ_API_KEY: process.env.GROQ_API_KEY || undefined,
+  DAILY_API_KEY: process.env.DAILY_API_KEY || undefined,
+  DAILY_DOMAIN: process.env.DAILY_DOMAIN || 'ethaum.daily.co',
 }

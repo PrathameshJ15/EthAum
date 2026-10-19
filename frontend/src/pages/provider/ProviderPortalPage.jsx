@@ -35,6 +35,7 @@ import {
   StatusBadge,
   useToast,
   Breadcrumb,
+  VideoConsultationRoom,
 } from '../../components'
 
 import { providerService } from '../../services/providerService'
@@ -58,6 +59,17 @@ export function ProviderPortalPage() {
   const [caseFilter, setCaseFilter] = useState('all') // 'all' | 'active' | 'pending'
   const [caseSearch, setCaseSearch] = useState('')
   const [appointmentFilter, setAppointmentFilter] = useState('all') // 'all' | 'REQUESTED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW'
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [activeVideoAppointment, setActiveVideoAppointment] = useState(null)
+
+  const handleOpenProviderVideoRoom = (apt) => {
+    setActiveVideoAppointment(apt)
+    setIsVideoModalOpen(true)
+  }
+
+  const handleProviderVideoSessionEnded = () => {
+    loadProviderData()
+  }
 
   // Records Modal State
   const [recordsModalOpen, setRecordsModalOpen] = useState(false)
@@ -1199,17 +1211,14 @@ export function ProviderPortalPage() {
 
                       {isConfirmed && (
                         <>
-                          {apt.meetingUrl && (
-                            <a
-                              href={apt.meetingUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[var(--green-rich)] text-white text-xs font-medium hover:opacity-90 transition-opacity"
-                            >
-                              <Video className="w-3.5 h-3.5" />
-                              <span>Launch Video Room</span>
-                            </a>
-                          )}
+                          <Button
+                            size="sm"
+                            variant="primary"
+                            onClick={() => handleOpenProviderVideoRoom(apt)}
+                            leftIcon={<Video className="w-3.5 h-3.5" />}
+                          >
+                            Launch Video Room
+                          </Button>
                           <Button
                             size="sm"
                             variant="outline"
@@ -2389,6 +2398,15 @@ export function ProviderPortalPage() {
           </div>
         </form>
       </Modal>
+
+      {/* Video Consultation & Telemedicine Room (E2EE HIPAA / Daily.co) */}
+      <VideoConsultationRoom
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        appointment={activeVideoAppointment}
+        isProviderView={true}
+        onSessionEnded={handleProviderVideoSessionEnded}
+      />
     </div>
   )
 }

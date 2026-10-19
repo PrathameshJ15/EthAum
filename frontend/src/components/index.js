@@ -56,4 +56,8 @@ export {
 export { JourneyTracker } from './journey/JourneyTracker'
 export { AftercareModule } from './aftercare/AftercareModule'
 
+// Telemedicine & Consultation Components
+export { VideoConsultationRoom } from './consultation/VideoConsultationRoom'
+
+
 

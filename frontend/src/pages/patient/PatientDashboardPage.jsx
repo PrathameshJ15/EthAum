@@ -16,6 +16,7 @@ import {
   Modal,
   FileUploader,
   useToast,
+  VideoConsultationRoom,
 } from '../../components'
 
 import { caseService } from '../../services/caseService'
@@ -31,6 +32,8 @@ export function PatientDashboardPage() {
   const [cases, setCases] = useState(() => caseService.getAllCasesSync())
   const [loadingCases, setLoadingCases] = useState(false)
   const activeCase = cases[0] || null
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [videoAppointment, setVideoAppointment] = useState(null)
 
   useEffect(() => {
     let isMounted = true
@@ -413,9 +416,16 @@ export function PatientDashboardPage() {
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={() => {
-                if (activeCase?.nextAppointment?.meetingLink) {
-                  window.open(activeCase.nextAppointment.meetingLink, '_blank')
-                }
+                setVideoAppointment({
+                  id: 'apt-1',
+                  caseId: activeCase?.id || 'ET-8492',
+                  doctorName: 'Dr. Vikram Oberoi',
+                  providerName: 'Apex Orthopedic & Robotic Joint Institute',
+                  specialty: 'Adult Knee & Hip Reconstruction',
+                  title: 'Pre-Surgical Video Consultation',
+                  status: 'CONFIRMED',
+                })
+                setIsVideoModalOpen(true)
               }}
               className="bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors rounded-[3px] px-4 py-2 text-xs font-medium font-sans tracking-[0.02em] cursor-pointer"
             >
@@ -626,6 +636,13 @@ export function PatientDashboardPage() {
           </div>
         </div>
       </Modal>
+
+      {/* Video Consultation & Telemedicine Room (E2EE HIPAA / Daily.co) */}
+      <VideoConsultationRoom
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        appointment={videoAppointment}
+      />
     </div>
   )
 }
