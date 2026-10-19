@@ -17,12 +17,14 @@ import { useAuth } from '../../context/AuthContext'
 import { useToast, BackgroundGrid } from '../../components'
 import { Button } from '../../components/common/Button'
 import { Input } from '../../components/forms/Input'
+import { useTranslation } from '../../i18n'
 
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { login, switchDemoRole } = useAuth()
   const { addToast } = useToast()
+  const { t } = useTranslation()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -109,20 +111,20 @@ export function LoginPage() {
           </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-[var(--bg-elevated)] border border-[var(--border-hairline)] text-xs font-normal text-[var(--green-rich)] font-sans">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Encrypted Healthcare Authentication</span>
+            <span>{t('auth.loginSubtitle', 'Encrypted Healthcare Authentication')}</span>
           </div>
           <h1 className="text-3xl font-serif font-light text-[var(--text-primary)] tracking-tight">
-            Sign In to EthAum
+            {t('auth.loginTitle', 'Sign In to EthAum')}
           </h1>
           <p className="text-xs sm:text-sm font-light text-[var(--text-secondary)] font-sans">
-            Access your patient dossier, hospital quote inbox, or compliance desk.
+            {t('auth.loginSubtitle', 'Access your patient dossier, hospital quote inbox, or compliance desk.')}
           </p>
         </div>
 
         {/* Demo Role Fast-Switcher Pill Selector */}
         <div className="p-3 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-2 text-xs">
           <span className="text-[10px] font-normal text-[var(--text-muted)] uppercase tracking-wider block font-sans">
-            Demo Quick Login by Role:
+            {t('auth.demoAccountsTitle', 'Demo Quick Login by Role:')}
           </span>
           <div className="grid grid-cols-3 gap-2">
             <button
@@ -131,7 +133,7 @@ export function LoginPage() {
               className="p-2 rounded-xl bg-[#F8F8F5] dark:bg-[#151C1A] border border-[#EEF1EF] dark:border-[#2B3834] hover:border-[#173E39] dark:hover:border-[#6F9F91] hover:bg-[#E6EFEB]/60 dark:hover:bg-[#202B28] transition-all text-center cursor-pointer"
             >
               <User className="w-4 h-4 mx-auto text-[#315B55] dark:text-[#6F9F91] mb-1" />
-              <span className="font-semibold block text-[#172321] dark:text-[#F2F4F1]">Patient</span>
+              <span className="font-semibold block text-[#172321] dark:text-[#F2F4F1]">{t('case.aiAttributionPatient', 'Patient')}</span>
               <span className="text-[10px] text-[#172321]/50 dark:text-[#89938F]">Eleanor V.</span>
             </button>
 
@@ -141,7 +143,7 @@ export function LoginPage() {
               className="p-2 rounded-xl bg-[#F8F8F5] dark:bg-[#151C1A] border border-[#EEF1EF] dark:border-[#2B3834] hover:border-[#173E39] dark:hover:border-[#6F9F91] hover:bg-[#E6EFEB]/60 dark:hover:bg-[#202B28] transition-all text-center cursor-pointer"
             >
               <Building2 className="w-4 h-4 mx-auto text-[#315B55] dark:text-[#6F9F91] mb-1" />
-              <span className="font-semibold block text-[#172321] dark:text-[#F2F4F1]">Provider</span>
+              <span className="font-semibold block text-[#172321] dark:text-[#F2F4F1]">{t('nav.providers', 'Provider')}</span>
               <span className="text-[10px] text-[#172321]/50 dark:text-[#89938F]">Dr. Oberoi</span>
             </button>
 
@@ -168,9 +170,9 @@ export function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <Input
-              label="Email Address"
+              label={t('auth.emailLabel', 'Email Address')}
               type="email"
-              placeholder="patient@ethaum.com"
+              placeholder={t('auth.emailPlaceholder', 'patient@ethaum.com')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               leftIcon={<Mail className="w-4 h-4" />}
@@ -179,9 +181,9 @@ export function LoginPage() {
 
             <div className="space-y-1">
               <Input
-                label="Password"
+                label={t('auth.passwordLabel', 'Password')}
                 type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••••••"
+                placeholder={t('auth.passwordPlaceholder', '••••••••••••')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 leftIcon={<Lock className="w-4 h-4" />}
@@ -205,17 +207,17 @@ export function LoginPage() {
               size="lg"
               fullWidth
               isLoading={isSubmitting}
-              rightIcon={<ArrowRight className="w-4 h-4" />}
+              rightIcon={<ArrowRight className="w-4 h-4 rtl:rotate-180" />}
               className="mt-2"
             >
-              Sign In
+              {isSubmitting ? t('auth.signingIn', 'Authenticating...') : t('auth.signInBtn', 'Sign In')}
             </Button>
           </form>
 
           <div className="pt-4 border-t border-[#EEF1EF] dark:border-[#2B3834] text-center text-xs text-[#172321]/70 dark:text-[#B6C0BC]">
-            <span>Don't have an account yet? </span>
+            <span>{t('auth.noAccount', "Don't have an account yet?")} </span>
             <Link to="/signup" className="font-semibold text-[#173E39] dark:text-[#6F9F91] hover:underline">
-              Create an account
+              {t('auth.registerLink', 'Create an account')}
             </Link>
           </div>
         </div>

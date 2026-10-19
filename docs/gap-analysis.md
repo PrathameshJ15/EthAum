@@ -148,7 +148,7 @@ Per the Phase 24 audit, the following capabilities do not currently exist and mu
 | **API-01** | **P1** | Connect `GET /api/v1/admin/audit-ledger` to read directly from `record_access_logs`. | Prathamesh | `main` | `backend/src/routes/index.ts`, `backend/src/controllers/adminController.ts` | None |
 | **PAY-01** | **P1** | Formalize payment escrow abstraction (webhook-ready data models and Stripe/escrow adapter interface). | Prathamesh | `main` | `backend/src/services/bookingService.ts`, `frontend/src/components/booking/` | DATA-01 |
 | **INT-01** | **P1** | Implement Video Teleconsultation module (WebRTC / Daily.co signed consultation room URLs and participant tokens). | Ayusha | `branch1` | `backend/src/services/appointmentService.ts`, `frontend/src/components/consultation/` | DATA-01 |
-| **INT-02** | **P1** | Implement Multilingual Support (configure `i18next` for English, Spanish, Arabic, Hindi, language selector in Navbar). | Ayusha | `branch1` | `frontend/src/i18n/`, `frontend/src/components/layout/Navbar.jsx` | None |
+| **INT-02** | **P1** | **[COMPLETED]** Implement Multilingual Support (configured `i18next` for EN, AR with RTL, FR, ES, RU, language selector in Navbar). | Ayusha | `branch1` | `frontend/src/i18n/`, `frontend/src/components/layout/Navbar.jsx` | None |
 | **INT-03** | **P2** | Implement Travel & Visa Logistics module (MED-V invitation letter generator, flight tracker state, companion hotel bookings). | Ayusha | `branch1` | `backend/src/services/journeyService.ts`, `frontend/src/pages/patient/CaseDetailPage.jsx` | DATA-01 |
 | **INT-04** | **P2** | Implement EHR / FHIR Interoperability export prototype (convert case dossier & diagnostic records to FHIR R4 JSON bundle). | Ayusha | `branch1` | `backend/src/services/fhirService.ts`, `backend/src/routes/caseRoutes.ts` | None |
 | **PERF-01**| **P2** | Add Redis configuration support for distributed rate limiting and session caching. | Prathamesh | `main` | `backend/src/config/redis.ts`, `backend/src/app.ts` | None |
@@ -232,13 +232,17 @@ Per the Phase 24 audit, the following capabilities do not currently exist and mu
   3. Video events (`ROOM_JOINED`, `ROOM_LEFT`, `CONSULTATION_COMPLETED`) are recorded in case journey milestones.
 
 #### 9. INT-02: Multilingual Support & Localization
+- **Status:** **COMPLETED** (Phase 27, October 20, 2026)
 - **Assigned To:** Ayusha
 - **Branch:** `branch1`
-- **Modules:** `frontend/src/i18n/`, `frontend/src/components/layout/Navbar.jsx`, `frontend/src/locales/`
-- **Acceptance Criteria:**
-  1. `react-i18next` installed and configured with resource files for English (`en`), Spanish (`es`), Arabic (`ar` with RTL support), and Hindi (`hi`).
-  2. Language switcher in Navbar enables instant language switching across public pages (Hero, Treatments, Providers, Why EthAum).
-  3. User language preference is persisted in `localStorage`.
+- **Modules:** `frontend/src/i18n/`, `frontend/src/components/common/LanguageSelector.jsx`, `frontend/src/components/layout/Navbar.jsx`, `frontend/src/components/layout/Footer.jsx`, `frontend/src/pages/`
+- **Acceptance Criteria & Implementation Evidence:**
+  1. `i18next` and `react-i18next` configured with complete dictionaries for English (`en`), Arabic (`ar` with bidirectional RTL layout support), French (`fr`), Spanish (`es`), and Russian (`ru`).
+  2. Language switcher capsule in Navbar & mobile drawer enables instant reactivity across all major public and patient flows without reload.
+  3. Dynamic DOM direction (`dir="rtl"` vs `dir="ltr"`) and `document.documentElement.lang` synchronized automatically.
+  4. User preference persisted in `localStorage` under `'ethaum_language_preference'`.
+  5. Fallback safety guaranteed with `fallbackLng: 'en'`.
+  6. Verified with clean production build (`npm run build --prefix frontend` passed in 774ms) and clean lint (`npm run lint --prefix frontend`).
 
 ---
 

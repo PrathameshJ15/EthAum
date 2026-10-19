@@ -13,10 +13,12 @@ import { TREATMENTS_DATA } from '../data/treatmentsData'
 import { PROVIDERS_DATA } from '../data/providersData'
 import { DESTINATIONS_DATA } from '../data/destinationsData'
 import { treatmentService } from '../services/treatmentService'
+import { useTranslation } from '../i18n'
 
 export function TreatmentDetailPage({ onCreateCase }) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [expandedFaq, setExpandedFaq] = useState(0)
 
   const [treatment, setTreatment] = useState(
@@ -51,8 +53,8 @@ export function TreatmentDetailPage({ onCreateCase }) {
     <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16 space-y-12 text-left">
       <Breadcrumb
         items={[
-          { label: 'Marketplace', href: '/' },
-          { label: 'Treatments', href: '/treatments' },
+          { label: t('nav.marketplace', 'Marketplace'), href: '/' },
+          { label: t('nav.treatments', 'Treatments'), href: '/treatments' },
           { label: treatment.name, current: true },
         ]}
       />
@@ -61,8 +63,8 @@ export function TreatmentDetailPage({ onCreateCase }) {
       <div className="p-4 rounded-[4px] bg-[var(--bg-card)] border border-[var(--border-default)] flex items-start gap-3 text-xs font-sans text-[var(--text-secondary)]">
         <AlertTriangle className="w-4 h-4 shrink-0 text-[var(--copper)] mt-0.5" />
         <p className="leading-relaxed">
-          <span className="font-medium text-[var(--text-primary)]">Clinical Disclaimer: </span>
-          EthAum provides administrative coordination, provider matching, and medical record indexing. The information below is for educational and travel planning purposes and does not replace individualized diagnostic or surgical evaluation by a licensed physician.
+          <span className="font-medium text-[var(--text-primary)]">{t('common.disclaimer', 'Clinical Disclaimer:')} </span>
+          {t('treatments.disclaimerText', 'EthAum provides administrative coordination, provider matching, and medical record indexing. The information below is for educational and travel planning purposes and does not replace individualized diagnostic or surgical evaluation by a licensed physician.')}
         </p>
       </div>
 
@@ -75,10 +77,10 @@ export function TreatmentDetailPage({ onCreateCase }) {
               {treatment.category}
             </span>
             <span className="text-[11px] font-sans px-2.5 py-0.5 rounded-[3px] bg-[var(--bg-card)] border border-[var(--border-default)] text-[var(--text-secondary)]">
-              JCI Accredited Centers
+              {t('treatments.jciAccredited', 'JCI Accredited Centers')}
             </span>
             <span className="text-[11px] font-sans px-2.5 py-0.5 rounded-[3px] bg-[var(--bg-card)] border border-[var(--border-default)] text-[var(--text-secondary)]">
-              Robotic Navigation
+              {t('treatments.roboticNav', 'Robotic Navigation')}
             </span>
           </div>
 
@@ -93,19 +95,19 @@ export function TreatmentDetailPage({ onCreateCase }) {
           {/* Quick Metrics Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
             <div className="p-4 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)]">
-              <span className="text-[10px] font-sans uppercase text-[var(--text-muted)] block">Hospital Stay</span>
+              <span className="text-[10px] font-sans uppercase text-[var(--text-muted)] block">{t('treatments.details.hospitalStay', 'Hospital Stay')}</span>
               <span className="text-sm font-medium text-[var(--text-primary)] font-sans mt-0.5 block">
                 {treatment.hospitalStayDays}
               </span>
             </div>
             <div className="p-4 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)]">
-              <span className="text-[10px] font-sans uppercase text-[var(--text-muted)] block">Recovery Window</span>
+              <span className="text-[10px] font-sans uppercase text-[var(--text-muted)] block">{t('treatments.details.recoveryTime', 'Recovery Window')}</span>
               <span className="text-sm font-medium text-[var(--text-primary)] font-sans mt-0.5 block">
                 {treatment.recoveryTimeWeeks}
               </span>
             </div>
             <div className="p-4 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] col-span-2 sm:col-span-1">
-              <span className="text-[10px] font-sans uppercase text-[var(--text-muted)] block">Typical Savings</span>
+              <span className="text-[10px] font-sans uppercase text-[var(--text-muted)] block">{t('treatments.details.typicalSavings', 'Typical Savings')}</span>
               <span className="text-sm font-normal text-[var(--copper)] font-sans mt-0.5 block tabular-nums">
                 ~{treatment.savingsPercentage}% vs USA
               </span>
@@ -117,53 +119,53 @@ export function TreatmentDetailPage({ onCreateCase }) {
         <div className="lg:col-span-5 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] p-6 sm:p-8 space-y-6">
           <div className="space-y-1">
             <span className="text-[11px] font-sans text-[var(--text-muted)] uppercase tracking-wider block">
-              Direct Package Estimate
+              {t('treatments.directEstimate', 'Direct Package Estimate')}
             </span>
             <div className="text-3xl sm:text-4xl font-sans font-normal text-[var(--copper)] tabular-nums">
               ${treatment.startingPriceUSD.toLocaleString()} USD
             </div>
             <span className="text-xs font-sans text-[var(--text-secondary)] block">
-              Save up to ${(treatment.usAvgPriceUSD - treatment.startingPriceUSD).toLocaleString()} USD compared to US hospital billing
+              {t('treatments.savingsComparison', `Save up to $${(treatment.usAvgPriceUSD - treatment.startingPriceUSD).toLocaleString()} USD compared to US hospital billing`, { amount: (treatment.usAvgPriceUSD - treatment.startingPriceUSD).toLocaleString() })}
             </span>
           </div>
 
           <div className="p-3 bg-[var(--bg-base)] rounded-[3px] border border-[var(--border-hairline)] space-y-2 text-xs font-sans">
             <div className="flex justify-between text-[var(--text-secondary)]">
-              <span>US Private Hospital Cost:</span>
+              <span>{t('treatments.usPrivateCost', 'US Private Hospital Cost:')}</span>
               <span className="line-through text-[var(--text-muted)]">${treatment.usAvgPriceUSD.toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-[var(--text-secondary)]">
-              <span>UK Private Hospital Cost:</span>
+              <span>{t('treatments.ukPrivateCost', 'UK Private Hospital Cost:')}</span>
               <span className="line-through text-[var(--text-muted)]">£{treatment.ukAvgPriceUSD.toLocaleString()}</span>
             </div>
           </div>
 
           <div className="space-y-2 text-xs font-sans text-[var(--text-secondary)]">
-            <p className="font-medium text-[var(--text-primary)]">Standard package coverage:</p>
-            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> Certified surgical team & anesthesia</p>
-            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> FDA/CE-marked prosthesis hardware</p>
-            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> Inpatient private room & companion bed</p>
-            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> Airport concierge & chauffeur transfers</p>
+            <p className="font-medium text-[var(--text-primary)]">{t('treatments.coverageTitle', 'Standard package coverage:')}</p>
+            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> {t('treatments.coverageTeam', 'Certified surgical team & anesthesia')}</p>
+            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> {t('treatments.coverageHardware', 'FDA/CE-marked prosthesis hardware')}</p>
+            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> {t('treatments.coverageRoom', 'Inpatient private room & companion bed')}</p>
+            <p className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[var(--green-rich)] shrink-0" /> {t('treatments.coverageTransfer', 'Airport concierge & chauffeur transfers')}</p>
           </div>
 
           <button
             onClick={() => onCreateCase ? onCreateCase(treatment.id) : navigate('/create-case')}
-            className="w-full bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] py-3 text-[13px] font-medium font-sans tracking-[0.02em]"
+            className="w-full bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] py-3 text-[13px] font-medium font-sans tracking-[0.02em] cursor-pointer"
           >
-            Start Medical Case
+            {t('treatments.startCase', 'Start Medical Case')}
           </button>
 
           <p className="text-[11px] font-sans text-[var(--text-muted)] text-center">
-            Upload your MRI/records once · Receive verified quotes within 24h
+            {t('treatments.uploadOnceNotice', 'Upload your MRI/records once · Receive verified quotes within 24h')}
           </p>
         </div>
       </div>
 
       {/* Suitability & Indications */}
       <section className="p-6 sm:p-8 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4">
-        <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">General Clinical Indications</h3>
+        <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">{t('treatments.indicationsTitle', 'General Clinical Indications')}</h3>
         <p className="text-xs sm:text-sm font-light text-[var(--text-secondary)] font-sans leading-relaxed">
-          Patients traveling internationally for {treatment.name} commonly present with:
+          {t('treatments.indicationsSubtitle', `Patients traveling internationally for ${treatment.name} commonly present with:`)}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
           {treatment.suitableFor.map((item, idx) => (
@@ -180,10 +182,10 @@ export function TreatmentDetailPage({ onCreateCase }) {
         <div>
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-2 flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Clinical Pathway
+            {t('treatments.clinicalPathway', 'Clinical Pathway')}
           </p>
           <h3 className="text-2xl font-serif font-light text-[var(--text-primary)]">
-            Patient Journey for {treatment.name}
+            {t('treatments.journeyPathway', `Patient Journey for ${treatment.name}`)}
           </h3>
         </div>
 
@@ -207,10 +209,10 @@ export function TreatmentDetailPage({ onCreateCase }) {
         <div>
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-2 flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Matched Providers
+            {t('treatments.matchedProvidersBadge', 'Matched Providers')}
           </p>
           <h3 className="text-2xl font-serif font-light text-[var(--text-primary)]">
-            Accredited Centers Performing This Procedure
+            {t('treatments.matchedProvidersTitle', 'Accredited Centers Performing This Procedure')}
           </h3>
         </div>
 
@@ -247,7 +249,7 @@ export function TreatmentDetailPage({ onCreateCase }) {
 
               <div className="pt-3 border-t border-[var(--border-hairline)] flex items-center justify-between">
                 <span className="text-xs font-sans text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1">
-                  View center <span>&rarr;</span>
+                  {t('treatments.viewCenter', 'View center')} <span className="inline-block rtl:rotate-180">&rarr;</span>
                 </span>
               </div>
             </div>
@@ -261,10 +263,10 @@ export function TreatmentDetailPage({ onCreateCase }) {
           <div>
             <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-2 flex items-center gap-2.5 font-sans">
               <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-              Procedure Questions
+              {t('treatments.faqBadge', 'Procedure Questions')}
             </p>
             <h3 className="text-2xl font-serif font-light text-[var(--text-primary)]">
-              Frequently Asked Clinical Questions
+              {t('treatments.faqTitle', 'Frequently Asked Clinical Questions')}
             </h3>
           </div>
 

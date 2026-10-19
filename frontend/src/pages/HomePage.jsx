@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from '../i18n'
 
 export function HomePage({ onCreateCase }) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   // Timeline Active Step State in "How EthAum Coordinates Your Care"
   const [activeJourneyStep, setActiveJourneyStep] = useState(1) // Step 02: Create Medical Case
@@ -120,24 +122,24 @@ export function HomePage({ onCreateCase }) {
         {/* Subtle Square Grid Background */}
         <div className="absolute inset-0 bg-grid-ethaum pointer-events-none" />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left rtl:text-right">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="lg:col-span-7">
               {/* Eyebrow line */}
               <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-5 flex items-center gap-2.5 font-sans">
                 <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-                International Healthcare Platform
+                {t('home.hero.badge', 'International Healthcare Platform')}
               </p>
 
               {/* H1 headline */}
               <h1 className="text-4xl sm:text-6xl lg:text-[72px] xl:text-[80px] font-serif font-light text-[var(--text-primary)] leading-[1.04] tracking-[-0.03em] max-w-[620px]">
-                World-class healthcare,<br className="hidden sm:inline" /> without borders.
+                {t('home.hero.title', 'World-Class Healthcare, Coordinated For You')}
               </h1>
 
               {/* Body paragraph */}
               <p className="mt-6 text-[15px] sm:text-base font-light text-[var(--text-secondary)] leading-[1.75] max-w-[460px] font-sans">
-                EthAum coordinates your complete care journey — verified providers, organized records, and transparent pricing across 47 countries.
+                {t('home.hero.subtitle', 'EthAum coordinates your complete care journey — verified providers, organized records, and transparent pricing.')}
               </p>
 
               {/* CTA row */}
@@ -146,13 +148,13 @@ export function HomePage({ onCreateCase }) {
                   onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
                   className="btn-primary-cta"
                 >
-                  Create Medical Case
+                  {t('home.hero.createCaseCta', 'Create Medical Case')}
                 </button>
                 <Link
                   to="/treatments"
                   className="text-[13px] font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1.5 py-2.5 px-3"
                 >
-                  Explore treatments →
+                  {t('home.hero.startConsultation', 'Explore treatments')} <span className="rtl:rotate-180 inline-block">→</span>
                 </Link>
               </div>
 
@@ -907,16 +909,16 @@ export function HomePage({ onCreateCase }) {
         <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8">
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-4 inline-flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Get started today
+            {t('home.hero.badge', 'Get started today')}
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
           </p>
 
           <h2 className="text-3xl sm:text-5xl lg:text-[56px] font-serif font-light text-[var(--text-primary)] leading-[1.1] tracking-[-0.03em] max-w-2xl mx-auto">
-            Ready to explore world-class care options?
+            {t('home.cta.title', 'Take Control of Your Medical Care Today')}
           </h2>
 
           <p className="mt-5 text-[15px] sm:text-base font-light text-[var(--text-secondary)] font-sans leading-[1.75] max-w-[420px] mx-auto">
-            Create your Medical Case in minutes. No commitment, no cost to patients — just clarity.
+            {t('home.cta.subtitle', 'Create your confidential case dossier, upload your records securely, and receive customized quotes from top surgeons within 24 hours.')}
           </p>
 
           <div className="mt-8 flex justify-center">
@@ -924,8 +926,14 @@ export function HomePage({ onCreateCase }) {
               onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
               className="btn-primary-cta"
             >
-              Create a Medical Case
+              {t('home.cta.button', 'Create Your Medical Case')}
             </button>
+          </div>
+
+          <div className="mt-10 pt-6 border-t border-[var(--border-hairline)] max-w-xl mx-auto">
+            <p className="text-[11px] text-[var(--text-muted)] font-sans italic leading-relaxed">
+              {t('common.disclaimer')}
+            </p>
           </div>
         </div>
       </section>

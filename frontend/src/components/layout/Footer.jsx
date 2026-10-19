@@ -1,9 +1,12 @@
 import React from 'react'
 import { Activity, Shield, AlertTriangle } from 'lucide-react'
+import { useTranslation } from '../../i18n'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
 export function Footer({ onNavigate }) {
+  const { t } = useTranslation()
+
   const handleLinkClick = (href, e) => {
     e.preventDefault()
     if (onNavigate) onNavigate(href)
@@ -11,7 +14,7 @@ export function Footer({ onNavigate }) {
 
   return (
     <footer className="w-full bg-[var(--bg-base)] text-[var(--text-secondary)] pt-16 pb-12 border-t border-[var(--border-hairline)] mt-auto transition-colors duration-200">
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left rtl:text-right">
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 lg:gap-8 pb-12 border-b border-[var(--border-hairline)]">
           {/* Brand Info (2 cols) */}
@@ -27,34 +30,34 @@ export function Footer({ onNavigate }) {
               </span>
             </div>
             <p className="text-xs font-light text-[var(--text-secondary)] leading-relaxed max-w-sm font-sans">
-              International healthcare coordination — verified, organized, transparent.
+              {t('brand.tagline', 'Global Care. Closer to You.')}
             </p>
           </div>
 
           {/* Product Column */}
           <div className="space-y-3">
             <h4 className="text-xs font-normal uppercase tracking-[0.1em] text-[var(--text-primary)] font-sans">
-              Product
+              {t('nav.treatments', 'Treatments')}
             </h4>
             <ul className="space-y-2 text-xs font-light text-[var(--text-secondary)] font-sans">
               <li>
                 <a href="/treatments" onClick={(e) => handleLinkClick('/treatments', e)} className="hover:text-[var(--text-primary)] transition-colors">
-                  Treatments
+                  {t('nav.treatments', 'Treatments')}
                 </a>
               </li>
               <li>
                 <a href="/destinations" onClick={(e) => handleLinkClick('/destinations', e)} className="hover:text-[var(--text-primary)] transition-colors">
-                  Destinations
+                  {t('nav.destinations', 'Destinations')}
                 </a>
               </li>
               <li>
                 <a href="/providers" onClick={(e) => handleLinkClick('/providers', e)} className="hover:text-[var(--text-primary)] transition-colors">
-                  Providers
+                  {t('nav.providers', 'Providers')}
                 </a>
               </li>
               <li>
                 <a href="/create-case" onClick={(e) => handleLinkClick('/create-case', e)} className="hover:text-[var(--text-primary)] transition-colors">
-                  Medical Case
+                  {t('nav.case', 'Medical Case')}
                 </a>
               </li>
             </ul>

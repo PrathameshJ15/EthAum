@@ -19,11 +19,13 @@ import { useToast, BackgroundGrid } from '../../components'
 import { Button } from '../../components/common/Button'
 import { Input } from '../../components/forms/Input'
 import { authService } from '../../services/authService'
+import { useTranslation } from '../../i18n'
 
 export function SignupPage() {
   const navigate = useNavigate()
   const { signup } = useAuth()
   const { addToast } = useToast()
+  const { t } = useTranslation()
 
   const [role, setRole] = useState('patient')
   const [name, setName] = useState('')
@@ -115,13 +117,13 @@ export function SignupPage() {
           </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-[var(--bg-elevated)] border border-[var(--border-hairline)] text-xs font-normal text-[var(--green-rich)] font-sans">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Patient-Controlled Sovereignty</span>
+            <span>{t('auth.sovereigntyBadge', 'Patient-Controlled Sovereignty')}</span>
           </div>
           <h1 className="text-3xl font-serif font-light text-[var(--text-primary)] tracking-tight">
-            Create Your Account
+            {t('auth.signupTitle', 'Create Your Account')}
           </h1>
           <p className="text-xs sm:text-sm font-light text-[var(--text-secondary)] max-w-sm mx-auto font-sans">
-            Upload diagnostic files once, compare hospital packages, and coordinate cross-border surgery.
+            {t('auth.signupSubtitle', 'Upload diagnostic files once, compare hospital packages, and coordinate cross-border surgery.')}
           </p>
         </div>
 
@@ -140,7 +142,7 @@ export function SignupPage() {
             }`}
           >
             <User className="w-4 h-4" />
-            <span>I am a Patient</span>
+            <span>{t('auth.iAmPatient', 'I am a Patient')}</span>
           </button>
 
           <button
@@ -156,7 +158,7 @@ export function SignupPage() {
             }`}
           >
             <Building2 className="w-4 h-4" />
-            <span>I am a Healthcare Provider</span>
+            <span>{t('auth.iAmProvider', 'I am a Healthcare Provider')}</span>
           </button>
         </div>
 
@@ -171,7 +173,7 @@ export function SignupPage() {
 
           <form onSubmit={handleSignup} className="space-y-4">
             <Input
-              label={role === 'patient' ? 'Full Legal Name' : 'Doctor / Coordinator Name'}
+              label={role === 'patient' ? t('auth.legalName', 'Full Legal Name') : t('auth.providerName', 'Doctor / Coordinator Name')}
               placeholder={role === 'patient' ? 'e.g. Eleanor Vance' : 'e.g. Dr. Sarah Jenkins'}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -182,7 +184,7 @@ export function SignupPage() {
             {role === 'provider' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
-                  label="Hospital or Clinic Name"
+                  label={t('auth.hospitalName', 'Hospital or Clinic Name')}
                   placeholder="e.g. Apollo Hospitals"
                   value={organization}
                   onChange={(e) => setOrganization(e.target.value)}
@@ -190,7 +192,7 @@ export function SignupPage() {
                   required
                 />
                 <Input
-                  label="Clinical Specialty"
+                  label={t('auth.specialty', 'Clinical Specialty')}
                   placeholder="e.g. Orthopedics"
                   value={specialty}
                   onChange={(e) => setSpecialty(e.target.value)}
@@ -200,7 +202,7 @@ export function SignupPage() {
             )}
 
             <Input
-              label="Email Address"
+              label={t('auth.emailLabel', 'Email Address')}
               type="email"
               placeholder="name@example.com"
               value={email}
@@ -211,7 +213,7 @@ export function SignupPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Password"
+                label={t('auth.passwordLabel', 'Password')}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••••••"
                 value={password}
@@ -230,7 +232,7 @@ export function SignupPage() {
               />
 
               <Input
-                label="Confirm Password"
+                label={t('auth.confirmPassword', 'Confirm Password')}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••••••"
                 value={confirmPassword}
@@ -243,23 +245,23 @@ export function SignupPage() {
             {/* Live Password Rules */}
             {password.length > 0 && (
               <div className="p-3 bg-[#F8F8F5] dark:bg-[#151C1A] rounded-xl border border-[#EEF1EF] dark:border-[#2B3834] space-y-1.5 text-xs text-[#172321]/70 dark:text-[#B6C0BC]">
-                <p className="font-semibold text-[#173E39] dark:text-[#F2F4F1]">Password requirements:</p>
+                <p className="font-semibold text-[#173E39] dark:text-[#F2F4F1]">{t('auth.pwdReqs', 'Password requirements:')}</p>
                 <div className="grid grid-cols-2 gap-1.5 text-[11px]">
                   <span className={`flex items-center gap-1.5 ${pwdValidation.hasMinLength ? 'text-[#2D6A4F] dark:text-[#6F9F91] font-semibold' : 'text-[#172321]/50 dark:text-[#89938F]'}`}>
                     {pwdValidation.hasMinLength ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                    8+ characters
+                    {t('auth.charCount', '8+ characters')}
                   </span>
                   <span className={`flex items-center gap-1.5 ${pwdValidation.hasUpper ? 'text-[#2D6A4F] dark:text-[#6F9F91] font-semibold' : 'text-[#172321]/50 dark:text-[#89938F]'}`}>
                     {pwdValidation.hasUpper ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                    Uppercase letter
+                    {t('auth.uppercase', 'Uppercase letter')}
                   </span>
                   <span className={`flex items-center gap-1.5 ${pwdValidation.hasLower ? 'text-[#2D6A4F] dark:text-[#6F9F91] font-semibold' : 'text-[#172321]/50 dark:text-[#89938F]'}`}>
                     {pwdValidation.hasLower ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                    Lowercase letter
+                    {t('auth.lowercase', 'Lowercase letter')}
                   </span>
                   <span className={`flex items-center gap-1.5 ${pwdValidation.hasNumber ? 'text-[#2D6A4F] dark:text-[#6F9F91] font-semibold' : 'text-[#172321]/50 dark:text-[#89938F]'}`}>
                     {pwdValidation.hasNumber ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                    At least one number
+                    {t('auth.number', 'At least one number')}
                   </span>
                 </div>
               </div>
@@ -271,17 +273,17 @@ export function SignupPage() {
               size="lg"
               fullWidth
               isLoading={isSubmitting}
-              rightIcon={<ArrowRight className="w-4 h-4" />}
+              rightIcon={<ArrowRight className="w-4 h-4 rtl:rotate-180" />}
               className="mt-4"
             >
-              Register {role === 'patient' ? 'Patient Account' : 'Provider Profile'}
+              {role === 'patient' ? t('auth.registerPatient', 'Register Patient Account') : t('auth.registerProvider', 'Register Provider Profile')}
             </Button>
           </form>
 
           <div className="pt-4 border-t border-[#EEF1EF] dark:border-[#2B3834] text-center text-xs text-[#172321]/70 dark:text-[#B6C0BC]">
-            <span>Already registered? </span>
+            <span>{t('auth.haveAccount', 'Already registered?')} </span>
             <Link to="/login" className="font-semibold text-[#173E39] dark:text-[#6F9F91] hover:underline">
-              Sign in to your account
+              {t('auth.loginLink', 'Sign in to your account')}
             </Link>
           </div>
         </div>

@@ -4,8 +4,10 @@ import { Activity, Menu, Globe, User, PlusCircle, LogOut, LayoutDashboard, Build
 import { Button } from '../common/Button'
 import { IconButton } from '../common/IconButton'
 import { ThemeToggle } from '../common/ThemeToggle'
+import { LanguageSelector } from '../common/LanguageSelector'
 import { Drawer } from './Drawer'
 import { useAuth } from '../../context/AuthContext'
+import { useTranslation } from '../../i18n'
 
 export function Navbar({
   brandName = 'EthAum',
@@ -20,6 +22,7 @@ export function Navbar({
   const navigate = useNavigate()
   const location = useLocation()
   const currentPath = location.pathname
+  const { t } = useTranslation()
   
   const authContext = useAuth()
   const activeUser = userProp || authContext?.user || null
@@ -39,16 +42,16 @@ export function Navbar({
   }
 
   const getPortalLabel = () => {
-    if (role === 'provider') return 'Provider Portal'
-    if (role === 'admin') return 'Admin Console'
-    return 'My Cases'
+    if (role === 'provider') return t('nav.providerPortal', 'Provider Portal')
+    if (role === 'admin') return t('nav.adminConsole', 'Admin Console')
+    return t('nav.myCases', 'My Cases')
   }
 
   const navLinks = [
-    { label: 'Treatments', href: '/treatments' },
-    { label: 'Destinations', href: '/destinations' },
-    { label: 'Providers', href: '/providers' },
-    { label: 'How it works', href: '/how-it-works' },
+    { label: t('nav.treatments', 'Treatments'), href: '/treatments' },
+    { label: t('nav.destinations', 'Destinations'), href: '/destinations' },
+    { label: t('nav.providers', 'Providers'), href: '/providers' },
+    { label: t('nav.howItWorks', 'How it works'), href: '/how-it-works' },
   ]
 
   const handleLinkClick = (href) => {
@@ -121,12 +124,15 @@ export function Navbar({
         </nav>
 
         {/* Desktop Right Actions */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
+          {/* Language Selector Capsule Dropdown */}
+          <LanguageSelector variant="capsule" />
+
           {/* Theme Switcher Capsule Toggle */}
           <ThemeToggle />
 
           {activeUser ? (
-            <div className="flex items-center gap-2 pl-2 border-l border-[var(--border-hairline)]">
+            <div className="flex items-center gap-2 pl-2 border-l border-[var(--border-hairline)] rtl:border-l-0 rtl:border-r rtl:pl-0 rtl:pr-2">
               {/* Role-Specific Portal Button */}
               <button
                 type="button"
@@ -148,7 +154,7 @@ export function Navbar({
                 <div className="w-6 h-6 rounded-full bg-[var(--green-rich)] text-[var(--text-inverse)] text-[10px] font-bold flex items-center justify-center">
                   {activeUser.name ? activeUser.name.charAt(0).toUpperCase() : 'U'}
                 </div>
-                <div className="text-left pr-1">
+                <div className="text-left rtl:text-right pr-1 rtl:pr-0 rtl:pl-1">
                   <span className="block text-xs font-medium text-[var(--text-primary)] leading-tight max-w-[120px] truncate">
                     {activeUser.name || activeUser.email}
                   </span>
@@ -162,10 +168,10 @@ export function Navbar({
               <button
                 type="button"
                 onClick={handleLogout}
-                title="Sign out of EthAum"
+                title={t('nav.signOut', 'Sign Out')}
                 className="p-1.5 text-[var(--text-muted)] hover:text-[#A33B39] rounded-[3px] transition-colors cursor-pointer"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 rtl:rotate-180" />
               </button>
             </div>
           ) : (
@@ -173,13 +179,14 @@ export function Navbar({
               onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
               className="btn-primary-cta"
             >
-              Create Medical Case
+              {t('nav.createCase', 'Create Medical Case')}
             </button>
           )}
         </div>
 
         {/* Mobile Hamburger Toggle & Theme Switcher */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-1.5 md:hidden">
+          <LanguageSelector variant="capsule" showLabel={false} />
           <ThemeToggle size="sm" />
 
           {(!activeUser || role === 'patient') && (
@@ -189,7 +196,7 @@ export function Navbar({
               onClick={onCreateCase || (() => navigate('/create-case'))}
               className="text-xs px-2.5 py-1.5"
             >
-              Case
+              {t('nav.case', 'Case')}
             </Button>
           )}
 
@@ -263,17 +270,15 @@ export function Navbar({
           </div>
 
           <div className="pt-6 border-t border-[#EEF1EF] dark:border-[#2B3834] space-y-3">
-            {/* Mobile Theme Preference */}
-            <div className="flex items-center justify-between px-2 text-xs text-[#172321]/60 dark:text-[#89938F]">
-              <span>Appearance</span>
-              <ThemeToggle size="sm" />
+            {/* Mobile Language Selector */}
+            <div className="p-2 bg-[var(--bg-card)] border border-[var(--border-hairline)] rounded-[4px]">
+              <LanguageSelector variant="list" />
             </div>
 
+            {/* Mobile Theme Preference */}
             <div className="flex items-center justify-between px-2 text-xs text-[#172321]/60 dark:text-[#89938F]">
-              <span className="flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5" /> Regional Preference
-              </span>
-              <span className="font-semibold text-[#173E39] dark:text-[#83B2A3]">USD · EN</span>
+              <span>{t('nav.appearance', 'Appearance')}</span>
+              <ThemeToggle size="sm" />
             </div>
 
             {activeUser ? (
@@ -285,9 +290,9 @@ export function Navbar({
                   setMobileMenuOpen(false)
                   handleLogout()
                 }}
-                leftIcon={<LogOut className="w-4 h-4" />}
+                leftIcon={<LogOut className="w-4 h-4 rtl:rotate-180" />}
               >
-                Sign Out ({activeUser.name?.split(' ')[0]})
+                {t('nav.signOut', 'Sign Out')} ({activeUser.name?.split(' ')[0]})
               </Button>
             ) : (
               <>
@@ -302,7 +307,7 @@ export function Navbar({
                   }}
                   leftIcon={<User className="w-4 h-4" />}
                 >
-                  Login
+                  {t('nav.login', 'Login')}
                 </Button>
 
                 <Button
@@ -316,7 +321,7 @@ export function Navbar({
                   }}
                   leftIcon={<PlusCircle className="w-4 h-4" />}
                 >
-                  Create Medical Case
+                  {t('nav.createCase', 'Create Medical Case')}
                 </Button>
               </>
             )}

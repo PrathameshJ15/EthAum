@@ -6,6 +6,7 @@ import { CreateCaseModal } from './components/common/CreateCaseModal'
 import { LoginModal } from './components/common/LoginModal'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { LanguageProvider } from './i18n'
 import { ProtectedRoute } from './routes/ProtectedRoute'
 
 // Public Pages
@@ -201,14 +202,16 @@ function MainLayout() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <MainLayout />
-          </AuthProvider>
-        </BrowserRouter>
-      </ToastProvider>
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <MainLayout />
+            </AuthProvider>
+          </BrowserRouter>
+        </ToastProvider>
+      </ThemeProvider>
+    </LanguageProvider>
   )
 }

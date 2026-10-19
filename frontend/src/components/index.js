@@ -12,6 +12,7 @@ export { ErrorState } from './common/ErrorState'
 export { ToastItem, ToastProvider } from './common/Toast'
 export { useToast } from './common/useToast'
 export { ThemeToggle } from './common/ThemeToggle'
+export { LanguageSelector } from './common/LanguageSelector'
 export { BackgroundGrid } from './common/BackgroundGrid'
 
 // Form Components

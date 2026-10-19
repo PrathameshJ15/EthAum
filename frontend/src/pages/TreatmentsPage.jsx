@@ -5,9 +5,11 @@ import { Breadcrumb } from '../components'
 import { TREATMENTS_DATA, TREATMENT_CATEGORIES } from '../data/treatmentsData'
 import { DESTINATIONS_DATA } from '../data/destinationsData'
 import { treatmentService } from '../services/treatmentService'
+import { useTranslation } from '../i18n'
 
 export function TreatmentsPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const initialSearch = searchParams.get('search') || ''
@@ -84,8 +86,8 @@ export function TreatmentsPage() {
     <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16 space-y-10 text-left">
       <Breadcrumb
         items={[
-          { label: 'Marketplace', href: '/' },
-          { label: 'Treatments Directory', current: true },
+          { label: t('nav.marketplace', 'Marketplace'), href: '/' },
+          { label: t('treatments.title', 'Treatments Directory'), current: true },
         ]}
       />
 
@@ -93,15 +95,15 @@ export function TreatmentsPage() {
       <div>
         <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-4 flex items-center gap-2.5 font-sans">
           <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-          Clinical Catalog
+          {t('treatments.badge', 'Clinical Catalog')}
         </p>
 
         <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-serif font-light text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] max-w-2xl">
-          Find & Compare Surgical Procedures
+          {t('treatments.heading', 'Find & Compare Surgical Procedures')}
         </h1>
 
         <p className="mt-4 text-sm sm:text-base font-light text-[var(--text-secondary)] font-sans max-w-xl leading-relaxed">
-          Transparent surgical procedures, recovery timelines, and direct institutional package estimates across verified quaternary medical centers.
+          {t('treatments.subtitle', 'Transparent surgical procedures, recovery timelines, and direct institutional package estimates across verified quaternary medical centers.')}
         </p>
       </div>
 
@@ -113,7 +115,7 @@ export function TreatmentsPage() {
             <Search className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
             <input
               type="text"
-              placeholder="Search procedures (e.g. Knee Replacement, CABG, IVF)..."
+              placeholder={t('treatments.searchPlaceholder', 'Search procedures (e.g. Knee Replacement, CABG, IVF)...')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full bg-transparent text-sm text-[var(--text-primary)] outline-none font-sans font-light placeholder-[var(--text-muted)]"
@@ -131,13 +133,13 @@ export function TreatmentsPage() {
 
           {/* Destination Selector */}
           <div className="w-full md:w-56 flex items-center gap-2 px-3 py-2 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)]">
-            <span className="text-xs text-[var(--text-muted)] font-sans shrink-0">Hub:</span>
+            <span className="text-xs text-[var(--text-muted)] font-sans shrink-0">{t('treatments.hub', 'Hub:')}</span>
             <select
               value={selectedDestination}
               onChange={(e) => setSelectedDestination(e.target.value)}
               className="w-full bg-transparent text-xs font-sans text-[var(--text-secondary)] outline-none cursor-pointer"
             >
-              <option value="all" className="bg-[var(--bg-card)]">All Countries</option>
+              <option value="all" className="bg-[var(--bg-card)]">{t('treatments.allCountries', 'All Countries')}</option>
               {DESTINATIONS_DATA.map((d) => (
                 <option key={d.id} value={d.id} className="bg-[var(--bg-card)]">
                   {d.name}
@@ -149,7 +151,7 @@ export function TreatmentsPage() {
           {/* Price Range Slider */}
           <div className="w-full md:w-60 px-3 py-1.5 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)]">
             <div className="flex justify-between text-[11px] font-sans text-[var(--text-secondary)] mb-1">
-              <span>Max Starting Quote:</span>
+              <span>{t('treatments.maxStartingQuote', 'Max Starting Quote:')}</span>
               <span className="text-[var(--copper)] tabular-nums">${maxPrice.toLocaleString()} USD</span>
             </div>
             <input
@@ -166,7 +168,7 @@ export function TreatmentsPage() {
 
         {/* Category Filter Chips */}
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-[var(--border-hairline)]">
-          <span className="text-xs text-[var(--text-muted)] font-sans mr-2 shrink-0">Category:</span>
+          <span className="text-xs text-[var(--text-muted)] font-sans mr-2 rtl:mr-0 rtl:ml-2 shrink-0">{t('treatments.categoryLabel', 'Category:')}</span>
           {TREATMENT_CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -178,7 +180,7 @@ export function TreatmentsPage() {
                   : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
               }`}
             >
-              {cat}
+              {cat === 'All' ? t('treatments.categoryAll', 'All Specialties') : cat}
             </button>
           ))}
 
@@ -186,9 +188,9 @@ export function TreatmentsPage() {
             <button
               type="button"
               onClick={clearFilters}
-              className="ml-auto text-xs text-[var(--copper)] hover:underline cursor-pointer shrink-0"
+              className="ltr:ml-auto rtl:mr-auto text-xs text-[var(--copper)] hover:underline cursor-pointer shrink-0"
             >
-              Reset Filters
+              {t('treatments.resetFilters', 'Reset Filters')}
             </button>
           )}
         </div>
@@ -196,8 +198,8 @@ export function TreatmentsPage() {
 
       {/* Results Count */}
       <div className="flex items-center justify-between text-xs text-[var(--text-muted)] font-sans px-1">
-        <span>Showing {filteredTreatments.length} verified procedures</span>
-        <span>Institutional package rates</span>
+        <span>{t('treatments.showingProcedures', `Showing ${filteredTreatments.length} verified procedures`, { count: filteredTreatments.length })}</span>
+        <span>{t('treatments.institutionalPackageRates', 'Institutional package rates')}</span>
       </div>
 
       {/* Treatment Cards Grid */}
@@ -233,13 +235,13 @@ export function TreatmentsPage() {
                 <div className="p-3 bg-[var(--bg-base)] rounded-[3px] border border-[var(--border-hairline)] mb-4 flex items-center justify-between">
                   <div>
                     <span className="text-[10px] uppercase font-sans text-[var(--text-muted)] block">
-                      Direct Estimate
+                      {t('treatments.directEstimate', 'Direct Estimate')}
                     </span>
                     <span className="text-sm font-sans font-normal text-[var(--copper)] tabular-nums">
-                      From ${(treatment.startingPriceUSD ?? 0).toLocaleString()} USD
+                      {t('treatments.from', 'From')} ${(treatment.startingPriceUSD ?? 0).toLocaleString()} USD
                     </span>
                   </div>
-                  <div className="text-right border-l border-[var(--border-hairline)] pl-3">
+                  <div className="text-right rtl:text-left border-l rtl:border-l-0 rtl:border-r border-[var(--border-hairline)] pl-3 rtl:pl-0 rtl:pr-3">
                     <span className="text-[10px] uppercase font-sans text-[var(--text-muted)] block">
                       US / UK
                     </span>
@@ -251,17 +253,17 @@ export function TreatmentsPage() {
 
                 <div className="flex items-center justify-between text-xs font-sans text-[var(--text-muted)] mb-4">
                   <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" /> Stay: {treatment.hospitalStayDays || 'N/A'}
+                    <Clock className="w-3.5 h-3.5" /> {t('treatments.stay', 'Stay:')} {treatment.hospitalStayDays || 'N/A'}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5" /> {treatment.matchedProviderIds?.length ?? 0} Centers
+                    <Building2 className="w-3.5 h-3.5" /> {treatment.matchedProviderIds?.length ?? 0} {t('treatments.centers', 'Centers')}
                   </span>
                 </div>
               </div>
 
               <div className="pt-3 border-t border-[var(--border-hairline)] flex items-center justify-between">
                 <span className="text-xs font-sans text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1">
-                  Explore treatment <span>&rarr;</span>
+                  {t('treatments.explore', 'Explore treatment')} <span className="inline-block rtl:rotate-180">&rarr;</span>
                 </span>
                 <span className="text-[11px] font-sans text-[var(--text-muted)]">
                   {(treatment.topDestinationIds || []).join(', ').toUpperCase()}
@@ -272,15 +274,15 @@ export function TreatmentsPage() {
         </div>
       ) : (
         <div className="p-12 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] text-center space-y-4">
-          <p className="text-base font-sans text-[var(--text-primary)]">No procedures match your filter criteria</p>
+          <p className="text-base font-sans text-[var(--text-primary)]">{t('treatments.noTreatmentsFound', 'No procedures match your filter criteria')}</p>
           <p className="text-xs text-[var(--text-secondary)] font-sans max-w-sm mx-auto">
-            Try adjusting your search query, increasing your budget limit, or clearing filters.
+            {t('treatments.adjustFiltersPrompt', 'Try adjusting your search query, increasing your budget limit, or clearing filters.')}
           </p>
           <button
             onClick={clearFilters}
             className="border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-[3px] px-4 py-2 text-xs font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
-            Clear All Filters
+            {t('treatments.clearFilters', 'Clear All Filters')}
           </button>
         </div>
       )}
