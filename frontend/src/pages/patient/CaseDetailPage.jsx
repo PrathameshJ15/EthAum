@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   FileText,
   ShieldCheck,
@@ -55,6 +55,7 @@ import {
   JourneyTracker,
   AftercareModule,
 } from '../../components'
+import { TravelAssistanceView } from '../../components/travel/TravelAssistanceView'
 
 import { caseService, JOURNEY_STAGES } from '../../services/caseService'
 import { providerService } from '../../services/providerService'
@@ -66,11 +67,20 @@ import { bookingService } from '../../services/bookingService'
 export function CaseDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { addToast } = useToast()
 
   const caseId = id || 'ET-8492'
   const [medicalCase, setMedicalCase] = useState(() => caseService.getCaseByIdSync(caseId))
-  const [activeTab, setActiveTab] = useState('overview')
+  const initialTab = searchParams.get('tab') || 'overview'
+  const [activeTab, setActiveTab] = useState(initialTab)
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam) {
+      setActiveTab(tabParam)
+    }
+  }, [searchParams])
 
   // Keep state synchronized with caseService
   useEffect(() => {
@@ -723,6 +733,7 @@ export function CaseDetailPage() {
             label: 'Treatment Booking',
             badge: medicalCase.status === 'BOOKED' || medicalCase.bookingDetails || bookings.length > 0 ? 'Confirmed' : undefined,
           },
+          { id: 'travel', label: 'Travel & Visa Logistics', badge: 'Active' },
           { id: 'aftercare', label: 'Aftercare & Recovery' },
           { id: 'audit', label: 'Access Audit Ledger' },
         ]}
@@ -2436,6 +2447,13 @@ export function CaseDetailPage() {
             </div>
           )}
         </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* TAB 4.5: Travel & Visa Assistance Logistics                               */}
+      {/* ========================================================================= */}
+      {activeTab === 'travel' && (
+        <TravelAssistanceView caseId={caseId} medicalCase={medicalCase} />
       )}
 
       {/* ========================================================================= */}

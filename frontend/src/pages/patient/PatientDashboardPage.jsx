@@ -292,15 +292,19 @@ export function PatientDashboardPage() {
             </p>
           </div>
 
-          <div className="p-4 bg-[var(--bg-base)] rounded-[3px] border border-[var(--border-hairline)] space-y-1">
-            <span className="text-[10px] uppercase font-sans text-[var(--text-muted)] block">
-              4. What happens next?
+          <div
+            onClick={() => navigate(`/cases/${activeCase?.id || 'ET-8492'}?tab=travel`)}
+            className="p-4 bg-[var(--bg-base)] hover:bg-[var(--bg-elevated)]/40 rounded-[3px] border border-[var(--border-hairline)] space-y-1 cursor-pointer transition-colors group"
+          >
+            <span className="text-[10px] uppercase font-sans text-[var(--green-rich)] block flex items-center justify-between">
+              <span>4. What happens next?</span>
+              <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
             </span>
-            <p className="font-medium text-[var(--text-primary)] font-sans text-xs">
-              Medical Visa & Travel Schedule
+            <p className="font-medium text-[var(--text-primary)] font-sans text-xs group-hover:text-[var(--green-rich)] transition-colors">
+              Medical Visa & Travel Logistics
             </p>
             <p className="text-[11px] text-[var(--text-secondary)] font-light leading-relaxed">
-              Upon consultation completion, EthAum issues your MED-V visa invitation package.
+              Plan your travel dates, checklist, flight/hotel details, and access official government visa portals.
             </p>
           </div>
         </div>

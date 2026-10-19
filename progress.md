@@ -9,11 +9,12 @@
 
 | Metric | Status | Details |
 | :--- | :---: | :--- |
-| **Backend Test Suite** | 🟢 **146 / 146 Passing** | 15 test suites covering auth, security, CORS, AI, journeys, quotes, bookings |
-| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,036 modules transformed in 734ms) |
+| **Backend Test Suite** | 🟢 **157 / 157 Passing** | 16 test suites covering auth, security, CORS, AI, journeys, quotes, bookings, travel assistance |
+| **Frontend Production Build** | 🟢 **Passing** | Vite v8.3.2 client build passing (2,038 modules transformed in 705ms) |
 | **Phase 24 Parallel Audits** | 🟢 **Completed** | Full-stack audit completed by Prathamesh (frontend) and Ayusha (backend) |
 | **Phase 25 Gap Analysis** | 🟢 **Completed** | Consolidated in `docs/gap-analysis.md` with P0–P2 prioritized tasks & owners |
 | **Phase 26 Core Stability** | 🟢 **Completed** | All 5 P0 and 2 P1 bugs fixed on `feature/phase-26-stability` |
+| **Phase 29 Travel & Visa** | 🟢 **Completed** | Full module on `feature/travel-assistance` with official visa resources & checklists |
 | **AI Clinical Boundary** | 🟢 **Compliant** | Groq Llama-3 coordination layer active with strict non-diagnostic guardrails |
 | **Patient Data Sovereignty**| 🟢 **Active** | Explicit permission grants/revocations with immutable access audit trails |
 
@@ -116,7 +117,7 @@ flowchart LR
 - [x] No sensitive API keys (`GROQ_API_KEY`, `SUPABASE_SERVICE_KEY`) exposed to frontend
 
 ### Phase 12: Automated Verification & Test Coverage
-- [x] **15 Test Suites (144 Tests Total)** covering:
+- [x] **16 Test Suites (157 Tests Total)** covering:
   - `auth.test.ts` — Authentication & token validation
   - `criticalPatientJourney.test.ts` — End-to-end patient journey (Rahul's complete story)
   - `groqDocumentIntelligence.test.ts` — AI parsing, fallback, error, and timeout handling
@@ -132,6 +133,7 @@ flowchart LR
   - `supabaseIntegration.test.ts` — Storage and database operations
   - `errorHandling.test.ts` — Graceful API failure degradation
   - `health.test.ts` — Service health and uptime monitoring
+  - `travelAssistance.test.ts` — Travel planning, official visa resources, disclaimers, checklist toggling, security boundary validation
 
 ---
 
@@ -215,6 +217,40 @@ npm test
   * `frontend/src/services/caseService.js`
   * `frontend/src/pages/LegalPage.jsx` *(New)*
 * **Remaining Limitations:** In-browser WebRTC video room signaling (P1-4) and multilingual i18n framework (P1-5) are queued for Phase 27 on `branch1` (Ayusha).
+
+### Phase 29: Travel & Visa Assistance (Prathamesh — Completed on `feature/travel-assistance`)
+- [x] **Travel Planning & Status Tracking:** Patients can manage departure/arrival windows, destination country/city, and live travel statuses (`planning`, `visa_applied`, `visa_approved`, `tickets_booked`, `arrived`, `departed`).
+- [x] **Official Government Visa Resource Links:** Verified destination-specific links to official governmental visa portals:
+  - India: Indian Visa Online (`indianvisaonline.gov.in`)
+  - Thailand: Thai E-Visa Official Portal (`thaievisa.go.th`)
+  - Turkey: Republic of Türkiye Electronic Visa Application System (`evisa.gov.tr`)
+  - Mexico: Instituto Nacional de Migración (`gob.mx/inm`)
+- [x] **Regulatory & Legal Disclaimers:** Explicitly displayed notices explaining that visa requirements depend on individual nationality/circumstances, must be confirmed with embassy/consulate authorities, and EthAum does not guarantee visa approvals or issue travel documents.
+- [x] **Pre-Travel Preparation Checklist:** Interactive, categorized checklist (`documentation`, `medical`, `logistics`, `financial`) with item completion tracking and timestamped verification.
+- [x] **Self-Arranged Logistics Recording:** Patients can store flight details, accommodation/hotel preferences, airport ground transfer requests (including wheelchair accessibility), and personal coordination notes.
+- [x] **Transparent Non-Booking Badge:** Clear UX warnings emphasizing that flight and hotel records are patient-entered notes and do not constitute an automated booking reservation until confirmed through third-party services.
+- [x] **Security & Privacy Boundary Enforcement:** Zod validation rejects payloads containing sensitive identity numbers (e.g., `passportNumber`, `ssn`) with HTTP 400 Bad Request to prevent unauthorized retention of government credentials.
+- [x] **Deep-Linked Case & Journey Integration:** Seamless navigation from Patient Dashboard Card 4 and Journey Tracker Stage 7 directly into `CaseDetailPage.jsx?tab=travel` via `useSearchParams`.
+
+#### Phase 29 Verification Summary
+* **Module Status:** 100% complete, fully wired to Medical Case workflow.
+* **Backend Tests:** 16 test files passed, 157 tests passed (0 failed). Added `travelAssistance.test.ts` (11 unit/integration tests).
+* **Frontend Build:** Vite v8.3.2 production build succeeded in 705ms with 2,038 modules transformed.
+* **Modified & Created Files:**
+  * `backend/src/types/index.ts`
+  * `backend/src/services/travelService.ts` *(New)*
+  * `backend/src/controllers/travelController.ts` *(New)*
+  * `backend/src/routes/travelRoutes.ts` *(New)*
+  * `backend/src/routes/caseRoutes.ts`
+  * `backend/src/routes/index.ts`
+  * `backend/tests/travelAssistance.test.ts` *(New)*
+  * `frontend/src/services/travelService.js` *(New)*
+  * `frontend/src/components/travel/TravelAssistanceView.jsx` *(New)*
+  * `frontend/src/components/index.js`
+  * `frontend/src/pages/patient/CaseDetailPage.jsx`
+  * `frontend/src/pages/patient/PatientDashboardPage.jsx`
+  * `frontend/src/components/journey/JourneyTracker.jsx`
+* **Remaining Limitations:** Third-party real-time flight status and live GDS/hotel booking integrations require external travel API keys and enterprise partnerships.
 
 ### Phase 27: Feature Development & Specialization (Parallel Branches)
 - [ ] **P1-4 (Ayusha — `branch1`):** Video Consultation Room component & Daily.co/WebRTC integration

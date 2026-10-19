@@ -51,8 +51,9 @@ export {
   QuoteCard,
 } from './quotes'
 
-// Journey & Aftercare Components
+// Journey, Aftercare & Travel Components
 export { JourneyTracker } from './journey/JourneyTracker'
 export { AftercareModule } from './aftercare/AftercareModule'
+export { TravelAssistanceView } from './travel/TravelAssistanceView'
 
 

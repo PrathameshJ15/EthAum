@@ -135,8 +135,8 @@ export function JourneyTracker({
         return {
           title: 'Review Admission Pass & Flight Details',
           description: 'Admission date confirmed (Nov 15). Coordinate airport limousine and traveling companion suite.',
-          actionLabel: 'View Inpatient Pass',
-          tab: 'overview',
+          actionLabel: 'Coordinate Travel & Logistics',
+          tab: 'travel',
           urgent: false,
         }
       case 8: // TREATMENT
