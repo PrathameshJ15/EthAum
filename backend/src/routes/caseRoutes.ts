@@ -110,6 +110,52 @@ caseRoutes.get('/:id/payments', requireAuth, async (req, res, next) => {
   }
 })
 
+// Case HL7 FHIR Interoperability
+caseRoutes.get('/:id/fhir/preview', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.previewExport(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.get('/:id/fhir/export', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.exportBundle(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.post('/:id/fhir/import/stage', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.stageImport(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.post('/:id/fhir/import/confirm', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.confirmImport(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.get('/:id/fhir/operations', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.getOperations(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
 
 
 
