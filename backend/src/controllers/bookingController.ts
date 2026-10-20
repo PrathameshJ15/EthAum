@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { z } from 'zod'
 import { bookingService } from '../services/bookingService.js'
 import { sendSuccess } from '../utils/apiResponse.js'
-import { NotFoundError } from '../utils/apiError.js'
+import { NotFoundError, ForbiddenError } from '../utils/apiError.js'
 
 export const createBookingSchema = z.object({
   caseId: z.string().min(1, 'Case ID is required'),
@@ -54,6 +54,20 @@ export const bookingController = {
       if (!booking) {
         throw new NotFoundError(`Booking '${req.params.id}' not found`)
       }
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const patientId = user.patientId || user.id
+        if (booking.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You are not authorized to view this booking')
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (booking.providerId && booking.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You are not authorized to view this booking')
+        }
+      }
+
       return sendSuccess(res, booking)
     } catch (err) {
       next(err)
@@ -62,8 +76,17 @@ export const bookingController = {
 
   async createBooking(req: Request, res: Response, next: NextFunction) {
     try {
-      const patientId = req.user?.patientId || req.user?.id
-      const patientName = req.user?.name
+      const user = req.user
+      const patientId = user?.patientId || user?.id
+      const patientName = user?.name
+
+      if (user?.role === 'patient') {
+        const { caseService } = await import('../services/caseService.js')
+        const c = await caseService.getCaseById(req.body.caseId)
+        if (c && c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You can only create bookings for your own medical cases')
+        }
+      }
 
       const booking = await bookingService.createBooking({
         ...req.body,
