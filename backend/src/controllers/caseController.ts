@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { z } from 'zod'
 import { caseService } from '../services/caseService.js'
 import { sendSuccess } from '../utils/apiResponse.js'
-import { NotFoundError, ForbiddenError } from '../utils/apiError.js'
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../utils/apiError.js'
 import { MedicalCaseStatus } from '../types/index.js'
 import { caseSummaryService } from '../services/caseSummaryService.js'
 
@@ -115,7 +115,7 @@ export const caseController = {
           throw new ForbiddenError('Access denied: You are not authorized to update this case')
         }
       } else if (userRole === 'provider') {
-        const providerId = user?.providerId || user?.id
+        const providerId = user?.providerId || user?.id || ''
         const isAuthorized = await caseService.isProviderAuthorizedForCase(caseId, providerId)
         if (!isAuthorized) {
           throw new ForbiddenError('Access denied: You are not authorized to update this case')
