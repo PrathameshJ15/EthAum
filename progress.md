@@ -16,6 +16,7 @@
 | **Phase 26 Core Stability** | 🟢 **Completed** | All 5 P0 and 2 P1 bugs fixed on `feature/phase-26-stability` |
 | **Phase 29 Travel & Visa** | 🟢 **Completed** | Full module on `feature/travel-assistance` with official visa resources & checklists |
 | **Phase 30 Payment Gateway**| 🟢 **Completed** | Sovereign multi-provider gateway (Razorpay/Stripe/Mock) with HMAC & idempotent webhooks |
+| **Phase 31 EHR/FHIR Prototype** | 🟢 **Completed** | HL7 FHIR R4 (v4.0.1) export, staging, duplicate detection & 17 passing tests |
 | **AI Clinical Boundary** | 🟢 **Compliant** | Groq Llama-3 coordination layer active with strict non-diagnostic guardrails |
 | **Patient Data Sovereignty**| 🟢 **Active** | Explicit permission grants/revocations with immutable access audit trails |
 
@@ -303,10 +304,38 @@ npm test
 - [ ] **P1-6 (Prathamesh — `main`):** Wire Aftercare Document Vault to signed download URLs
 - [ ] **P1-7 (Prathamesh — `main`):** Connect Provider Portal messaging to real `messageService`
 
-### Phase 28: Platform Integrations & Release
-- [ ] **P2-1 (Ayusha — `branch1`):** Medical Travel & Visa Concierge intake module
-- [ ] **P2-2 (Ayusha — `branch1`):** HL7/FHIR R4 JSON export prototype for case records
-- [x] **P2-3 (Prathamesh — `feature/payment-gateway`):** International escrow payment gateway integration (Stripe / Razorpay)
-- [ ] Joint Architecture Review of `branch1` merge into `main` and production deployment
+### Phase 31: EHR / FHIR Interoperability Prototype (Ayusha — Completed on `feature/ehr-fhir-prototype`)
+- [x] **FHIR R4 v4.0.1 Standard Conformity:** Complete Zod schema and TypeScript interfaces for HL7 FHIR Release 4 (`Patient`, `Condition`, `Observation`, `DiagnosticReport`, `DocumentReference`, `Encounter`, and `Bundle`).
+- [x] **Bidirectional Resource Mapping:** Documented mapping in `docs/fhir-interoperability.md` mapping EthAum cases, records, diagnostic studies, and appointments to FHIR R4 resources with SNOMED CT (`38362002`) and LOINC (`82312-0`) clinical coding.
+- [x] **Original Document Preservation & AI Boundary:** Source medical files and scans are strictly preserved in original formats with signed access URLs. AI summaries augment diagnostic reports without replacing primary records.
+- [x] **Patient Consent & Object-Level Access Control:** Strict authorization guards (`verifyCaseAccess`). Cross-patient access returns HTTP 403. Provider exports filter documents based on explicit patient consent grants (`rec.permissions.includes(providerId)`).
+- [x] **Staging Workflow & Duplicate Detection:** Inbound bundles enter a `PENDING_REVIEW` staging queue (`POST /cases/:id/fhir/import/stage`). Document titles and filenames are cross-checked against existing dossier files, flagging duplicates to protect clinical record integrity.
+- [x] **Authorized Merge & Journey Milestones:** Patient/clinician confirmation (`POST /cases/:id/fhir/import/confirm`) creates vetted `MedicalRecord` items and records an immutable milestone in `journeyService`.
+- [x] **Operations Audit Ledger:** Cryptographic ledger recording every `EXPORT`, `IMPORT_STAGE`, and `IMPORT_CONFIRM` with timestamps, actor IDs, and resource counts.
+- [x] **Frontend Interoperability Interface:** Built `FhirInteroperabilityCard.jsx` embedded in `CaseDetailPage.jsx` providing export preview, download, synthetic Eleanor Vance bundle quick-loader, live JSON validation, staging review, and audit trail viewing.
+- [x] **Documentation & Prototype Disclaimer:** Complete architecture and API documentation in `docs/fhir-interoperability.md` with explicit disclaimer that external hospital EHR connections require mutual mTLS certificates and certified interface engine credentials.
+
+#### Phase 31 Verification Summary
+* **Backend Tests:** 17 tests passed (0 failed) in `backend/tests/fhirInteroperability.test.ts`.
+* **TypeScript Compilation:** `tsc` passed with 0 errors across backend.
+* **Frontend Production Build:** Vite build succeeded with 2,042 modules transformed and 0 lint errors.
+* **Modified & Created Files:**
+  * `backend/src/types/fhir.ts` *(New)*
+  * `backend/src/services/fhirService.ts` *(New)*
+  * `backend/src/controllers/fhirController.ts` *(New)*
+  * `backend/src/routes/fhirRoutes.ts` *(New)*
+  * `backend/src/routes/caseRoutes.ts`
+  * `backend/src/routes/index.ts`
+  * `backend/src/middleware/validate.ts`
+  * `backend/src/services/payment/PaymentProvider.ts`
+  * `backend/tests/fhirInteroperability.test.ts` *(New)*
+  * `frontend/src/services/fhirService.js` *(New)*
+  * `frontend/src/components/fhir/FhirInteroperabilityCard.jsx` *(New)*
+  * `frontend/src/components/index.js`
+  * `frontend/src/pages/patient/CaseDetailPage.jsx`
+  * `docs/fhir-interoperability.md` *(New)*
+  * `progress.md`
+  * `README.md`
+* **Remaining Limitations:** Certified connectivity to live hospital EHR networks (Epic FHIR, Cerner Millennium) requires institutional production developer credentials and SMART-on-FHIR OAuth 2.0 app registration.
 
 

@@ -29,6 +29,7 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronUp,
+  CreditCard,
 } from 'lucide-react'
 
 import {
@@ -55,6 +56,7 @@ import {
   JourneyTracker,
   AftercareModule,
   PaymentCheckoutModal,
+  FhirInteroperabilityCard,
 } from '../../components'
 import { TravelAssistanceView } from '../../components/travel/TravelAssistanceView'
 
@@ -751,6 +753,7 @@ export function CaseDetailPage() {
           },
           { id: 'travel', label: 'Travel & Visa Logistics', badge: 'Active' },
           { id: 'aftercare', label: 'Aftercare & Recovery' },
+          { id: 'fhir', label: 'EHR / FHIR Interoperability', badge: 'R4' },
           { id: 'audit', label: 'Access Audit Ledger' },
         ]}
         activeTab={activeTab}
@@ -2494,6 +2497,13 @@ export function CaseDetailPage() {
       {/* ========================================================================= */}
       {activeTab === 'aftercare' && (
         <AftercareModule caseId={caseId} medicalCase={medicalCase} />
+      )}
+
+      {/* ========================================================================= */}
+      {/* TAB 5.5: HL7 FHIR R4 Interoperability Prototype                          */}
+      {/* ========================================================================= */}
+      {activeTab === 'fhir' && (
+        <FhirInteroperabilityCard caseId={caseId} />
       )}
 
       {/* ========================================================================= */}
