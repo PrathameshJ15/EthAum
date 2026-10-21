@@ -28,113 +28,113 @@
 }
 
 :root {
-  /* EthAum Modern White Healthcare Theme (Clean Pure White & Medical Blue) */
-  --bg: #FFFFFF;
+  /* EthAum Design System 2.0 — Light Theme (Default) */
+  --bg: #FAFBF9;
   --surface: #FFFFFF;
-  --surface-alt: #F8FAFC;
-  --text: #334E68;
-  --text-heading: #102A43;
-  --text-muted: #627D98;
-  --border: #E2E8F0;
-  --border-strong: #CBD5E1;
-  --action: #1877F2;
+  --surface-alt: #E8F0EB;
+  --text: #202C30;
+  --text-heading: #174C4F;
+  --text-muted: #58686C;
+  --border: #DFE6E2;
+  --border-strong: #9DB3AE;
+  --action: #247C78;
   --on-action: #FFFFFF;
-  --action-text: #1877F2;
-  --info-bg: #EBF3FE;
-  --info-text: #1877F2;
-  --warn-bg: #FEF3C7;
-  --warn-text: #92400E;
-  --success-bg: #ECFDF5;
-  --success-text: #059669;
-  --error-bg: #FEE2E2;
-  --error-text: #DC2626;
+  --action-text: #1E6B67;
+  --info-bg: #E1EEF7;
+  --info-text: #2F5F87;
+  --warn-bg: #FBEFD5;
+  --warn-text: #7A5200;
+  --success-bg: #DFF1E5;
+  --success-text: #1F5A34;
+  --error-bg: #FBE3E1;
+  --error-text: #8A2A22;
 
   /* Radius Tokens */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-pill: 9999px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
   /* Backward Compatibility Bridge */
-  --bg-canvas: #FFFFFF;
-  --bg-base: #FFFFFF;
-  --bg-card: #FFFFFF;
-  --bg-elevated: #F8FAFC;
-  --bg-overlay: #FFFFFF;
+  --bg-canvas: var(--bg);
+  --bg-base: var(--bg);
+  --bg-card: var(--surface);
+  --bg-elevated: var(--surface-alt);
+  --bg-overlay: var(--surface);
 
-  --green-deep: #102A43;
-  --green-rich: #1877F2;
-  --green-cta: #1877F2;
-  --green-hover: #0E65D9;
+  --green-deep: #174C4F;
+  --green-rich: #247C78;
+  --green-cta: #247C78;
+  --green-hover: #1E6B67;
 
-  --copper: #627D98;
-  --copper-dim: #486581;
-  --copper-pale: #F0F6FF;
-  --copper-border: #E2E8F0;
+  --copper: #58686C;
+  --copper-dim: #3E5A5D;
+  --copper-pale: #E8F0EB;
+  --copper-border: #DFE6E2;
 
-  --text-primary: #334E68;
-  --text-secondary: #627D98;
-  --text-inverse: #FFFFFF;
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --text-inverse: var(--on-action);
 
-  --border-hairline: #E2E8F0;
-  --border-default: #E2E8F0;
-  --grid-line: rgba(24, 119, 242, 0.04);
+  --border-hairline: var(--border);
+  --border-default: var(--border);
+  --grid-line: rgba(23, 76, 79, 0.05);
 
   color-scheme: light;
 }
 
 .dark, [data-theme="dark"] {
-  /* Enforced White Theme across all selectors per user request */
-  --bg: #FFFFFF;
-  --surface: #FFFFFF;
-  --surface-alt: #F8FAFC;
-  --text: #334E68;
-  --text-heading: #102A43;
-  --text-muted: #627D98;
-  --border: #E2E8F0;
-  --border-strong: #CBD5E1;
-  --action: #1877F2;
-  --on-action: #FFFFFF;
-  --action-text: #1877F2;
-  --info-bg: #EBF3FE;
-  --info-text: #1877F2;
-  --warn-bg: #FEF3C7;
-  --warn-text: #92400E;
-  --success-bg: #ECFDF5;
-  --success-text: #059669;
-  --error-bg: #FEE2E2;
-  --error-text: #DC2626;
+  /* EthAum Design System 2.0 — Dark Theme */
+  --bg: #0F1B1D;
+  --surface: #172A2D;
+  --surface-alt: #142427;
+  --text: #E4ECEA;
+  --text-heading: #F2F7F5;
+  --text-muted: #9FB2B0;
+  --border: #26393C;
+  --border-strong: #3E5A5D;
+  --action: #4FB3AC;
+  --on-action: #0B1A1C;
+  --action-text: #7CCBC4;
+  --info-bg: #1E3548;
+  --info-text: #A9CDEB;
+  --warn-bg: #3A2E14;
+  --warn-text: #F0CF8A;
+  --success-bg: #16341F;
+  --success-text: #9ED7B0;
+  --error-bg: #3F1D1A;
+  --error-text: #F2B1AA;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-pill: 9999px;
+  /* Radius Tokens */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
-  --bg-canvas: #FFFFFF;
-  --bg-base: #FFFFFF;
-  --bg-card: #FFFFFF;
-  --bg-elevated: #F8FAFC;
-  --bg-overlay: #FFFFFF;
+  /* Backward Compatibility Bridge */
+  --bg-canvas: var(--bg);
+  --bg-base: var(--bg);
+  --bg-card: var(--surface);
+  --bg-elevated: var(--surface-alt);
+  --bg-overlay: var(--surface);
 
-  --green-deep: #102A43;
-  --green-rich: #1877F2;
-  --green-cta: #1877F2;
-  --green-hover: #0E65D9;
+  --green-deep: #4FB3AC;
+  --green-rich: #4FB3AC;
+  --green-cta: #4FB3AC;
+  --green-hover: #7CCBC4;
 
-  --copper: #627D98;
-  --copper-dim: #486581;
-  --copper-pale: #F0F6FF;
-  --copper-border: #E2E8F0;
+  --copper: #9FB2B0;
+  --copper-dim: #7CCBC4;
+  --copper-pale: #142427;
+  --copper-border: #26393C;
 
-  --text-primary: #334E68;
-  --text-secondary: #627D98;
-  --text-inverse: #FFFFFF;
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --text-inverse: var(--on-action);
 
-  --border-hairline: #E2E8F0;
-  --border-default: #E2E8F0;
-  --grid-line: rgba(24, 119, 242, 0.04);
+  --border-hairline: var(--border);
+  --border-default: var(--border);
+  --grid-line: rgba(242, 247, 245, 0.03);
 
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 html {
@@ -191,26 +191,24 @@ h4 {
   background-color: var(--action);
   color: var(--on-action);
   border: 1px solid transparent;
-  border-radius: 9999px;
-  min-height: 46px;
-  padding: 12px 28px;
+  border-radius: var(--radius-md, 8px);
+  min-height: 48px;
+  padding: 12px 24px;
   font-family: 'Inter', system-ui, sans-serif;
   font-weight: 600;
   font-size: 15px;
   line-height: 1.4;
-  transition: all 180ms ease;
+  transition: all 150ms ease;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(24, 119, 242, 0.28);
 }
 
 .btn-primary-cta:hover {
-  background-color: #0E65D9;
-  box-shadow: 0 6px 20px rgba(24, 119, 242, 0.38);
-  transform: translateY(-1px);
+  opacity: 0.92;
+  box-shadow: 0 2px 8px rgba(36, 124, 120, 0.2);
 }
 
 .btn-primary-cta:focus-visible {
@@ -220,30 +218,27 @@ h4 {
 
 /* Secondary Button Styling */
 .btn-secondary-ghost {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border);
+  background-color: transparent;
+  border: 1px solid var(--border-strong);
   color: var(--text-heading);
-  border-radius: 9999px;
-  min-height: 46px;
-  padding: 12px 26px;
+  border-radius: var(--radius-md, 8px);
+  min-height: 48px;
+  padding: 12px 24px;
   font-family: 'Inter', system-ui, sans-serif;
   font-weight: 600;
   font-size: 15px;
   line-height: 1.4;
-  transition: all 180ms ease;
+  transition: all 150ms ease;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 0 2px 6px rgba(16, 42, 67, 0.04);
 }
 
 .btn-secondary-ghost:hover {
   background-color: var(--surface-alt);
-  border-color: var(--border-strong);
-  color: var(--action);
-  transform: translateY(-1px);
+  color: var(--text-heading);
 }
 
 .btn-secondary-ghost:focus-visible {

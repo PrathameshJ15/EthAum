@@ -3,31 +3,92 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from '
 const THEME_STORAGE_KEY = 'ethaum_theme_preference'
 
 const ThemeContext = createContext({
-  theme: 'light',
+  theme: 'system',
   resolvedTheme: 'light',
   setTheme: () => {},
   toggleTheme: () => {},
 })
 
 export function ThemeProvider({ children }) {
-  const [theme] = useState('light')
-  const resolvedTheme = 'light'
+  // 1. Get initial preference from localStorage or default to 'light' per DESIGN.md (Light first)
+  const [theme, setThemeState] = useState(() => {
+    try {
+      const stored = localStorage.getItem(THEME_STORAGE_KEY)
+      if (stored === 'light' || stored === 'dark' || stored === 'system') {
+        return stored
+      }
+    } catch {
+      // localStorage may fail in private mode
+    }
+    return 'light'
+  })
 
-  // Ensure DOM root stays strictly in white theme per user specification
+  // 2. Track OS media query preference
+  const [systemPrefersDark, setSystemPrefersDark] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+    return false
+  })
+
+  // Listen to OS color scheme changes
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = (e) => {
+      setSystemPrefersDark(e.matches)
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  // 3. Resolve active visual theme ('light' or 'dark')
+  const resolvedTheme = useMemo(() => {
+    if (theme === 'system') {
+      return systemPrefersDark ? 'dark' : 'light'
+    }
+    return theme
+  }, [theme, systemPrefersDark])
+
+  // 4. Update DOM root and persist choice
   useEffect(() => {
     const root = document.documentElement
-    root.classList.remove('dark')
-    root.setAttribute('data-theme', 'light')
-    root.style.colorScheme = 'light'
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, 'light')
-    } catch {
-      // safe fallback
+
+    if (resolvedTheme === 'dark') {
+      root.classList.add('dark')
+      root.setAttribute('data-theme', 'dark')
+      root.style.colorScheme = 'dark'
+    } else {
+      root.classList.remove('dark')
+      root.setAttribute('data-theme', 'light')
+      root.style.colorScheme = 'light'
+    }
+  }, [resolvedTheme])
+
+  const setTheme = React.useCallback((newTheme) => {
+    if (newTheme === 'light' || newTheme === 'dark' || newTheme === 'system') {
+      setThemeState(newTheme)
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, newTheme)
+      } catch {
+        // Ignore storage errors
+      }
     }
   }, [])
 
-  const setTheme = React.useCallback(() => {}, [])
-  const toggleTheme = React.useCallback(() => {}, [])
+  const toggleTheme = React.useCallback(() => {
+    setThemeState((prevTheme) => {
+      const nextTheme = prevTheme === 'light' ? 'dark' : prevTheme === 'dark' ? 'system' : 'light'
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme)
+      } catch {
+        // Ignore storage errors
+      }
+      return nextTheme
+    })
+  }, [])
 
   const value = useMemo(
     () => ({
