@@ -55,7 +55,7 @@ export interface ProviderRefundResult {
 export interface PaymentProvider {
   readonly name: PaymentProviderName
   createOrder(params: CreateProviderOrderParams): Promise<ProviderOrderResult>
-  verifyPayment(params: VerifyProviderPaymentParams): Promise<boolean>
+  verifyPayment(params: VerifyProviderPaymentParams): boolean
   verifyWebhookSignature(rawBody: Buffer | string, signature: string): boolean
   parseWebhookEvent(rawBody: Buffer | string, headers: Record<string, any>): ParsedWebhookEvent | null
   refund(params: RefundProviderParams): Promise<ProviderRefundResult>
