@@ -31,13 +31,15 @@ import { CaseRecordsPage } from './pages/patient/CaseRecordsPage'
 import { ProviderPortalPage } from './pages/provider/ProviderPortalPage'
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage'
 
-// Automatically scrolls to top on route change
+// Automatically scrolls to top on route change unless navigating to a hash anchor
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  }, [pathname])
+    if (!hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }
+  }, [pathname, hash])
 
   return null
 }

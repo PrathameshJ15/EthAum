@@ -1,11 +1,38 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Activity, Shield, AlertTriangle } from 'lucide-react'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
 export function Footer({ onNavigate }) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const handleLinkClick = (href, e) => {
+    if (href.startsWith('/#')) {
+      e.preventDefault()
+      const targetId = href.replace('/#', '')
+      if (location.pathname === '/') {
+        const el = document.getElementById(targetId)
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' })
+          window.history.pushState(null, '', href)
+        }
+      } else {
+        navigate(href)
+      }
+      return
+    }
+
+    if (href === '/') {
+      if (location.pathname === '/') {
+        e.preventDefault()
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        window.history.pushState(null, '', '/')
+        return
+      }
+    }
+
     if (onNavigate) {
       e.preventDefault()
       onNavigate(href)
@@ -19,7 +46,7 @@ export function Footer({ onNavigate }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 lg:gap-8 pb-12 border-b border-[var(--border-hairline)]">
           {/* Brand Info (2 cols) */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-3">
+            <Link to="/" onClick={(e) => handleLinkClick('/', e)} className="flex items-center gap-3">
               <img
                 src="/logo.png"
                 alt="EthAum"
@@ -41,17 +68,17 @@ export function Footer({ onNavigate }) {
             </h4>
             <ul className="space-y-2 text-xs font-light text-[var(--text-secondary)] font-sans">
               <li>
-                <Link to="/treatments" onClick={(e) => handleLinkClick('/treatments', e)} className="hover:text-[var(--text-primary)] transition-colors">
+                <Link to="/#treatments" onClick={(e) => handleLinkClick('/#treatments', e)} className="hover:text-[var(--text-primary)] transition-colors">
                   Treatments
                 </Link>
               </li>
               <li>
-                <Link to="/destinations" onClick={(e) => handleLinkClick('/destinations', e)} className="hover:text-[var(--text-primary)] transition-colors">
+                <Link to="/#destinations" onClick={(e) => handleLinkClick('/#destinations', e)} className="hover:text-[var(--text-primary)] transition-colors">
                   Destinations
                 </Link>
               </li>
               <li>
-                <Link to="/providers" onClick={(e) => handleLinkClick('/providers', e)} className="hover:text-[var(--text-primary)] transition-colors">
+                <Link to="/#providers" onClick={(e) => handleLinkClick('/#providers', e)} className="hover:text-[var(--text-primary)] transition-colors">
                   Providers
                 </Link>
               </li>
@@ -70,7 +97,7 @@ export function Footer({ onNavigate }) {
             </h4>
             <ul className="space-y-2 text-xs font-light text-[var(--text-secondary)] font-sans">
               <li>
-                <Link to="/how-it-works" onClick={(e) => handleLinkClick('/how-it-works', e)} className="hover:text-[var(--text-primary)] transition-colors">
+                <Link to="/#how-it-works" onClick={(e) => handleLinkClick('/#how-it-works', e)} className="hover:text-[var(--text-primary)] transition-colors">
                   How it works
                 </Link>
               </li>

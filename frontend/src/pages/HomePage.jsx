@@ -1,8 +1,23 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 
 export function HomePage({ onCreateCase }) {
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Smooth scroll to section if hash exists in URL on mount or hash change
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '')
+      const timer = setTimeout(() => {
+        const el = document.getElementById(id)
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [location.hash])
 
   // Timeline Active Step State in "How EthAum Coordinates Your Care"
   const [activeJourneyStep, setActiveJourneyStep] = useState(1) // Step 02: Create Medical Case
@@ -116,7 +131,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           1. HERO SECTION (With Signature Arched Portal)
           ================================================== */}
-      <section className="relative pt-[70px] sm:pt-[90px] lg:pt-[120px] pb-[60px] lg:pb-[90px] bg-[var(--bg-base)] border-b border-[var(--border-hairline)] overflow-hidden transition-colors duration-200">
+      <section id="hero" className="relative pt-[70px] sm:pt-[90px] lg:pt-[120px] pb-[60px] lg:pb-[90px] bg-[var(--bg-base)] border-b border-[var(--border-hairline)] overflow-hidden transition-colors duration-200">
         {/* Subtle Square Grid Background */}
         <div className="absolute inset-0 bg-grid-ethaum pointer-events-none" />
 
@@ -148,12 +163,18 @@ export function HomePage({ onCreateCase }) {
                 >
                   Create Medical Case
                 </button>
-                <Link
-                  to="/treatments"
-                  className="text-[13px] font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1.5 py-2.5 px-3"
+                <a
+                  href="#treatments"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const el = document.getElementById('treatments')
+                    el?.scrollIntoView({ behavior: 'smooth' })
+                    window.history.pushState(null, '', '/#treatments')
+                  }}
+                  className="text-[13px] font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1.5 py-2.5 px-3 cursor-pointer"
                 >
                   Explore treatments →
-                </Link>
+                </a>
               </div>
 
               {/* Trust bar */}
@@ -200,7 +221,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           2. POPULAR CROSS-BORDER TREATMENTS (Asymmetric Layout)
           ================================================== */}
-      <section className="py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
+      <section id="treatments" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
             <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
@@ -328,7 +349,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           3. LEADING MEDICAL TOURISM HUBS (Destinations)
           ================================================== */}
-      <section className="py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 border-t border-[var(--border-hairline)] text-left">
+      <section id="destinations" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 border-t border-[var(--border-hairline)] text-left">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
             <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
@@ -420,7 +441,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           4. HOW ETHAUM COORDINATES YOUR CARE (Journey & Mockup)
           ================================================== */}
-      <section className="py-20 lg:py-24 bg-[var(--bg-base)] border-t border-b border-[var(--border-hairline)] transition-colors duration-200 text-left">
+      <section id="how-it-works" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--bg-base)] border-t border-b border-[var(--border-hairline)] transition-colors duration-200 text-left">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
@@ -574,7 +595,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           5. THE MEDICAL CASE (The patient's journey, organized in one place)
           ================================================== */}
-      <section className="relative py-24 lg:py-28 bg-[var(--bg-canvas)] border-b border-[var(--border-hairline)] overflow-hidden text-left">
+      <section id="providers" className="scroll-mt-20 sm:scroll-mt-24 relative py-24 lg:py-28 bg-[var(--bg-canvas)] border-b border-[var(--border-hairline)] overflow-hidden text-left">
         {/* Faint Square Grid Background */}
         <div className="absolute inset-0 bg-grid-ethaum pointer-events-none" />
 
@@ -708,7 +729,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           6. QUOTE COMPARISON (See what treatment actually costs)
           ================================================== */}
-      <section className="py-20 lg:py-24 bg-[var(--bg-base)] border-t border-b border-[var(--border-hairline)] transition-colors duration-200 text-left">
+      <section id="quotes" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--bg-base)] border-t border-b border-[var(--border-hairline)] transition-colors duration-200 text-left">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
@@ -788,7 +809,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           7. VERIFIED PATIENT JOURNEYS (Testimonials)
           ================================================== */}
-      <section className="py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
+      <section id="testimonials" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
         <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
           <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
           Verified Patient Journeys
@@ -850,7 +871,7 @@ export function HomePage({ onCreateCase }) {
       {/* ==================================================
           8. FREQUENTLY ASKED QUESTIONS (FAQ)
           ================================================== */}
-      <section className="py-20 max-w-4xl mx-auto px-6 sm:px-8 border-t border-[var(--border-hairline)] text-left">
+      <section id="faq" className="scroll-mt-20 sm:scroll-mt-24 py-20 max-w-4xl mx-auto px-6 sm:px-8 border-t border-[var(--border-hairline)] text-left">
         <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
           <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
           Frequently Asked Questions

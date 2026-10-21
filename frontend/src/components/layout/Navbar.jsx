@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Activity, Menu, Globe, User, PlusCircle, LogOut, LayoutDashboard, Building2, Shield } from 'lucide-react'
 import { Button } from '../common/Button'
@@ -45,28 +45,77 @@ export function Navbar({
   }
 
   const navLinks = [
-    { label: 'Treatments', href: '/treatments' },
-    { label: 'Destinations', href: '/destinations' },
-    { label: 'Providers', href: '/providers' },
-    { label: 'How it works', href: '/how-it-works' },
+    { label: 'Treatments', href: '/#treatments' },
+    { label: 'Destinations', href: '/#destinations' },
+    { label: 'Providers', href: '/#providers' },
+    { label: 'How it works', href: '/#how-it-works' },
   ]
+
+  const [activeSection, setActiveSection] = useState('')
+
+  useEffect(() => {
+    if (currentPath !== '/') {
+      setActiveSection('')
+      return
+    }
+
+    const sectionIds = ['treatments', 'destinations', 'how-it-works', 'providers']
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 160
+      let current = ''
+      for (const id of sectionIds) {
+        const el = document.getElementById(id)
+        if (el) {
+          const top = el.offsetTop
+          if (scrollPosition >= top) {
+            current = id
+          }
+        }
+      }
+      setActiveSection(current)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [currentPath])
 
   const handleLinkClick = (href) => {
     setMobileMenuOpen(false)
     if (href.startsWith('/#')) {
+      const targetId = href.replace('/#', '')
       if (currentPath !== '/') {
-        navigate('/')
-        setTimeout(() => {
-          const el = document.getElementById(href.replace('/#', ''))
-          el?.scrollIntoView({ behavior: 'smooth' })
-        }, 150)
+        navigate(`/#${targetId}`)
       } else {
-        const el = document.getElementById(href.replace('/#', ''))
-        el?.scrollIntoView({ behavior: 'smooth' })
+        const el = document.getElementById(targetId)
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' })
+          window.history.pushState(null, '', `/#${targetId}`)
+          setActiveSection(targetId)
+        }
+      }
+    } else if (href === '/') {
+      if (currentPath === '/') {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        window.history.pushState(null, '', '/')
+        setActiveSection('')
+      } else {
+        navigate('/')
       }
     } else {
       navigate(href)
     }
+  }
+
+  const isLinkActive = (linkHref) => {
+    if (linkHref.startsWith('/#')) {
+      const targetId = linkHref.replace('/#', '')
+      return currentPath === '/' && activeSection === targetId
+    }
+    if (linkHref === '/') {
+      return currentPath === '/' && !activeSection
+    }
+    return currentPath.startsWith(linkHref)
   }
 
   return (
@@ -100,10 +149,7 @@ export function Navbar({
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-7 lg:gap-9">
           {navLinks.map((link) => {
-            const isActive =
-              link.href === '/'
-                ? currentPath === '/'
-                : !link.href.startsWith('/#') && currentPath.startsWith(link.href)
+            const isActive = isLinkActive(link.href)
 
             return (
               <button
@@ -239,10 +285,7 @@ export function Navbar({
             )}
 
             {navLinks.map((link) => {
-              const isActive =
-                link.href === '/'
-                  ? currentPath === '/'
-                  : !link.href.startsWith('/#') && currentPath.startsWith(link.href)
+              const isActive = isLinkActive(link.href)
 
               return (
                 <button
