@@ -214,39 +214,19 @@ export function HomePage({ onCreateCase }) {
               </div>
             </div>
 
-            {/* Right Photography + Genuine Preview Overlay (5 cols) */}
+            {/* Right Doctor Hero Visual (from user reference) */}
             <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
-              <div className="w-full max-w-[460px] relative">
-                {/* Clinical Documentary Photo: Real high-res NCI clinical photography */}
-                <Photo
-                  src="/images/hero-consultation.webp"
-                  alt="Senior consulting physician reviewing medical case documentation with patient across a desk in a calm, modern consultation room"
-                  subject="Clinical Consultation & Patient Review"
-                  aspectRatio="4/5"
-                  priority={true}
-                  className="w-full shadow-sm"
-                />
+              <div className="w-full max-w-[500px] relative">
+                {/* Soft ambient aura matching the reference screenshot */}
+                <div className="absolute -inset-4 bg-gradient-to-tr from-[#EBF3FE] via-[#F0F6FF] to-transparent rounded-full blur-2xl opacity-80 pointer-events-none" />
 
-                {/* Overlapping Genuine Product Preview Card */}
-                <div className="absolute -bottom-6 -left-4 sm:-left-6 right-6 sm:right-auto sm:w-[320px] bg-[var(--surface)] border border-[var(--border)] p-5 rounded-[var(--radius-lg,12px)] shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-10">
-                  <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] mb-3">
-                    <span className="text-sm font-bold text-[var(--text-heading)]">Case #MC-2024-0891</span>
-                    <StatusBadge status="ACTIVE" size="sm" />
-                  </div>
-                  <div className="space-y-2.5 text-sm">
-                    <div className="flex justify-between items-center text-[var(--text-muted)]">
-                      <span>Procedure</span>
-                      <span className="font-semibold text-[var(--text-heading)]">Cardiac Consultation</span>
-                    </div>
-                    <div className="flex justify-between items-center text-[var(--text-muted)]">
-                      <span>Matched Center</span>
-                      <span className="font-medium text-[var(--text-heading)]">Bumrungrad (JCI)</span>
-                    </div>
-                    <div className="flex justify-between items-center text-[var(--text-muted)]">
-                      <span>Verified Quote</span>
-                      <span className="font-bold tabular-nums text-[var(--action-text)]">$4,200 USD</span>
-                    </div>
-                  </div>
+                {/* Doctor Hero Graphic with clean rounded card frame */}
+                <div className="relative z-10 w-full overflow-hidden rounded-[28px] bg-gradient-to-b from-[#FFFFFF] to-[#F8FAFC] p-3 sm:p-4 border border-[#E2E8F0] shadow-[0_16px_40px_rgba(16,42,67,0.06)]">
+                  <img
+                    src="/images/doctor-hero.png"
+                    alt="Accredited consulting physician providing international medical care and tele-consultations"
+                    className="w-full h-auto object-contain rounded-[20px]"
+                  />
                 </div>
               </div>
             </div>
