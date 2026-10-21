@@ -522,7 +522,7 @@ export const caseService = {
     if (index === -1) return null
 
     const newRec = {
-      id: `rec-${Date.now()}`,
+      id: recordData.id || `rec-${Date.now()}`,
       name: recordData.name || 'Diagnostic_Document.pdf',
       category: recordData.category || 'MRI',
       type: recordData.type || 'Clinical Document',
@@ -594,15 +594,16 @@ export const caseService = {
   async generateCaseSummary(caseId) {
     try {
       const res = await apiClient.post(`/cases/${caseId}/summary/generate`)
-      if (res?.data) {
+      const data = res?.data !== undefined ? res.data : res
+      if (data) {
         const all = getStoredCases()
         const idx = all.findIndex((c) => c.id.toLowerCase() === caseId.toLowerCase())
         if (idx !== -1) {
-          all[idx].coordinationSummary = res.data.summary
-          all[idx].summaryCorrections = res.data.corrections || []
+          all[idx].coordinationSummary = data.summary
+          all[idx].summaryCorrections = data.corrections || []
           persistCases(all)
         }
-        return res.data
+        return data
       }
     } catch (err) {
       console.warn('[caseService] generateCaseSummary backend error:', err.message)
@@ -613,7 +614,8 @@ export const caseService = {
   async getCaseSummary(caseId) {
     try {
       const res = await apiClient.get(`/cases/${caseId}/summary`)
-      return res?.data || null
+      const data = res?.data !== undefined ? res.data : res
+      return data || null
     } catch (err) {
       console.warn('[caseService] getCaseSummary fallback to local store:', err.message)
       const c = this.getCaseByIdSync(caseId)
@@ -627,18 +629,19 @@ export const caseService = {
   async submitCorrection(caseId, correctionData) {
     try {
       const res = await apiClient.post(`/cases/${caseId}/summary/corrections`, correctionData)
-      if (res?.data) {
+      const data = res?.data !== undefined ? res.data : res
+      if (data) {
         const all = getStoredCases()
         const idx = all.findIndex((c) => c.id.toLowerCase() === caseId.toLowerCase())
         if (idx !== -1) {
           if (!all[idx].summaryCorrections) all[idx].summaryCorrections = []
-          all[idx].summaryCorrections.push(res.data.correction)
-          if (res.data.summary) {
-            all[idx].coordinationSummary = res.data.summary
+          if (data.correction) all[idx].summaryCorrections.push(data.correction)
+          if (data.summary) {
+            all[idx].coordinationSummary = data.summary
           }
           persistCases(all)
         }
-        return res.data
+        return data
       }
     } catch (err) {
       console.warn('[caseService] submitCorrection backend error:', err.message)
@@ -652,8 +655,9 @@ export const caseService = {
       if (options.destination) params.destination = options.destination
       if (options.maxResults) params.maxResults = options.maxResults
       const res = await apiClient.get(`/cases/${caseId}/matches`, { params })
-      if (res?.data) return res.data
-      if (res?.matches) return res
+      const data = res?.data !== undefined ? res.data : res
+      if (data?.matches) return data
+      if (data) return data
     } catch (err) {
       console.warn(`[caseService] getCaseProviderMatches error:`, err.message)
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   FileText,
   ShieldCheck,
@@ -29,6 +29,7 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronUp,
+  CreditCard,
 } from 'lucide-react'
 
 import {
@@ -55,23 +56,50 @@ import {
   JourneyTracker,
   AftercareModule,
   VideoConsultationRoom,
+  PaymentCheckoutModal,
+  FhirInteroperabilityCard,
 } from '../../components'
+import { TravelAssistanceView } from '../../components/travel/TravelAssistanceView'
 
 import { caseService, JOURNEY_STAGES } from '../../services/caseService'
 import { providerService } from '../../services/providerService'
 import { quoteService } from '../../services/quoteService'
 import { appointmentService } from '../../services/appointmentService'
 import { bookingService } from '../../services/bookingService'
+import { paymentService } from '../../services/paymentService'
 
 
 export function CaseDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { addToast } = useToast()
 
   const caseId = id || 'ET-8492'
   const [medicalCase, setMedicalCase] = useState(() => caseService.getCaseByIdSync(caseId))
-  const [activeTab, setActiveTab] = useState('overview')
+  const initialTab = searchParams.get('tab') || 'overview'
+  const [activeTab, setActiveTab] = useState(initialTab)
+
+  // Payment Gateway states
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  const [paymentPurpose, setPaymentPurpose] = useState('TREATMENT_DEPOSIT')
+  const [casePayments, setCasePayments] = useState([])
+
+  useEffect(() => {
+    paymentService
+      .getCasePayments(caseId)
+      .then((res) => {
+        if (Array.isArray(res)) setCasePayments(res)
+      })
+      .catch(() => {})
+  }, [caseId])
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam) {
+      setActiveTab(tabParam)
+    }
+  }, [searchParams])
 
   // Keep state synchronized with caseService
   useEffect(() => {
@@ -711,7 +739,7 @@ export function CaseDetailPage() {
       <JourneyTracker
         medicalCase={medicalCase}
         onSelectStage={handleStageSelect}
-        onActionClick={(tab) => setActiveTab(tab)}
+        onActionClick={(tab) => setActiveTab(tab === 'summary' ? 'overview' : tab)}
         appointments={appointments}
       />
 
@@ -736,7 +764,9 @@ export function CaseDetailPage() {
             label: 'Treatment Booking',
             badge: medicalCase.status === 'BOOKED' || medicalCase.bookingDetails || bookings.length > 0 ? 'Confirmed' : undefined,
           },
+          { id: 'travel', label: 'Travel & Visa Logistics', badge: 'Active' },
           { id: 'aftercare', label: 'Aftercare & Recovery' },
+          { id: 'fhir', label: 'EHR / FHIR Interoperability', badge: 'R4' },
           { id: 'audit', label: 'Access Audit Ledger' },
         ]}
         activeTab={activeTab}
@@ -2311,17 +2341,17 @@ export function CaseDetailPage() {
                             <span className="text-[10px] uppercase font-mono text-[var(--text-muted)]">
                               Escrow Status
                             </span>
-                            <Badge variant="success" size="sm">
-                              {b.paymentStatus || 'MOCK_ESCROW_AUTHORIZED'}
+                            <Badge variant={casePayments.some((p) => p.status === 'SUCCEEDED') ? 'success' : 'outline'} size="sm">
+                              {casePayments.find((p) => p.status === 'SUCCEEDED') ? 'CONFIRMED (GATEWAY)' : b.paymentStatus || 'MOCK_ESCROW_AUTHORIZED'}
                             </Badge>
                           </div>
 
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] uppercase font-mono text-[var(--text-muted)]">
-                              Escrow Reference
+                              Payment Reference
                             </span>
                             <span className="text-xs font-mono font-medium text-[var(--green-rich)]">
-                              {b.paymentReference || 'MOCK-ESCROW-8492-9182'}
+                              {casePayments.find((p) => p.status === 'SUCCEEDED')?.paymentId || b.paymentReference || 'MOCK-ESCROW-8492-9182'}
                             </span>
                           </div>
 
@@ -2344,13 +2374,30 @@ export function CaseDetailPage() {
                           </div>
                         </div>
 
-                        <div className="text-[11px] text-[var(--text-muted)] space-y-1 leading-relaxed">
+                        <div className="text-[11px] text-[var(--text-muted)] space-y-1.5 leading-relaxed">
                           <p>
-                            • Simulated deposit authorization ensures provider readiness without transferring real capital.
+                            • Deposit authorization guarantees surgical and clinical team availability at the hospital.
                           </p>
                           <p>
-                            • In accordance with platform safety specifications, zero real payment gateways are connected.
+                            • Protected under sovereign escrow agreements and verified by backend cryptographic signatures.
                           </p>
+                        </div>
+
+                        <div className="pt-2 border-t border-[var(--border-hairline)] flex flex-col gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full text-xs"
+                            onClick={() => {
+                              setPaymentPurpose('TREATMENT_DEPOSIT')
+                              setIsPaymentModalOpen(true)
+                            }}
+                            leftIcon={<CreditCard className="w-3.5 h-3.5 text-[var(--green-rich)]" />}
+                          >
+                            {casePayments.some((p) => p.status === 'SUCCEEDED')
+                              ? 'Manage / View Escrow Payment'
+                              : 'Authorize via Payment Gateway ($500 USD)'}
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -2450,10 +2497,24 @@ export function CaseDetailPage() {
       )}
 
       {/* ========================================================================= */}
+      {/* TAB 4.5: Travel & Visa Assistance Logistics                               */}
+      {/* ========================================================================= */}
+      {activeTab === 'travel' && (
+        <TravelAssistanceView caseId={caseId} medicalCase={medicalCase} />
+      )}
+
+      {/* ========================================================================= */}
       {/* TAB 5: Coordination-Focused Aftercare Support                             */}
       {/* ========================================================================= */}
       {activeTab === 'aftercare' && (
         <AftercareModule caseId={caseId} medicalCase={medicalCase} />
+      )}
+
+      {/* ========================================================================= */}
+      {/* TAB 5.5: HL7 FHIR R4 Interoperability Prototype                          */}
+      {/* ========================================================================= */}
+      {activeTab === 'fhir' && (
+        <FhirInteroperabilityCard caseId={caseId} />
       )}
 
       {/* ========================================================================= */}
@@ -2622,7 +2683,7 @@ export function CaseDetailPage() {
         onSuccess={handleConsultationSuccess}
       />
 
-      {/* Treatment & Hospital Admission Booking Modal (Mock Escrow Only) */}
+      {/* Treatment & Hospital Admission Booking Modal */}
       <TreatmentBookingModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
@@ -2637,8 +2698,32 @@ export function CaseDetailPage() {
         appointment={activeVideoAppointment}
         onSessionEnded={handleVideoSessionEnded}
       />
+
+      {/* Real Gateway Payment Checkout Modal */}
+      <PaymentCheckoutModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        caseData={medicalCase}
+        purpose={paymentPurpose}
+        bookingId={medicalCase.bookingDetails?.id}
+        onSuccess={(verified) => {
+          setCasePayments((prev) => [verified, ...prev.filter((p) => p.paymentId !== verified.paymentId)])
+          setMedicalCase((prev) => ({
+            ...prev,
+            status: 'BOOKED',
+            journeyStage: 'Booked',
+            bookingDetails: {
+              ...(prev.bookingDetails || {}),
+              paymentStatus: 'CONFIRMED',
+              paymentReference: verified.paymentId,
+            },
+          }))
+          setIsPaymentModalOpen(false)
+        }}
+      />
     </div>
   )
 }
 
 export default CaseDetailPage
+

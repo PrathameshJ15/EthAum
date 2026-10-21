@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { Search, MapPin, X } from 'lucide-react'
-import { Breadcrumb } from '../components'
+import { useNavigate } from 'react-router-dom'
+import { Search, MapPin, X, ArrowRight } from 'lucide-react'
+import { Breadcrumb, Button, StatusBadge } from '../components'
 import { PROVIDERS_DATA } from '../data/providersData'
 import { DESTINATIONS_DATA } from '../data/destinationsData'
 import { providerService } from '../services/providerService'
@@ -69,7 +69,7 @@ export function ProvidersPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16 space-y-10 text-left">
+    <div className="max-w-[1200px] mx-auto px-6 sm:px-8 py-10 sm:py-16 space-y-10 text-left rtl:text-right">
       <Breadcrumb
         items={[
           { label: t('nav.marketplace', 'Marketplace'), href: '/' },
@@ -79,38 +79,37 @@ export function ProvidersPage() {
 
       {/* Editorial Header */}
       <div>
-        <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-4 flex items-center gap-2.5 font-sans">
-          <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
           {t('providers.badge', 'Accredited Global Hospitals')}
         </p>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-serif font-light text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] max-w-2xl">
+        <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-heading font-extrabold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] max-w-2xl">
           {t('providers.heading', 'Verified Quaternary Healthcare Centers')}
         </h1>
 
-        <p className="mt-4 text-sm sm:text-base font-light text-[var(--text-secondary)] font-sans max-w-xl leading-relaxed">
+        <p className="mt-3 text-base font-normal text-[var(--text-muted)] max-w-xl leading-relaxed">
           {t('providers.subtitle', 'Explore medical facilities credentialed under Joint Commission International (JCI) standards, featuring fellowship-trained surgical chiefs and dedicated international patient concierges.')}
         </p>
       </div>
 
       {/* Search & Filter Controls Surface */}
-      <div className="p-4 sm:p-5 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4">
+      <div className="p-5 bg-[var(--surface)] rounded-[var(--radius-lg,12px)] border border-[var(--border)] space-y-4">
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           {/* Search Box */}
-          <div className="flex-1 flex items-center gap-2.5 px-3 py-2 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)] focus-within:border-[var(--border-default)] transition-colors">
+          <div className="flex-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)] focus-within:border-[var(--action)] transition-colors">
             <Search className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
             <input
               type="text"
               placeholder={t('providers.searchPlaceholder', 'Search hospitals or cities (e.g. Apex Joint, Bangkok, Istanbul)...')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-transparent text-sm text-[var(--text-primary)] outline-none font-sans font-light placeholder-[var(--text-muted)]"
+              className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder-[var(--text-muted)]/70"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch('')}
-                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 cursor-pointer"
+                className="text-[var(--text-muted)] hover:text-[var(--text-heading)] p-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -118,16 +117,18 @@ export function ProvidersPage() {
           </div>
 
           {/* Country Selector */}
-          <div className="w-full md:w-56 flex items-center gap-2 px-3 py-2 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)]">
-            <MapPin className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
+          <div className="w-full md:w-56 flex items-center gap-2 px-3 py-2.5 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)]">
+            <MapPin className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
             <select
               value={selectedCountry}
               onChange={(e) => setSelectedCountry(e.target.value)}
-              className="w-full bg-transparent text-xs font-sans text-[var(--text-secondary)] outline-none cursor-pointer"
+              className="w-full bg-transparent text-xs text-[var(--text-heading)] font-medium outline-none cursor-pointer"
             >
-              <option value="all" className="bg-[var(--bg-card)]">{t('providers.filterCountry', 'All Countries')}</option>
+              <option value="all" className="bg-[var(--surface)]">
+                {t('providers.filterCountry', 'All Countries')}
+              </option>
               {DESTINATIONS_DATA.map((d) => (
-                <option key={d.id} value={d.name} className="bg-[var(--bg-card)]">
+                <option key={d.id} value={d.name} className="bg-[var(--surface)]">
                   {d.name}
                 </option>
               ))}
@@ -135,24 +136,24 @@ export function ProvidersPage() {
           </div>
 
           {/* JCI Checkbox Toggle */}
-          <label className="flex items-center gap-2 px-3 py-2 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)] text-xs font-sans text-[var(--text-secondary)] cursor-pointer select-none">
+          <label className="flex items-center gap-2 px-3.5 py-2.5 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)] text-xs text-[var(--text-heading)] font-semibold cursor-pointer select-none">
             <input
               type="checkbox"
               checked={onlyJci}
               onChange={(e) => setOnlyJci(e.target.checked)}
-              className="rounded accent-[var(--green-rich)]"
+              className="rounded accent-[var(--action)]"
             />
             <span>{t('providers.jciOnly', 'JCI Accredited Only')}</span>
           </label>
         </div>
 
         {(search || selectedCountry !== 'all' || onlyJci) && (
-          <div className="flex items-center justify-between text-xs font-sans text-[var(--text-muted)] pt-2 border-t border-[var(--border-hairline)]">
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border)]">
             <span>{t('common.filtersActive', 'Filters active')}</span>
             <button
               type="button"
               onClick={clearFilters}
-              className="text-[var(--copper)] hover:underline cursor-pointer"
+              className="font-semibold text-[var(--action-text)] hover:underline cursor-pointer"
             >
               {t('treatments.resetFilters', 'Reset Filters')}
             </button>
@@ -166,40 +167,39 @@ export function ProvidersPage() {
           <div
             key={provider.id}
             onClick={() => navigate(`/providers/${provider.id}`)}
-            className="bg-[var(--bg-card)] border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-[4px] p-6 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between group"
+            className="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-[var(--radius-lg,12px)] p-6 transition-all duration-150 cursor-pointer flex flex-col justify-between group"
           >
             <div>
-              <div className="aspect-[16/9] overflow-hidden rounded-[4px] mb-4 bg-[var(--bg-base)]">
+              <div className="aspect-[16/9] overflow-hidden rounded-[var(--radius-md,8px)] mb-4 bg-[var(--surface-alt)] border border-[var(--border)]">
                 <img
                   src={provider.coverImage}
                   alt={provider.name}
-                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-250 ease-out"
+                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-200 ease-out dark:brightness-90"
                 />
               </div>
 
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[11px] font-sans text-[var(--text-muted)] uppercase tracking-[0.06em]">
+                <span className="text-xs text-[var(--text-muted)] uppercase tracking-wide">
                   {provider.city}, {provider.country}
                 </span>
-                <span className="text-[10px] font-sans px-2 py-0.5 rounded-[3px] bg-[var(--copper-pale)] border border-[var(--copper-border)] text-[var(--copper)]">
-                  {provider.accreditations[0]}
-                </span>
+                <StatusBadge status="VERIFIED" customLabel={provider.accreditations[0]} size="sm" />
               </div>
 
-              <h4 className="text-lg font-medium text-[var(--text-primary)] font-sans mb-2 leading-snug">
+              <h4 className="text-lg font-heading font-bold text-[var(--text-heading)] mb-2 leading-snug">
                 {provider.name}
               </h4>
 
-              <p className="text-xs font-light text-[var(--text-secondary)] font-sans line-clamp-3 leading-relaxed mb-4">
+              <p className="text-xs text-[var(--text-muted)] line-clamp-3 leading-relaxed mb-4">
                 {provider.overview}
               </p>
             </div>
 
-            <div className="pt-3 border-t border-[var(--border-hairline)] flex items-center justify-between">
-              <span className="text-xs font-sans text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1">
-                {t('providers.viewProfile', 'View center')} <span className="inline-block rtl:rotate-180">&rarr;</span>
+            <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between">
+              <span className="text-xs font-semibold text-[var(--action-text)] group-hover:underline inline-flex items-center gap-1">
+                <span>{t('providers.viewProfile', 'View accredited center')}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
               </span>
-              <span className="text-[11px] font-sans text-[var(--text-muted)]">
+              <span className="text-xs text-[var(--text-muted)]">
                 {t('providers.established', 'Est.')} {provider.establishedYear}
               </span>
             </div>

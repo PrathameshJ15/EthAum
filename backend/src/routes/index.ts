@@ -15,6 +15,9 @@ import { journeyRoutes } from './journeyRoutes.js'
 import { notificationRoutes } from './notificationRoutes.js'
 import { bookingRoutes } from './bookingRoutes.js'
 import { aftercareRoutes } from './aftercareRoutes.js'
+import { travelRoutes } from './travelRoutes.js'
+import { paymentRoutes } from './paymentRoutes.js'
+import { fhirRoutes } from './fhirRoutes.js'
 
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { sendSuccess } from '../utils/apiResponse.js'
@@ -38,6 +41,9 @@ apiRouter.use('/appointments', appointmentRoutes)
 apiRouter.use('/bookings', bookingRoutes)
 apiRouter.use('/messages', messagingRoutes)
 apiRouter.use('/journey', journeyRoutes)
+apiRouter.use('/travel', travelRoutes)
+apiRouter.use('/payments', paymentRoutes)
+apiRouter.use('/fhir', fhirRoutes)
 apiRouter.use('/aftercare', aftercareRoutes)
 apiRouter.use('/notifications', notificationRoutes)
 

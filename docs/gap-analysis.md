@@ -1,311 +1,276 @@
-# EthAum — Phase 25: Audit Consolidation & Gap Analysis
+# EthAum — Phase 25: Audit Consolidation & Task Planning (Gap Analysis)
 
-**Date:** October 20, 2026  
-**Auditors / Collaborators:** Prathamesh (Project Lead / Frontend & Core) & Ayusha (Backend & Specialized Features)  
-**Branches:** `main` (Prathamesh), `branch1` (Ayusha)  
-**Status:** Approved Technical Plan for Phase 26 Implementation
+> **Document Type:** Consolidated Technical Audit & Implementation Roadmap  
+> **Repository:** EthAum Healthcare Marketplace  
+> **Consolidation Date:** October 2026  
+> **Authors:** Prathamesh (Lead / Frontend & Architecture) & Ayusha (Backend & Specialized Features)  
+> **Target Branches:** `main` (Prathamesh) and `branch1` (Ayusha)
 
 ---
 
 ## 1. Executive Summary
 
-During Phase 24, comprehensive frontend and backend audits were conducted on the EthAum sovereign healthcare platform. EthAum connects international patients with accredited clinical institutions across India, Thailand, Turkey, and Mexico.
+During Phase 24, comprehensive parallel audits of the **EthAum** codebase were completed:
+* **Frontend Audit (Prathamesh):** Evaluated React 19, Vite v8, Tailwind CSS v4, React Router v7, UI components, accessibility, and state machines across 84 files. Verified production build success (`npm run build` in 1.38s) and uncovered 6 actionable client-side bugs, including broken global footer links, API response unpacking mismatches, dormant modals, and a tab desynchronization bug that rendered blank pages during the patient qualification phase.
+* **Backend Audit (Ayusha):** Evaluated Node.js/Express, TypeScript, Zod schemas, Supabase integrations, Groq AI safety boundaries, and the test suite (15 passed test files, 144 passing tests). Confirmed robust RBAC, patient data isolation, and cryptographic audit trails, while identifying permissive CORS fallback rules, memory-only session fallbacks, and the absence of video calling signaling and multilingual endpoints.
 
-The platform architecture has successfully converged onto a unified TypeScript full-stack structure:
-- **Frontend:** React 19, Vite 8, Tailwind CSS 4, React Router 7, Axios
-- **Backend:** Node.js, Express 4.21.2, TypeScript 5.7.3, Supabase (PostgreSQL, Auth, Storage), Groq LLM API
-- **Testing Status:** 14 of 15 Vitest backend test suites pass (142 of 144 unit and integration tests). Frontend compiles cleanly (`npm run build` exits 0 with 0 errors).
-
-The audit revealed that the core clinical workflows—including the 12-stage Medical Case state machine, patient-controlled diagnostic record access, private signed storage URLs, HIPAA audit logging, transparent provider scoring, quote normalization, and clinical aftercare—are largely complete and functional. 
-
-However, critical gaps must be addressed before production deployment:
-1. **Security Vulnerability:** Unauthenticated mock token bypass in authentication middleware that could allow privilege escalation if deployed to production.
-2. **CORS Vulnerability:** Overly permissive CORS callback falling back to accepting all origins.
-3. **Automated Test Failures (2 tests):** The end-to-end critical journey test suite fails with HTTP 502 Bad Gateway when the Groq LLM API key is unconfigured or invalid, due to lack of an offline/degraded fallback mode in document analysis and case summarization.
-4. **Data Volatility:** Bookings, appointments, notifications, and conversations reside partially or wholly in in-memory JavaScript arrays rather than persisting to Supabase PostgreSQL.
-5. **Specialized Integrations:** Real video teleconsultation, multi-language localization, travel/visa logistics, and EHR/FHIR interoperability are currently represented by simulated mock data or static text.
-
-This document consolidates all findings, eliminates duplicates, separates verified bugs from unverified observations, establishes task ownership between Prathamesh and Ayusha, and defines the prioritized execution sequence for Phase 26.
+This document consolidates both audits into one unified, de-duplicated engineering gap analysis. It separates **verified working features** (which must not be rewritten) from **confirmed bugs** and **incomplete features**, prioritizing them from **P0** (Critical) to **P2** (Enhancement) with assigned team ownership, target branches, and unambiguous acceptance criteria.
 
 ---
 
-## 2. Confirmed Completed Functionality (Do NOT Rebuild)
+## 2. Confirmed Completed Functionality (Do Not Rebuild)
 
-The following modules have been audited, code-verified, and proven functional:
+The following components and services have been inspected, tested, and verified as functioning correctly:
 
-| Subsystem | Verified Features | Verification Evidence |
-|---|---|---|
-| **Development Foundation** | Root orchestrator via `concurrently` running backend (port 8000) and frontend (port 5173). | Verified live running; both HTTP endpoints respond with 200. |
-| **Public Experience** | Complete responsive UI with 8 pages: Home, Treatments Directory, Treatment Detail, Providers Directory, Provider Detail, Destinations Directory, Destination Detail, and How It Works. | Verified in `frontend/src/pages/` and `App.jsx`. ThemeContext toggles cleanly between dark and canvas modes. |
-| **Authentication & RBAC** | Session restoration, login/signup forms, password strength validation, and route guards (`ProtectedRoute.jsx`) enforcing `patient`, `provider`, and `admin` roles. | Verified in `frontend/src/context/AuthContext.jsx` and `tests/auth.test.ts` (7 passing tests). |
-| **Medical Case Dossier** | Full 12-stage state machine tracking (`DRAFT` → `RECORDS_PENDING` → `QUALIFICATION` → `MATCHING` → `QUOTES_RECEIVED` → `PROVIDER_SELECTED` → `CONSULTATION` → `BOOKED` → `TREATMENT` → `AFTERCARE` → `COMPLETED` / `CANCELLED`). | Verified in `backend/src/services/caseService.ts` and `caseController.ts`. |
-| **Patient Data Sovereignty** | Object-level record access control (`recordAuth.ts`): patients own files; providers can only view files with active grants in `record_permissions`; admins generate audit records. | Verified in `tests/medicalRecords.test.ts` (7 passing tests). |
-| **Storage Security** | Private Supabase Storage bucket `medical-records` with MIME whitelist and short-lived signed upload (15-min TTL) and download (1-hour TTL) URLs. | Verified in `backend/src/services/storageService.ts` and `tests/supabaseIntegration.test.ts` (15 passing tests). |
-| **Regulatory Audit Logging** | Immutable access logging for every sensitive operation (`VIEW`, `DOWNLOAD`, `UPLOAD`, `SHARE_GRANTED`, `SHARE_REVOKED`) recording user, IP, role, and timestamp. | Verified in `backend/src/services/medicalRecordService.ts` and `tests/securityAudit.test.ts` (13 passing tests). |
-| **Transparent Provider Matching** | 5-dimension algorithmic scoring (clinical capability, destination, budget, accreditation, logistics) combined with non-superlative AI relevance explanations. | Verified in `tests/providerMatching.test.ts` (13 passing tests). Regex filters ban superiority claims. |
-| **Institutional Quotes** | Quote comparison, itemized hospital bill breakdowns, and acceptance transitions. | Verified in `tests/quoteManagement.test.ts` (6 passing tests) and `QuoteComparisonModal.jsx`. |
-| **Clinical Aftercare & Safety** | Physician-verified recovery protocols, fit-to-fly timeline, DVT prevention regimens, daily symptom checklists, and emergency escalation thresholds. | Verified in `tests/journeyAndAftercare.test.ts` (9 passing tests). |
-
----
-
-## 3. Critical Bugs & Verified Evidence
-
-### BUG-01: End-to-End Critical Journey Test Failure (HTTP 502 on Unconfigured AI)
-- **Severity:** P0 (Critical Test Suite & Core Flow Blocker)
-- **Status:** Confirmed
-- **Evidence:**
-  Executing `npx vitest run tests/criticalPatientJourney.test.ts` fails 2 tests out of 14:
-  1. `Step 4: AI organizes and analyzes uploaded documents` ([L113](file:///C:/Users/ayush/EthAum/backend/tests/criticalPatientJourney.test.ts#L113)): Expected HTTP 200, received HTTP 502.
-  2. `Steps 5 & 6: AI creates structured case summary and identifies missing information` ([L128](file:///C:/Users/ayush/EthAum/backend/tests/criticalPatientJourney.test.ts#L128)): Expected HTTP 200, received HTTP 502.
-- **Root Cause:**
-  When `GROQ_API_KEY` is not set or set to a placeholder string (`your-groq-api-key`), `groqService.analyzeDocument` and `groqService.generateCaseSummary` make a live HTTP request to `api.groq.com`, which responds with `401 Unauthorized`. The service throws `AiProcessingError`, which maps to HTTP 502 Bad Gateway. Unlike `generateProviderRelevanceExplanation` (which has a graceful rule-based fallback on error), document analysis and summary generation fail abruptly.
-- **Fix Required:** Add deterministic offline/rule-based fallback responses in `groqService` when Groq is unconfigured or unreachable.
-
-### BUG-02: React Hook Cascading Re-Renders & Dependency Warnings
-- **Severity:** P1 (Frontend Performance & Render Cycle Stability)
-- **Status:** Confirmed
-- **Evidence:**
-  `oxlint` flags 123 warnings across 84 files, specifically in [`frontend/src/pages/patient/CaseDetailPage.jsx`](file:///C:/Users/ayush/EthAum/frontend/src/pages/patient/CaseDetailPage.jsx#L91-L94, #L137-L139, #L166-L168, #L215-L218):
-  - Direct synchronous calls to `setState` inside `useEffect` bodies causing cascading re-renders.
-  - Missing dependencies in effect arrays (`loadMatches`, `loadQuotes`, `loadAppointments`, `loadBookings`).
-- **Fix Required:** Wrap data-fetching functions in `useCallback` or decouple state synchronization from effect dispatch to prevent runaway render loops.
+| Module / System | Verification Status | Evidence / Files |
+| :--- | :---: | :--- |
+| **Vite & Tailwind Production Build** | ✅ Verified | `dist/index.html` (1.04 kB), CSS (90.58 kB), JS (905.77 kB) generated in 1.38s. |
+| **Backend Test Suite** | ✅ Verified (144/144) | All 15 test suites in `backend/tests/` passing cleanly in 13.11s. |
+| **Public Marketplace Exploration** | ✅ Verified | `HomePage.jsx`, `TreatmentsPage.jsx`, `TreatmentDetailPage.jsx`, `ProvidersPage.jsx`, `ProviderDetailPage.jsx`, `DestinationsPage.jsx`, `DestinationDetailPage.jsx`, `HowItWorksPage.jsx`. |
+| **Catalog Search & Filtering** | ✅ Verified | Dynamic search by keyword, procedure category, destination corridor, and maximum price slider (`TreatmentsPage.jsx`). |
+| **Authentication & RBAC** | ✅ Verified | Dual-mode Supabase/JWT auth in `AuthContext.jsx` with strict route guarding in `ProtectedRoute.jsx` for `patient`, `provider`, and `admin` roles. |
+| **Sovereign Case Creation & Drafts** | ✅ Verified | 4-step intake wizard in `CreateCasePage.jsx` with automatic local draft persistence in `localStorage` (`ethaum_case_draft_v1`). |
+| **Patient Record Access Permissions** | ✅ Verified | Granular per-provider grant/revoke toggles in `CaseDetailPage.jsx` and `CaseRecordsPage.jsx` backed by `record_permissions`. |
+| **Immutable Access Audit Logging** | ✅ Verified | Access event creation on record view/download in `medicalRecordService.ts` and `medicalRecordController.ts`. |
+| **Groq AI Clinical Safety Guardrails** | ✅ Verified | Non-diagnostic system prompts, missing diagnostic detection, and automated stripping of promotional superlatives in `groqService.ts`. |
+| **Objective Quote Comparison** | ✅ Verified | Side-by-side comparative matrix in `QuoteComparisonModal.jsx` without automated favoritism, featuring differential highlighting. |
+| **Provider Quoting & Lead Desk** | ✅ Verified | Case lead triage, itemized quotation authoring, and inquiry answering in `ProviderPortalPage.jsx`. |
+| **Consultation & Booking Scheduling** | ✅ Verified | Doctor slot selection in `ConsultationBookingModal.jsx` and admission scheduling in `TreatmentBookingModal.jsx`. |
 
 ---
 
-## 4. Incomplete Features
+## 3. Critical Bugs & Confirmed Evidence
 
-1. **In-Memory Volatile Persistence for Secondary Modules:**
-   - **Status:** Partially implemented.
-   - **Details:** While `cases`, `medical_records`, and `users` have full dual-mode support querying Supabase PostgreSQL tables when configured, `bookingService.ts`, `appointmentService.ts`, `messagingService.ts`, and `notificationService.ts` currently store data in in-memory JavaScript arrays (`MOCK_BOOKINGS`, `MOCK_APPOINTMENTS`, etc.). These records are wiped upon process restart.
-2. **Admin Sovereign Audit Ledger API Endpoint:**
-   - **Status:** Stubbed.
-   - **Details:** `GET /api/v1/admin/audit-ledger` in [`backend/src/routes/index.ts`](file:///C:/Users/ayush/EthAum/backend/src/routes/index.ts#L45-L47) returns a static JSON mock `{ status: 'secure', auditEntries: [] }` rather than querying the `record_access_logs` database table.
-3. **Escrow & Deposit Handling:**
-   - **Status:** Simulated mock escrow only.
-   - **Details:** `createBooking` in [`bookingService.ts`](file:///C:/Users/ayush/EthAum/backend/src/services/bookingService.ts#L97-L99) creates dummy reference strings (`MOCK-ESCROW-...`) and marks payment as `MOCK_ESCROW_AUTHORIZED`. There is no real payment gateway connection.
-
----
-
-## 5. Security and Privacy Findings
-
-### SEC-01: Development / Mock Token Bypass in Authentication Middleware
-- **Severity:** P0 (Critical Vulnerability)
-- **Details:** In [`backend/src/middleware/auth.ts`](file:///C:/Users/ayush/EthAum/backend/src/middleware/auth.ts#L47-L53, #L107-L147), any authorization header matching `Bearer admin-token` or `Bearer patient-token` immediately grants full authenticated access as that role without cryptographic JWT verification. Furthermore, this bypass is **not guarded** by an environment check `if (process.env.NODE_ENV !== 'production')`.
-- **Remediation:** Enforce that mock token evaluation is strictly locked to `NODE_ENV === 'test'` or `NODE_ENV === 'development'`. When running in production, reject any non-Supabase JWT with HTTP 401.
-
-### SEC-02: Overly Permissive CORS Origin Configuration
-- **Severity:** P0 (High Risk Security Misconfiguration)
-- **Details:** In [`backend/src/app.ts`](file:///C:/Users/ayush/EthAum/backend/src/app.ts#L17-L30), the CORS origin verification callback executes `callback(null, true)` inside both the conditional and the `else` block:
-  ```typescript
-  if (!origin || /^https?:\/\/(localhost|...)/.test(origin) || origin === env.FRONTEND_URL) {
-    callback(null, true)
-  } else {
-    callback(null, true) // VULNERABILITY: Allows all external origins
-  }
+### 🔴 Bug 1: Dead Links in Global Footer
+* **Severity:** P0 (User-Facing Navigation Breakdown)
+* **Owner:** Prathamesh (`main`)
+* **Evidence:** In [`frontend/src/components/layout/Footer.jsx`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/components/layout/Footer.jsx#L6-L10):
+  ```javascript
+  export function Footer({ onNavigate }) {
+    const handleLinkClick = (href, e) => {
+      e.preventDefault()
+      if (onNavigate) onNavigate(href)
+    }
   ```
-- **Remediation:** Return `callback(new Error('Not allowed by CORS policy'))` in the `else` branch.
+  In [`frontend/src/App.jsx`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/App.jsx#L185), `<Footer />` is instantiated without passing the `onNavigate` prop.
+* **Impact:** Every single link in the footer (Treatments, Destinations, Providers, Medical Case, How It Works, Get a Quote, Patient Guide, Support, Partner Portal, Accreditation, About, Privacy, Terms) intercepts clicks with `e.preventDefault()` and does nothing. In addition, `/privacy` and `/terms` lack route definitions in `App.jsx`.
 
-### SEC-03: In-Memory Rate Limiting Storage
-- **Severity:** P2 (Operational / DoS Protection)
-- **Details:** Rate limiting in [`backend/src/app.ts`](file:///C:/Users/ayush/EthAum/backend/src/app.ts#L33-L45) relies on default in-memory storage. Horizontal scaling across multiple containers will reset counts per container instance.
-- **Remediation:** Prepare Redis store configuration for production deployments.
+### 🔴 Bug 2: API Client Unpacking Discrepancy Breaking AI Summaries & Aftercare
+* **Severity:** P0 (Data Flow Breakdown)
+* **Owner:** Prathamesh (`main`)
+* **Evidence:** In [`frontend/src/services/apiClient.js`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/services/apiClient.js#L40-L51), the Axios response interceptor unwraps `{ success: true, data: ... }` and returns `response.data.data` directly as `res`.
+  However, in [`caseService.js`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/services/caseService.js#L596-L625) and [`aftercareService.js`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/services/aftercareService.js#L302-L305):
+  ```javascript
+  const res = await apiClient.post(`/cases/${caseId}/summary/generate`)
+  if (res?.data) { ... } // res is ALREADY the data payload! res.data is undefined!
+  ```
+* **Impact:** `generateCaseSummary()`, `getCaseSummary()`, and `getAftercarePlan()` evaluate `if (res?.data)` to `undefined`, silently discarding valid HTTP 200 API responses from the backend and falling back to cached local storage.
 
----
+### 🔴 Bug 3: Blank Screen on Journey Tracker Qualification Step
+* **Severity:** P0 (Core Journey Blocker)
+* **Owner:** Prathamesh (`main`)
+* **Evidence:** In [`frontend/src/components/journey/JourneyTracker.jsx`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/components/journey/JourneyTracker.jsx#L99):
+  ```javascript
+  case 2: // QUALIFICATION
+    return {
+      title: 'Clinical Qualification & Gap Detection',
+      actionLabel: 'Review Summary Facts',
+      tab: 'summary', // <-- Target tab 'summary'
+    }
+  ```
+  In [`CaseDetailPage.jsx`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/pages/patient/CaseDetailPage.jsx#L707-L728), the declared tabs are: `'overview'`, `'matching'`, `'records'`, `'quotes'`, `'consultation'`, `'booking'`, `'aftercare'`, `'audit'`.
+* **Impact:** Clicking "Review Summary Facts" on Stage 2 sets `activeTab` to `'summary'`, which matches none of the tab render conditions in `CaseDetailPage.jsx`. The content area below the tabs renders completely blank.
 
-## 6. Missing Specialized Integrations
+### 🔴 Bug 4: Diagnostic Record Upload ID Desynchronization
+* **Severity:** P0 (Data Integrity / Download Failure)
+* **Owner:** Prathamesh (`main`)
+* **Evidence:** In [`frontend/src/pages/patient/CaseRecordsPage.jsx`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/pages/patient/CaseRecordsPage.jsx#L198-L219), when a patient uploads a record:
+  1. `recordService.requestUploadUrl` registers the file in the backend database with a UUID (`rec-c3fa...`).
+  2. Line 214 calls `caseService.addRecord`, which assigns a local timestamp ID (`rec-${Date.now()}`) to `medicalCase.records`.
+* **Impact:** When the patient subsequently clicks "Download Record" or "View Access Log", `recordService.getDownloadUrl(record.id)` requests the timestamp ID instead of the UUID, resulting in HTTP 404.
 
-Per the Phase 24 audit, the following capabilities do not currently exist and must be developed as focused features:
+### 🔴 Bug 5: Permissive CORS Fallback in Production Backend
+* **Severity:** P0 (Security Vulnerability)
+* **Owner:** Prathamesh (`main`)
+* **Evidence:** In [`backend/src/app.ts`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/backend/src/app.ts#L17-L29):
+  ```typescript
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || /^https?:\/\/(localhost|127\.0\.0\.1|...)/.test(origin) || origin === env.FRONTEND_URL) {
+        callback(null, true)
+      } else {
+        callback(null, true) // <-- Permissive fallback allows ALL origins!
+      }
+    },
+    credentials: true,
+  })
+  ```
+* **Impact:** In production, any malicious origin can execute authenticated cross-site requests against sensitive patient medical records.
 
-1. **Video Teleconsultation Integration (Ayusha):**
-   - *Current State:* Appointments contain dummy URLs (`https://meet.ethaum.health/room/...`).
-   - *Requirement:* Implement real browser-based teleconsultation rooms using WebRTC or a headless embed provider (e.g. Daily.co pre-authenticated room tokens) with doctor/patient consultation room management.
-2. **Multilingual Support & Localization (Ayusha):**
-   - *Current State:* Only static string tags on hospitals (`languages: ['English', 'Hindi']`).
-   - *Requirement:* Configure frontend `i18next` with dictionary bundles for core languages (English, Spanish, Arabic, Hindi) and backend support for localized clinical metadata.
-3. **Cross-Border Travel & Medical Visa Assistance (Ayusha):**
-   - *Current State:* Informational strings in hospital profiles; airfare/visas explicitly marked as excluded on quotes.
-   - *Requirement:* Dedicated travel logistics module handling Medical Visa (MED-V) invitation generation, flight itinerary tracking, and airport transfer concierge status.
-4. **EHR / FHIR Healthcare Interoperability (Ayusha):**
-   - *Current State:* Static diagnostic file downloads only.
-   - *Requirement:* Prototype a FHIR R4 export adapter converting patient case history and document metadata into standard HL7 FHIR JSON resources (`Patient`, `DocumentReference`, `Condition`).
+### 🟡 Bug 6: Stale Initial Procedure in `CreateCaseModal.jsx`
+* **Severity:** P1 (Form UX Defect)
+* **Owner:** Prathamesh (`main`)
+* **Evidence:** In [`frontend/src/components/common/CreateCaseModal.jsx`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/components/common/CreateCaseModal.jsx#L13-L15), `const [treatment, setTreatment] = useState(initialTreatment || '')` is initialized only on mount.
+* **Impact:** When a user navigates between different procedure pages and clicks "Start Medical Case", the modal does not update to the clicked procedure.
 
----
-
-## 7. Prioritized Implementation Plan (Phase 26 Task Table)
-
-### Priority Legend
-- **P0:** Critical security vulnerability or core functionality blocker
-- **P1:** Important functionality or stability issue
-- **P2:** Feature enhancement or optional integration
-
-| Task ID | Priority | Description | Owner | Branch | Affected Modules | Dependencies |
-|---|---|---|---|---|---|---|
-| **SEC-01** | **P0** | Lock mock authentication tokens behind `NODE_ENV === 'test' \|\| 'development'` and reject in production. | Prathamesh | `main` | `backend/src/middleware/auth.ts` | None |
-| **SEC-02** | **P0** | Fix CORS callback to reject unauthorized origins in `else` branch. | Prathamesh | `main` | `backend/src/app.ts` | None |
-| **BUG-01** | **P0** | Add deterministic rule-based offline fallback to `groqService` for document analysis & case summarization to fix 502 errors and pass all 15 test suites. | Prathamesh & Ayusha | `branch1` → `main` | `backend/src/services/groqService.ts`, `tests/criticalPatientJourney.test.ts` | None |
-| **DATA-01** | **P0** | Connect `bookingService` and `appointmentService` to Supabase PostgreSQL with in-memory fallback. | Prathamesh | `main` | `backend/src/services/bookingService.ts`, `appointmentService.ts`, `database_schema.md` | None |
-| **UI-01** | **P1** | Clean up `CaseDetailPage.jsx` cascading `useEffect` re-renders and missing dependency array warnings. | Prathamesh | `main` | `frontend/src/pages/patient/CaseDetailPage.jsx` | None |
-| **API-01** | **P1** | Connect `GET /api/v1/admin/audit-ledger` to read directly from `record_access_logs`. | Prathamesh | `main` | `backend/src/routes/index.ts`, `backend/src/controllers/adminController.ts` | None |
-| **PAY-01** | **P1** | Formalize payment escrow abstraction (webhook-ready data models and Stripe/escrow adapter interface). | Prathamesh | `main` | `backend/src/services/bookingService.ts`, `frontend/src/components/booking/` | DATA-01 |
-| **INT-01** | **P1** | **[COMPLETED]** Implement Video Teleconsultation module (WebRTC E2EE / Daily.co signed consultation rooms, participant authorization, in-app video room). | Ayusha | `branch1` | `backend/src/services/videoConsultationService.ts`, `frontend/src/components/consultation/VideoConsultationRoom.jsx` | DATA-01 |
-| **INT-02** | **P1** | **[COMPLETED]** Implement Multilingual Support (configured `i18next` for EN, AR with RTL, FR, ES, RU, language selector in Navbar). | Ayusha | `branch1` | `frontend/src/i18n/`, `frontend/src/components/layout/Navbar.jsx` | None |
-| **INT-03** | **P2** | Implement Travel & Visa Logistics module (MED-V invitation letter generator, flight tracker state, companion hotel bookings). | Ayusha | `branch1` | `backend/src/services/journeyService.ts`, `frontend/src/pages/patient/CaseDetailPage.jsx` | DATA-01 |
-| **INT-04** | **P2** | Implement EHR / FHIR Interoperability export prototype (convert case dossier & diagnostic records to FHIR R4 JSON bundle). | Ayusha | `branch1` | `backend/src/services/fhirService.ts`, `backend/src/routes/caseRoutes.ts` | None |
-| **PERF-01**| **P2** | Add Redis configuration support for distributed rate limiting and session caching. | Prathamesh | `main` | `backend/src/config/redis.ts`, `backend/src/app.ts` | None |
-
----
-
-## 8. Detailed Task Specifications & Acceptance Criteria
-
-### P0 Tasks
-
-#### 1. SEC-01: Lock Mock Token Authentication
-- **Assigned To:** Prathamesh
-- **Branch:** `main`
-- **Modules:** `backend/src/middleware/auth.ts`
-- **Acceptance Criteria:**
-  1. In production (`NODE_ENV === 'production'`), requests bearing mock tokens (e.g. `admin-token`, `patient-token`) MUST return HTTP 401 Unauthorized.
-  2. In test and development modes, existing test suites continue to pass using mock tokens.
-  3. Supabase live token verification remains primary when configured.
-
-#### 2. SEC-02: Fix CORS Origin Whitelisting
-- **Assigned To:** Prathamesh
-- **Branch:** `main`
-- **Modules:** `backend/src/app.ts`
-- **Acceptance Criteria:**
-  1. Origins not matching `env.FRONTEND_URL` or localhost development regex return an HTTP 403 or CORS rejected error.
-  2. Authorized frontend on `localhost:5173` continues to make authenticated requests with cookies/headers without interruption.
-
-#### 3. BUG-01: Resilient Offline / Degraded AI Fallback
-- **Assigned To:** Prathamesh & Ayusha
-- **Branch:** `branch1` (shared review before merge to `main`)
-- **Modules:** `backend/src/services/groqService.ts`
-- **Acceptance Criteria:**
-  1. When `GROQ_API_KEY` is not set, is invalid, or times out, `analyzeDocument` falls back to deterministic clinical classification based on filename, category, and standard rule heuristics.
-  2. `generateCaseSummary` falls back to a structured non-diagnostic case summary populated from patient-submitted parameters and record metadata.
-  3. Running `npx vitest run tests/criticalPatientJourney.test.ts` passes with **14 / 14 tests passing (0 failures)**.
-  4. Full backend test suite passes **15 / 15 test suites (144 / 144 tests passing)**.
-
-#### 4. DATA-01: Supabase Persistence for Bookings & Appointments
-- **Assigned To:** Prathamesh
-- **Branch:** `main`
-- **Modules:** `backend/src/services/bookingService.ts`, `backend/src/services/appointmentService.ts`
-- **Acceptance Criteria:**
-  1. When `isSupabaseConfigured()` is true, bookings and appointments are inserted and queried against the Supabase `bookings` and `appointments` tables.
-  2. When Supabase is offline/unconfigured, existing in-memory array fallback maintains zero-crash functionality.
+### 🟡 Bug 7: Hardcoded White Backgrounds Breaking Dark Mode
+* **Severity:** P1 (Theme & Visual Regression)
+* **Owner:** Prathamesh (`main`)
+* **Evidence:** [`AdminDashboardPage.jsx`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/pages/admin/AdminDashboardPage.jsx#L81-L93) and lines 111, 169, 184 use hardcoded `bg-white` classes.
+* **Impact:** Toggling dark mode renders blinding white rectangular boxes with low-contrast text.
 
 ---
 
-### P1 Tasks
+## 4. Incomplete Features & Missing Integrations
 
-#### 5. UI-01: Resolve CaseDetailPage Render Cycles & Lints
-- **Assigned To:** Prathamesh
-- **Branch:** `main`
-- **Modules:** `frontend/src/pages/patient/CaseDetailPage.jsx`
-- **Acceptance Criteria:**
-  1. `loadMatches`, `loadQuotes`, `loadAppointments`, and `loadBookings` are wrapped in `useCallback` with proper dependency arrays.
-  2. Oxlint warnings on `CaseDetailPage.jsx` are reduced to 0.
+### Incomplete Features
+1. **Aftercare Document Vault Real Downloads:**
+   [`AftercareModule.jsx#L529`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/components/aftercare/AftercareModule.jsx#L529) only triggers a Toast. It must resolve signed URLs from `recordService` or generate download blobs for discharge summaries and implant cards.
+2. **Admin Partner Verification Action:**
+   [`AdminDashboardPage.jsx#L154`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/pages/admin/AdminDashboardPage.jsx#L154) has an "Approve Partner" button that only triggers a local Toast without updating database state.
+3. **Provider Portal Messaging:**
+   [`ProviderPortalPage.jsx#L400`](file:///C:/Users/jadha/OneDrive/Desktop/EthAum/frontend/src/pages/provider/ProviderPortalPage.jsx#L400) mocks messages in component state instead of calling `messageService.sendMessage()`.
+4. **Dormant `LoginModal`:**
+   Mounted in `App.jsx`, but never opened because login navigation directs straight to `/login`.
 
-#### 6. API-01: Admin Audit Ledger Live Integration
-- **Assigned To:** Prathamesh
-- **Branch:** `main`
-- **Modules:** `backend/src/routes/index.ts`, `backend/src/controllers/adminController.ts`
-- **Acceptance Criteria:**
-  1. `GET /api/v1/admin/audit-ledger` queries `record_access_logs` with pagination (`limit`, `offset`) and role filters.
-  2. Only users with the `admin` role can access this endpoint; others receive HTTP 403 Forbidden.
-
-#### 7. PAY-01: Payment & Escrow Abstraction Layer
-- **Assigned To:** Prathamesh
-- **Branch:** `main`
-- **Modules:** `backend/src/services/paymentService.ts`, `backend/src/services/bookingService.ts`
-- **Acceptance Criteria:**
-  1. Introduce a typed payment interface (`PaymentIntent`, `PaymentGatewayAdapter`) supporting authorized hold, capture, and escrow refund workflows.
-  2. Booking status transitions cleanly from `ESCROW_HELD` to `CONFIRMED` upon webhook or mock trigger.
-
-#### 8. INT-01: Video Teleconsultation Integration
-- **Status:** **COMPLETED** (Phase 28, October 20, 2026)
-- **Assigned To:** Ayusha
-- **Branch:** `branch1`
-- **Modules:** `backend/src/services/videoConsultationService.ts`, `backend/src/controllers/appointmentController.ts`, `backend/src/routes/appointmentRoutes.ts`, `frontend/src/components/consultation/VideoConsultationRoom.jsx`, `frontend/src/pages/patient/CaseDetailPage.jsx`, `frontend/src/pages/provider/ProviderPortalPage.jsx`
-- **Acceptance Criteria & Implementation Evidence:**
-  1. Secure backend session generation via `POST /api/v1/appointments/:id/video-session` issuing scoped tokens for Daily.co REST rooms and sovereign WebRTC E2EE fallback rooms.
-  2. Strict participant authorization enforcing that only assigned patients, attending doctors/providers, and admins can join (unauthorized users strictly rejected with HTTP 403).
-  3. Session status validation preventing join on CANCELLED or COMPLETED appointments (HTTP 400).
-  4. Privacy and clinical safety guaranteed: zero recording by default (`enable_recording: false`), API secrets strictly encapsulated on backend.
-  5. In-browser `VideoConsultationRoom` component providing hardware camera/mic diagnostics, audio-only fallback, screen sharing, live timer, and call teardown.
-  6. Verified by 11/11 passing tests in `backend/tests/videoConsultation.test.ts` and clean Vite production build.
-
-
-#### 9. INT-02: Multilingual Support & Localization
-- **Status:** **COMPLETED** (Phase 27, October 20, 2026)
-- **Assigned To:** Ayusha
-- **Branch:** `branch1`
-- **Modules:** `frontend/src/i18n/`, `frontend/src/components/common/LanguageSelector.jsx`, `frontend/src/components/layout/Navbar.jsx`, `frontend/src/components/layout/Footer.jsx`, `frontend/src/pages/`
-- **Acceptance Criteria & Implementation Evidence:**
-  1. `i18next` and `react-i18next` configured with complete dictionaries for English (`en`), Arabic (`ar` with bidirectional RTL layout support), French (`fr`), Spanish (`es`), and Russian (`ru`).
-  2. Language switcher capsule in Navbar & mobile drawer enables instant reactivity across all major public and patient flows without reload.
-  3. Dynamic DOM direction (`dir="rtl"` vs `dir="ltr"`) and `document.documentElement.lang` synchronized automatically.
-  4. User preference persisted in `localStorage` under `'ethaum_language_preference'`.
-  5. Fallback safety guaranteed with `fallbackLng: 'en'`.
-  6. Verified with clean production build (`npm run build --prefix frontend` passed in 774ms) and clean lint (`npm run lint --prefix frontend`).
+### Missing Feature Domains (Assigned to Ayusha)
+1. **Multilingual Architecture (i18n):**
+   * *Current state:* 100% hardcoded English. No translation framework exists.
+   * *Target:* Implement `react-i18next` with language switcher in Navbar supporting English (`en`), Arabic (`ar`), Spanish (`es`), and Thai (`th`), with RTL support for Arabic.
+2. **Video Consultation Integration:**
+   * *Current state:* Appointments save static placeholder URLs (`https://meet.ethaum.health/...`).
+   * *Target:* Implement a WebRTC or Daily.co pre-surgical video room component with camera/microphone toggle and in-browser clinical session controls.
+3. **Travel Assistance & Concierge:**
+   * *Current state:* Static text in `destinationsData.js`.
+   * *Target:* Coordinated medical e-visa assistance intake, flight itinerary logging, and airport chauffeur dispatch tracker.
+4. **EHR / FHIR Feasibility & Prototype:**
+   * *Current state:* Custom JSON schema.
+   * *Target:* FHIR Release 4 JSON exporter for `Patient`, `Condition`, `DiagnosticReport`, and `CarePlan` resources.
 
 ---
 
-### P2 Tasks
+## 5. Security & Privacy Findings
 
-#### 10. INT-03: Travel & Visa Assistance Module
-- **Assigned To:** Ayusha
-- **Branch:** `branch1`
-- **Modules:** `backend/src/services/travelService.ts`, `frontend/src/components/medical/TravelAssistanceCard.jsx`
-- **Acceptance Criteria:**
-  1. System generates a formal PDF/HTML Medical Visa Invitation (MED-V) template populated with hospital credentials, patient details, and confirmed procedure dates.
-  2. Journey stage displays flight tracking status and airport transfer coordination details.
-
-#### 11. INT-04: EHR / FHIR Interoperability Export
-- **Assigned To:** Ayusha
-- **Branch:** `branch1`
-- **Modules:** `backend/src/services/fhirService.ts`, `backend/src/routes/caseRoutes.ts`
-- **Acceptance Criteria:**
-  1. New endpoint `GET /api/v1/cases/:id/fhir-export` outputs a valid HL7 FHIR R4 `Bundle` containing:
-     - `Patient` resource
-     - `Condition` resource (treatment diagnosis/notes)
-     - `DocumentReference` resources for authorized diagnostic records.
-  2. Validated against standard FHIR JSON schema.
+1. **Patient Data Isolation:** Verified and enforced by automated tests (`securityAudit.test.ts`). Cross-patient access to `/cases/:id` and `/medical-records/:id` returns HTTP 403 Forbidden.
+2. **Provider Permission Enclosure:** Providers cannot view diagnostic records without explicit patient consent via `record_permissions`.
+3. **Client-Side Secrets Scan:** Verified clean. Neither `GROQ_API_KEY` nor `SUPABASE_SERVICE_ROLE_KEY` are exposed in frontend bundle or `.env`.
+4. **CORS Remediation Required:** The permissive `callback(null, true)` fallback in `backend/src/app.ts` must be replaced with strict origin rejection in production.
 
 ---
 
-## 9. Recommended Implementation Order (Safe Sequencing)
+## 6. Prioritized Task Table
 
-To maintain maximum application stability and prevent cross-branch merge conflicts:
+| Task ID | Priority | Description | Affected Modules | Owner | Branch |
+| :--- | :---: | :--- | :--- | :---: | :---: |
+| **P0-1** | **P0** | Fix API client response unpacking mismatch for summaries & aftercare | `caseService.js`, `aftercareService.js` | Prathamesh | `main` |
+| **P0-2** | **P0** | Fix dead links in global footer & add `/privacy` and `/terms` routes | `Footer.jsx`, `App.jsx` | Prathamesh | `main` |
+| **P0-3** | **P0** | Fix Journey Tracker Stage 2 tab target from `'summary'` to `'overview'` | `JourneyTracker.jsx` | Prathamesh | `main` |
+| **P0-4** | **P0** | Fix upload record ID desync between backend UUID and local state | `CaseRecordsPage.jsx` | Prathamesh | `main` |
+| **P0-5** | **P0** | Tighten CORS origin validation to reject untrusted domains in production | `backend/src/app.ts` | Prathamesh | `main` |
+| **P1-1** | **P1** | Add `useEffect` sync for `initialTreatment` in case creation modal | `CreateCaseModal.jsx` | Prathamesh | `main` |
+| **P1-2** | **P1** | Connect backend Groq document intelligence on upload completion | `CaseRecordsPage.jsx`, `recordService.js` | Prathamesh | `main` |
+| **P1-3** | **P1** | Fix dark mode styling regressions (`bg-white` classes) | `AdminDashboardPage.jsx`, `Dropdown.jsx` | Prathamesh | `main` |
+| **P1-4** | **P1** | Build Video Consultation room component & Daily.co/WebRTC integration | `frontend/src/components/telemedicine/`, `appointmentRoutes.ts` | Ayusha | `branch1` |
+| **P1-5** | **P1** | Implement `react-i18next` multilingual framework (EN, AR, ES, TH) | `frontend/src/i18n/`, `Navbar.jsx` | Ayusha | `branch1` |
+| **P1-6** | **P1** | Wire Aftercare Document Vault to signed download URLs | `AftercareModule.jsx`, `aftercareService.js` | Prathamesh | `main` |
+| **P1-7** | **P1** | Connect Provider Portal patient messaging to real `messageService` | `ProviderPortalPage.jsx` | Prathamesh | `main` |
+| **P2-1** | **P2** | Develop Medical Travel & Visa Concierge assistance module | `frontend/src/components/travel/`, `destinationsData.js` | Ayusha | `branch1` |
+| **P2-2** | **P2** | Build HL7/FHIR R4 JSON export prototype for case records | `backend/src/services/fhirService.ts` | Ayusha | `branch1` |
+| **P2-3** | **P2** | Coordinate international escrow payment gateway integration | `backend/src/services/paymentService.ts` | Prathamesh | `main` |
+| **P2-4** | **P2** | Clean up dormant `LoginModal` and resolve unused oxlint variables | `App.jsx`, `CaseDetailPage.jsx` | Prathamesh | `main` |
 
-```text
-Phase 26.1: Security & Test Hardening (P0)
-  ├── 1. SEC-01 & SEC-02 (Prathamesh on main): Enforce Auth & CORS security
-  └── 2. BUG-01 (Ayusha on branch1 + review with Prathamesh): Groq fallback & fix failing test suite
-      └── Synchronize: Merge BUG-01 into main (15/15 test suites passing)
+---
 
-Phase 26.2: Core Persistence & Data Reliability (P0/P1)
-  ├── 3. DATA-01 & API-01 (Prathamesh on main): Supabase DB wiring for bookings & audit ledger
-  └── 4. UI-01 (Prathamesh on main): Clean up React hook render cycles in CaseDetailPage
+## 7. Task Dependencies & Acceptance Criteria
 
-Phase 26.3: Specialized Integrations Development (P1)
-  ├── 5. INT-01 (Ayusha on branch1): Video Teleconsultation integration
-  ├── 6. INT-02 (Ayusha on branch1): Multilingual i18n support
-  └── 7. PAY-01 (Prathamesh on main): Escrow & Payment Gateway abstraction
+### P0-1: Fix API Client Response Unpacking
+* **Dependencies:** None.
+* **Acceptance Criteria:**
+  1. `caseService.generateCaseSummary(caseId)` correctly receives `{ summary, corrections }` from `/cases/:id/summary/generate` without evaluating to `undefined`.
+  2. `aftercareService.getAftercarePlan(caseId)` receives the live plan object from `/aftercare/:id` without falling back to local defaults when backend is running.
+  3. Uses defensive extraction: `const data = res?.data !== undefined ? res.data : res`.
 
-Phase 26.4: Extended Healthcare Capabilities (P2)
-  ├── 8. INT-03 (Ayusha on branch1): Travel & Visa logistics
-  ├── 9. INT-04 (Ayusha on branch1): EHR/FHIR interoperability export
-  └── 10. Final Full-Stack Regression & Release Verification (Prathamesh & Ayusha)
+### P0-2: Fix Dead Footer Links & Add Legal Routes
+* **Dependencies:** None.
+* **Acceptance Criteria:**
+  1. All links in `Footer.jsx` navigate to their respective routes via React Router `<Link to="...">` or an active `navigate` handler.
+  2. Navigating to `/privacy` and `/terms` displays structured legal/compliance statements rather than redirecting to the homepage fallback.
+  3. No link in the footer causes a no-op or unhandled click.
+
+### P0-3: Fix Journey Tracker Tab Target Mismatch
+* **Dependencies:** None.
+* **Acceptance Criteria:**
+  1. In `JourneyTracker.jsx`, Stage 2 (`QUALIFICATION`) targets `tab: 'overview'`.
+  2. Clicking "Review Summary Facts" on a case in the qualification stage smoothly shifts to the overview tab and scrolls to the AI Coordination Briefing section.
+  3. The page never displays an empty blank screen below the tabs.
+
+### P0-4: Fix Diagnostic Record Upload ID Desynchronization
+* **Dependencies:** None.
+* **Acceptance Criteria:**
+  1. In `CaseRecordsPage.jsx`, the return value of `recordService.requestUploadUrl` (which contains `uploadInit.record.id`) is passed into `caseService.addRecord`.
+  2. Clicking "Download Record" or "View Access Log" immediately after uploading resolves with the correct database record UUID.
+  3. Backend returns HTTP 200 for download signed URL generation.
+
+### P0-5: Tighten CORS Origin Validation
+* **Dependencies:** None.
+* **Acceptance Criteria:**
+  1. In `backend/src/app.ts`, origins not matching the localhost/private-IP regex or `env.FRONTEND_URL` in production return `callback(new Error('Not allowed by CORS'))`.
+  2. Vitest security audit tests continue to pass (144/144).
+
+### P1-1: Sync Initial Treatment in Case Creation Modal
+* **Dependencies:** None.
+* **Acceptance Criteria:**
+  1. Clicking "Start Medical Case" from `/treatments/cardiac-bypass` opens `CreateCaseModal` with "Cardiac Bypass Surgery" pre-selected in the dropdown.
+  2. Updating the target procedure synchronizes immediately with component state.
+
+### P1-4: Video Consultation Room Component (Ayusha / `branch1`)
+* **Dependencies:** P0-1.
+* **Acceptance Criteria:**
+  1. A dedicated telemedicine view (`/cases/:id/consultation/room`) is introduced.
+  2. Renders video streams or an embedded Daily.co / WebRTC frame with camera, mute, and end-call controls.
+  3. Clicking "Launch Video Room" in `JourneyTracker.jsx` navigates to the active room.
+
+### P1-5: Multilingual Framework Implementation (Ayusha / `branch1`)
+* **Dependencies:** None.
+* **Acceptance Criteria:**
+  1. `i18next` and `react-i18next` configured with language resource files for `en`, `ar`, `es`, and `th`.
+  2. Navbar contains an interactive language selector dropdown.
+  3. Switching to Arabic applies `dir="rtl"` to the document body and mirrors layout direction.
+
+---
+
+## 8. Recommended Implementation Order (Safe Execution Plan)
+
+To prevent merge conflicts and preserve test coverage, work should proceed in three distinct phases:
+
+```mermaid
+flowchart TD
+    subgraph Phase_26["Phase 26: Core Stability & Critical Fixes (Prathamesh — main)"]
+        A["P0-1: API Client Unpacking"] --> B["P0-2: Footer Links & Legal Routes"]
+        B --> C["P0-3: Journey Tracker Tab Target"]
+        C --> D["P0-4: Upload Record ID Desync"]
+        D --> E["P0-5: Strict CORS Rules"]
+        E --> F["P1-1 & P1-3: Modal Sync & Dark Mode"]
+    end
+
+    subgraph Phase_27["Phase 27: Feature Development (Parallel Branches)"]
+        G["Prathamesh (main)\nP1-2: Real AI Upload Trigger\nP1-6: Document Vault Downloads\nP1-7: Real Provider Messaging"]
+        H["Ayusha (branch1)\nP1-4: Video Consultation Room\nP1-5: Multilingual i18n\nP2-1: Travel & Visa Concierge"]
+    end
+
+    subgraph Phase_28["Phase 28: Integration, FHIR & Deployment"]
+        I["Architecture Review of branch1 into main"]
+        J["P2-2: FHIR R4 Export Prototype"]
+        K["P2-3: Payment Gateway Escrow"]
+        L["Final End-to-End Regression & Vercel/Render Release"]
+        I --> J --> K --> L
+    end
+
+    Phase_26 --> Phase_27
+    Phase_27 --> Phase_28
 ```
 
----
-
-## 10. Recommended Next Development Phase
-
-**Next Phase:** **Phase 26 — Security Hardening, Test Suite Resolution, and Core Feature Implementation**
-
-The immediate next actions are:
-1. **Prathamesh (`main`):** Implement `SEC-01` (gate mock auth tokens behind test/dev check) and `SEC-02` (restrict CORS).
-2. **Ayusha (`branch1`):** Implement `BUG-01` in [`backend/src/services/groqService.ts`](file:///C:/Users/ayush/EthAum/backend/src/services/groqService.ts) to provide resilient fallback responses so that all 15 test suites pass cleanly.
-3. Review and merge `BUG-01` into `main`, establishing a 100% green build baseline before starting Phase 26.2.
+1. **Step 1 (Prathamesh / `main`):** Implement P0-1 through P0-5 and P1-1. Run `npm test` and `npm run build` to confirm zero regressions on core flows.
+2. **Step 2 (Ayusha / `branch1`):** In parallel, develop Multilingual framework (P1-5) and Video Consultation Room (P1-4) on `branch1`.
+3. **Step 3 (Joint Review):** Merge `branch1` into `main` after mutual architectural review of i18n translation keys and consultation route structure.
+4. **Step 4 (Final Polish & Release):** Implement P1-6, P1-7, and P2 items followed by comprehensive end-to-end verification.

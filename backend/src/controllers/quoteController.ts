@@ -97,6 +97,22 @@ export const quoteController = {
       if (!quote) {
         throw new NotFoundError(`Quote '${quoteId}' not found`)
       }
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const { caseService } = await import('../services/caseService.js')
+        const c = await caseService.getCaseById(quote.caseId)
+        const patientId = user.patientId || user.id
+        if (c && c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You are not authorized to view this quote')
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (quote.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You are not authorized to view this quote')
+        }
+      }
+
       return sendSuccess(res, quote)
     } catch (err) {
       next(err)
@@ -181,19 +197,36 @@ export const quoteController = {
 
   async acceptQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const patientId = req.user?.id
-      if (!patientId) {
+      const user = req.user
+      if (!user) {
         throw new UnauthorizedError()
       }
       const quoteId = req.params.id as string
-      const quote = await quoteService.acceptQuote(quoteId, patientId)
+      const quote = await quoteService.getQuoteById(quoteId)
       if (!quote) {
+        throw new NotFoundError(`Quote '${quoteId}' not found`)
+      }
+
+      if (user.role === 'patient') {
+        const { caseService } = await import('../services/caseService.js')
+        const c = await caseService.getCaseById(quote.caseId)
+        const patientId = user.patientId || user.id
+        if (c && c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You can only accept quotes for your own cases')
+        }
+      } else if (user.role !== 'admin') {
+        throw new ForbiddenError('Access denied: Only patients can accept quotes')
+      }
+
+      const patientId = user.patientId || user.id
+      const accepted = await quoteService.acceptQuote(quoteId, patientId)
+      if (!accepted) {
         throw new NotFoundError(`Quote '${quoteId}' not found`)
       }
       return sendSuccess(
         res,
-        quote,
-        `Institutional quote accepted. Provider '${quote.providerName}' selected for this case. No payment processed.`
+        accepted,
+        `Institutional quote accepted. Provider '${accepted.providerName}' selected for this case. No payment processed.`
       )
     } catch (err) {
       next(err)
@@ -202,17 +235,34 @@ export const quoteController = {
 
   async rejectQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const patientId = req.user?.id
-      if (!patientId) {
+      const user = req.user
+      if (!user) {
         throw new UnauthorizedError()
       }
       const quoteId = req.params.id as string
-      const reason = req.body?.reason as string | undefined
-      const quote = await quoteService.rejectQuote(quoteId, patientId, reason)
+      const quote = await quoteService.getQuoteById(quoteId)
       if (!quote) {
         throw new NotFoundError(`Quote '${quoteId}' not found`)
       }
-      return sendSuccess(res, quote, 'Quote declined successfully')
+
+      if (user.role === 'patient') {
+        const { caseService } = await import('../services/caseService.js')
+        const c = await caseService.getCaseById(quote.caseId)
+        const patientId = user.patientId || user.id
+        if (c && c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You can only reject quotes for your own cases')
+        }
+      } else if (user.role !== 'admin') {
+        throw new ForbiddenError('Access denied: Only patients can reject quotes')
+      }
+
+      const patientId = user.patientId || user.id
+      const reason = req.body?.reason as string | undefined
+      const rejected = await quoteService.rejectQuote(quoteId, patientId, reason)
+      if (!rejected) {
+        throw new NotFoundError(`Quote '${quoteId}' not found`)
+      }
+      return sendSuccess(res, rejected, 'Quote declined successfully')
     } catch (err) {
       next(err)
     }
@@ -237,12 +287,26 @@ export const quoteController = {
       if (!user) throw new UnauthorizedError()
 
       const quoteId = req.params.id as string
+      const quote = await quoteService.getQuoteById(quoteId)
+      if (!quote) {
+        throw new NotFoundError(`Quote '${quoteId}' not found`)
+      }
+
+      if (user.role === 'patient') {
+        const { caseService } = await import('../services/caseService.js')
+        const c = await caseService.getCaseById(quote.caseId)
+        const patientId = user.patientId || user.id
+        if (c && c.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You can only submit questions for your own cases')
+        }
+      }
+
       const questionText = req.body.question as string
       if (!questionText || questionText.trim().length < 3) {
         throw new ValidationError('Question text is required (at least 3 characters)')
       }
 
-      const patientId = user.id
+      const patientId = user.patientId || user.id
       const patientName = user.name || 'Patient'
 
       const question = await quoteService.addQuestion(quoteId, patientId, patientName, questionText)
@@ -265,6 +329,18 @@ export const quoteController = {
       }
 
       const quoteId = req.params.id as string
+      const quote = await quoteService.getQuoteById(quoteId)
+      if (!quote) {
+        throw new NotFoundError(`Quote '${quoteId}' not found`)
+      }
+
+      if (user.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (quote.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You can only answer questions for quotes issued by your facility')
+        }
+      }
+
       const questionId = req.params.questionId as string
       const answerText = req.body.answer as string
       if (!answerText || answerText.trim().length < 2) {

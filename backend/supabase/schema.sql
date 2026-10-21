@@ -419,3 +419,57 @@ VALUES (
 ON CONFLICT (id) DO UPDATE
 SET public = false,
     file_size_limit = 52428800;
+
+-- ==============================================================================
+-- 18. PAYMENTS & CHARGES
+-- Patient consultation fees, treatment booking deposits, and escrow records
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.payments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    payment_id TEXT UNIQUE NOT NULL,
+    user_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
+    patient_id TEXT NOT NULL,
+    patient_name TEXT,
+    case_id TEXT NOT NULL REFERENCES public.cases(id) ON DELETE CASCADE,
+    booking_id TEXT,
+    appointment_id TEXT,
+    provider TEXT NOT NULL CHECK (provider IN ('razorpay', 'stripe', 'mock')),
+    provider_order_id TEXT,
+    provider_payment_id TEXT,
+    amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
+    currency TEXT NOT NULL DEFAULT 'USD',
+    status TEXT NOT NULL CHECK (status IN ('PENDING', 'PROCESSING', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'REFUNDED')),
+    purpose TEXT NOT NULL CHECK (purpose IN ('CONSULTATION_FEE', 'TREATMENT_DEPOSIT', 'HOSPITAL_ADMISSION', 'SECOND_OPINION')),
+    idempotency_key TEXT UNIQUE,
+    receipt_url TEXT,
+    failure_reason TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    refund_status TEXT DEFAULT 'NONE' CHECK (refund_status IN ('NONE', 'PARTIAL', 'FULL', 'REQUESTED')),
+    refunded_amount NUMERIC(10, 2) DEFAULT 0.00 CHECK (refunded_amount >= 0),
+    created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_payments_user_id ON public.payments(user_id);
+CREATE INDEX IF NOT EXISTS idx_payments_patient_id ON public.payments(patient_id);
+CREATE INDEX IF NOT EXISTS idx_payments_case_id ON public.payments(case_id);
+CREATE INDEX IF NOT EXISTS idx_payments_provider_order_id ON public.payments(provider_order_id);
+CREATE INDEX IF NOT EXISTS idx_payments_provider_payment_id ON public.payments(provider_payment_id);
+CREATE INDEX IF NOT EXISTS idx_payments_status ON public.payments(status);
+
+-- ==============================================================================
+-- 19. PAYMENT WEBHOOK EVENTS (Idempotency & Audit)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.payment_webhook_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id TEXT UNIQUE NOT NULL,
+    provider TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    payload JSONB NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('PROCESSED', 'IGNORED', 'FAILED')),
+    processed_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_payment_webhook_events_id ON public.payment_webhook_events(event_id);
+CREATE INDEX IF NOT EXISTS idx_payment_webhook_events_provider ON public.payment_webhook_events(provider);
+

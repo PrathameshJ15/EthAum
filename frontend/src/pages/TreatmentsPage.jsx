@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
-import { Search, Clock, Building2, X } from 'lucide-react'
-import { Breadcrumb } from '../components'
+import { Search, Clock, Building2, X, ArrowRight } from 'lucide-react'
+import { Breadcrumb, Button, StatusBadge, Photo } from '../components'
 import { TREATMENTS_DATA, TREATMENT_CATEGORIES } from '../data/treatmentsData'
 import { DESTINATIONS_DATA } from '../data/destinationsData'
 import { treatmentService } from '../services/treatmentService'
@@ -83,7 +83,7 @@ export function TreatmentsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16 space-y-10 text-left">
+    <div className="max-w-[1200px] mx-auto px-6 sm:px-8 py-10 sm:py-16 space-y-10 text-left rtl:text-right">
       <Breadcrumb
         items={[
           { label: t('nav.marketplace', 'Marketplace'), href: '/' },
@@ -93,38 +93,37 @@ export function TreatmentsPage() {
 
       {/* Editorial Header */}
       <div>
-        <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-4 flex items-center gap-2.5 font-sans">
-          <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
           {t('treatments.badge', 'Clinical Catalog')}
         </p>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-serif font-light text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] max-w-2xl">
+        <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-heading font-extrabold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] max-w-2xl">
           {t('treatments.heading', 'Find & Compare Surgical Procedures')}
         </h1>
 
-        <p className="mt-4 text-sm sm:text-base font-light text-[var(--text-secondary)] font-sans max-w-xl leading-relaxed">
+        <p className="mt-3 text-base font-normal text-[var(--text-muted)] max-w-xl leading-relaxed">
           {t('treatments.subtitle', 'Transparent surgical procedures, recovery timelines, and direct institutional package estimates across verified quaternary medical centers.')}
         </p>
       </div>
 
       {/* Search & Filter Controls Surface */}
-      <div className="p-4 sm:p-5 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4">
+      <div className="p-5 bg-[var(--surface)] rounded-[var(--radius-lg,12px)] border border-[var(--border)] space-y-4">
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           {/* Search Box */}
-          <div className="flex-1 flex items-center gap-2.5 px-3 py-2 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)] focus-within:border-[var(--border-default)] transition-colors">
+          <div className="flex-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)] focus-within:border-[var(--action)] transition-colors">
             <Search className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
             <input
               type="text"
               placeholder={t('treatments.searchPlaceholder', 'Search procedures (e.g. Knee Replacement, CABG, IVF)...')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-transparent text-sm text-[var(--text-primary)] outline-none font-sans font-light placeholder-[var(--text-muted)]"
+              className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder-[var(--text-muted)]/70"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery('')}
-                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 cursor-pointer"
+                className="text-[var(--text-muted)] hover:text-[var(--text-heading)] p-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -132,16 +131,18 @@ export function TreatmentsPage() {
           </div>
 
           {/* Destination Selector */}
-          <div className="w-full md:w-56 flex items-center gap-2 px-3 py-2 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)]">
-            <span className="text-xs text-[var(--text-muted)] font-sans shrink-0">{t('treatments.hub', 'Hub:')}</span>
+          <div className="w-full md:w-56 flex items-center gap-2 px-3 py-2.5 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)]">
+            <span className="text-xs text-[var(--text-muted)] font-medium shrink-0">{t('treatments.hub', 'Hub:')}</span>
             <select
               value={selectedDestination}
               onChange={(e) => setSelectedDestination(e.target.value)}
-              className="w-full bg-transparent text-xs font-sans text-[var(--text-secondary)] outline-none cursor-pointer"
+              className="w-full bg-transparent text-xs text-[var(--text-heading)] font-medium outline-none cursor-pointer"
             >
-              <option value="all" className="bg-[var(--bg-card)]">{t('treatments.allCountries', 'All Countries')}</option>
+              <option value="all" className="bg-[var(--surface)]">
+                {t('treatments.allCountries', 'All Countries')}
+              </option>
               {DESTINATIONS_DATA.map((d) => (
-                <option key={d.id} value={d.id} className="bg-[var(--bg-card)]">
+                <option key={d.id} value={d.id} className="bg-[var(--surface)]">
                   {d.name}
                 </option>
               ))}
@@ -149,10 +150,10 @@ export function TreatmentsPage() {
           </div>
 
           {/* Price Range Slider */}
-          <div className="w-full md:w-60 px-3 py-1.5 rounded-[3px] bg-[var(--bg-base)] border border-[var(--border-hairline)]">
-            <div className="flex justify-between text-[11px] font-sans text-[var(--text-secondary)] mb-1">
+          <div className="w-full md:w-60 px-3.5 py-2 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)]">
+            <div className="flex justify-between text-xs text-[var(--text-muted)] mb-1">
               <span>{t('treatments.maxStartingQuote', 'Max Starting Quote:')}</span>
-              <span className="text-[var(--copper)] tabular-nums">${maxPrice.toLocaleString()} USD</span>
+              <span className="font-bold text-[var(--action-text)] tabular-nums">${maxPrice.toLocaleString()} USD</span>
             </div>
             <input
               type="range"
@@ -161,23 +162,23 @@ export function TreatmentsPage() {
               step="500"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full h-1 bg-[var(--border-default)] rounded-lg appearance-none cursor-pointer accent-[var(--copper)]"
+              className="w-full h-1.5 bg-[var(--border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--action)]"
             />
           </div>
         </div>
 
         {/* Category Filter Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-[var(--border-hairline)]">
-          <span className="text-xs text-[var(--text-muted)] font-sans mr-2 rtl:mr-0 rtl:ml-2 shrink-0">{t('treatments.categoryLabel', 'Category:')}</span>
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-[var(--border)]">
+          <span className="text-xs font-semibold text-[var(--text-muted)] mr-2 rtl:mr-0 rtl:ml-2 shrink-0">{t('treatments.categoryLabel', 'Category:')}</span>
           {TREATMENT_CATEGORIES.map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1 rounded-[3px] text-xs font-sans whitespace-nowrap transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-[var(--radius-sm,6px)] text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-[var(--bg-elevated)] border border-[var(--border-strong)] text-[var(--text-primary)]'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                  ? 'bg-[var(--action)] text-[var(--on-action)] font-semibold'
+                  : 'bg-[var(--surface-alt)] text-[var(--text-muted)] hover:text-[var(--text-heading)] border border-[var(--border)]'
               }`}
             >
               {cat === 'All' ? t('treatments.categoryAll', 'All Specialties') : cat}
@@ -188,7 +189,7 @@ export function TreatmentsPage() {
             <button
               type="button"
               onClick={clearFilters}
-              className="ltr:ml-auto rtl:mr-auto text-xs text-[var(--copper)] hover:underline cursor-pointer shrink-0"
+              className="ml-auto rtl:ml-0 rtl:mr-auto text-xs font-semibold text-[var(--action-text)] hover:underline cursor-pointer shrink-0"
             >
               {t('treatments.resetFilters', 'Reset Filters')}
             </button>
@@ -197,7 +198,7 @@ export function TreatmentsPage() {
       </div>
 
       {/* Results Count */}
-      <div className="flex items-center justify-between text-xs text-[var(--text-muted)] font-sans px-1">
+      <div className="flex items-center justify-between text-xs text-[var(--text-muted)] px-1">
         <span>{t('treatments.showingProcedures', `Showing ${filteredTreatments.length} verified procedures`, { count: filteredTreatments.length })}</span>
         <span>{t('treatments.institutionalPackageRates', 'Institutional package rates')}</span>
       </div>
@@ -209,81 +210,79 @@ export function TreatmentsPage() {
             <div
               key={treatment.id}
               onClick={() => navigate(`/treatments/${treatment.id}`)}
-              className="bg-[var(--bg-card)] border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-[4px] p-6 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between group"
+              className="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-[var(--radius-lg,12px)] p-6 transition-all duration-150 cursor-pointer flex flex-col justify-between group"
             >
               <div>
-                <div className="aspect-[3/2] overflow-hidden rounded-[4px] mb-4 bg-[var(--bg-base)]">
+                <div className="aspect-[3/2] overflow-hidden rounded-[var(--radius-md,8px)] mb-4 bg-[var(--surface-alt)] border border-[var(--border)]">
                   <img
                     src={treatment.image}
                     alt={treatment.name}
-                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-250 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-200 ease-out dark:brightness-90"
                   />
                 </div>
 
-                <div className="text-[11px] font-sans text-[var(--text-muted)] uppercase tracking-[0.06em] mb-1.5">
+                <div className="text-xs font-semibold text-[var(--action-text)] uppercase tracking-wide mb-1.5">
                   {treatment.category}
                 </div>
 
-                <h4 className="text-lg font-medium text-[var(--text-primary)] font-sans mb-2 leading-snug">
+                <h4 className="text-lg font-heading font-bold text-[var(--text-heading)] mb-2 leading-snug">
                   {treatment.name}
                 </h4>
 
-                <p className="text-xs font-light text-[var(--text-secondary)] font-sans line-clamp-2 leading-relaxed mb-4">
+                <p className="text-xs text-[var(--text-muted)] line-clamp-2 leading-relaxed mb-4">
                   {treatment.shortDescription}
                 </p>
 
-                <div className="p-3 bg-[var(--bg-base)] rounded-[3px] border border-[var(--border-hairline)] mb-4 flex items-center justify-between">
+                <div className="p-3 bg-[var(--surface-alt)] rounded-[var(--radius-md,8px)] border border-[var(--border)] mb-4 flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] uppercase font-sans text-[var(--text-muted)] block">
+                    <span className="text-[10px] uppercase text-[var(--text-muted)] block">
                       {t('treatments.directEstimate', 'Direct Estimate')}
                     </span>
-                    <span className="text-sm font-sans font-normal text-[var(--copper)] tabular-nums">
+                    <span className="text-sm font-heading font-bold text-[var(--action-text)] tabular-nums">
                       {t('treatments.from', 'From')} ${(treatment.startingPriceUSD ?? 0).toLocaleString()} USD
                     </span>
                   </div>
-                  <div className="text-right rtl:text-left border-l rtl:border-l-0 rtl:border-r border-[var(--border-hairline)] pl-3 rtl:pl-0 rtl:pr-3">
-                    <span className="text-[10px] uppercase font-sans text-[var(--text-muted)] block">
-                      US / UK
+                  <div className="text-right rtl:text-left border-l rtl:border-l-0 rtl:border-r border-[var(--border)] pl-3 rtl:pl-0 rtl:pr-3">
+                    <span className="text-[10px] uppercase text-[var(--text-muted)] block">
+                      US / UK Avg
                     </span>
-                    <span className="text-xs font-sans text-[var(--text-muted)] line-through">
+                    <span className="text-xs text-[var(--text-muted)] line-through">
                       ${(treatment.usAvgPriceUSD ?? 0).toLocaleString()}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs font-sans text-[var(--text-muted)] mb-4">
+                <div className="flex items-center justify-between text-xs text-[var(--text-muted)] mb-4">
                   <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" /> {t('treatments.stay', 'Stay:')} {treatment.hospitalStayDays || 'N/A'}
+                    <Clock className="w-3.5 h-3.5 text-[var(--action)]" /> {t('treatments.stay', 'Stay:')} {treatment.hospitalStayDays || 'N/A'}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5" /> {treatment.matchedProviderIds?.length ?? 0} {t('treatments.centers', 'Centers')}
+                    <Building2 className="w-3.5 h-3.5 text-[var(--action)]" /> {treatment.matchedProviderIds?.length ?? 0} {t('treatments.centers', 'Centers')}
                   </span>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[var(--border-hairline)] flex items-center justify-between">
-                <span className="text-xs font-sans text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1">
-                  {t('treatments.explore', 'Explore treatment')} <span className="inline-block rtl:rotate-180">&rarr;</span>
+              <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between">
+                <span className="text-xs font-semibold text-[var(--action-text)] group-hover:underline inline-flex items-center gap-1">
+                  <span>{t('treatments.explore', 'Explore treatment')}</span>
+                  <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                 </span>
-                <span className="text-[11px] font-sans text-[var(--text-muted)]">
-                  {(treatment.topDestinationIds || []).join(', ').toUpperCase()}
+                <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase">
+                  {(treatment.topDestinationIds || []).join(', ')}
                 </span>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="p-12 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] text-center space-y-4">
-          <p className="text-base font-sans text-[var(--text-primary)]">{t('treatments.noTreatmentsFound', 'No procedures match your filter criteria')}</p>
-          <p className="text-xs text-[var(--text-secondary)] font-sans max-w-sm mx-auto">
+        <div className="p-12 bg-[var(--surface)] rounded-[var(--radius-lg,12px)] border border-[var(--border)] text-center space-y-4">
+          <p className="text-base font-semibold text-[var(--text-heading)]">{t('treatments.noTreatmentsFound', 'No procedures match your filter criteria')}</p>
+          <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
             {t('treatments.adjustFiltersPrompt', 'Try adjusting your search query, increasing your budget limit, or clearing filters.')}
           </p>
-          <button
-            onClick={clearFilters}
-            className="border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-[3px] px-4 py-2 text-xs font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-          >
+          <Button variant="secondary" size="sm" onClick={clearFilters}>
             {t('treatments.clearFilters', 'Clear All Filters')}
-          </button>
+          </Button>
         </div>
       )}
     </div>

@@ -13,6 +13,13 @@ export interface EnvConfig {
   GROQ_API_KEY?: string
   DAILY_API_KEY?: string
   DAILY_DOMAIN?: string
+  PAYMENT_PROVIDER?: 'razorpay' | 'stripe' | 'mock'
+  RAZORPAY_KEY_ID?: string
+  RAZORPAY_KEY_SECRET?: string
+  RAZORPAY_WEBHOOK_SECRET?: string
+  STRIPE_PUBLISHABLE_KEY?: string
+  STRIPE_SECRET_KEY?: string
+  STRIPE_WEBHOOK_SECRET?: string
 }
 
 export const env: EnvConfig = {
@@ -25,4 +32,11 @@ export const env: EnvConfig = {
   GROQ_API_KEY: process.env.GROQ_API_KEY || undefined,
   DAILY_API_KEY: process.env.DAILY_API_KEY || undefined,
   DAILY_DOMAIN: process.env.DAILY_DOMAIN || 'ethaum.daily.co',
+  PAYMENT_PROVIDER: (process.env.PAYMENT_PROVIDER as EnvConfig['PAYMENT_PROVIDER']) || 'mock',
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || undefined,
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || undefined,
+  RAZORPAY_WEBHOOK_SECRET: process.env.RAZORPAY_WEBHOOK_SECRET || undefined,
+  STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY || undefined,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || undefined,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || undefined,
 }

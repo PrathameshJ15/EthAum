@@ -11,6 +11,7 @@ export { EmptyState } from './common/EmptyState'
 export { ErrorState } from './common/ErrorState'
 export { ToastItem, ToastProvider } from './common/Toast'
 export { useToast } from './common/useToast'
+export { Photo } from './common/Photo'
 export { ThemeToggle } from './common/ThemeToggle'
 export { LanguageSelector } from './common/LanguageSelector'
 export { BackgroundGrid } from './common/BackgroundGrid'
@@ -52,12 +53,16 @@ export {
   QuoteCard,
 } from './quotes'
 
-// Journey & Aftercare Components
+// Journey, Aftercare & Travel Components
 export { JourneyTracker } from './journey/JourneyTracker'
 export { AftercareModule } from './aftercare/AftercareModule'
+export { TravelAssistanceView } from './travel/TravelAssistanceView'
 
 // Telemedicine & Consultation Components
 export { VideoConsultationRoom } from './consultation/VideoConsultationRoom'
 
+// Payment Gateway Components
+export { PaymentCheckoutModal } from './payment/PaymentCheckoutModal'
 
-
+// FHIR Interoperability Components
+export { FhirInteroperabilityCard } from './fhir/FhirInteroperabilityCard'

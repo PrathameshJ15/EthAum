@@ -199,7 +199,7 @@ describe('Quote Management System End-to-End Tests', () => {
         .post('/api/v1/quotes')
         .set('Authorization', providerToken)
         .send({
-          caseId: 'ET-7123',
+          caseId: 'ET-8492',
           treatmentId: 'cabg',
           treatmentName: 'Coronary Artery Bypass Graft',
           total: 18000,

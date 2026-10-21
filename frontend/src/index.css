@@ -1,256 +1,263 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Background Scale */
-  --color-bg-canvas: #060E09;
-  --color-bg-base: #0A1610;
-  --color-bg-card: #0E1E14;
-  --color-bg-elevated: #152A1B;
-  --color-bg-overlay: #1C3824;
-
-  /* Brand Greens */
-  --color-green-deep: #1A5C38;
-  --color-green-rich: #16A358;
-  --color-green-cta: #12D058;
-  --color-green-hover: #0EA349;
-
-  /* Copper Accent */
-  --color-copper: #A67C52;
-  --color-copper-dim: #6B4F34;
-  --color-copper-pale: rgba(166, 124, 82, 0.12);
-  --color-copper-border: rgba(166, 124, 82, 0.22);
-
-  /* Text Scale */
-  --color-text-primary: #EDE5CE;
-  --color-text-secondary: #9E8F74;
-  --color-text-muted: #526155;
-  --color-text-inverse: #060E09;
-
-  /* Border Scale */
-  --color-border-hairline: rgba(255, 255, 255, 0.05);
-  --color-border-default: rgba(255, 255, 255, 0.09);
-  --color-border-strong: rgba(255, 255, 255, 0.15);
+  /* Theme Tokens */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-text: var(--text);
+  --color-text-heading: var(--text-heading);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-action: var(--action);
+  --color-on-action: var(--on-action);
+  --color-action-text: var(--action-text);
+  --color-info-bg: var(--info-bg);
+  --color-info-text: var(--info-text);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-text: var(--warn-text);
+  --color-success-bg: var(--success-bg);
+  --color-success-text: var(--success-text);
+  --color-error-bg: var(--error-bg);
+  --color-error-text: var(--error-text);
 }
 
 :root {
-  /* Exact Design Tokens — White Mode (Matches User Screenshots Exactly) */
-  --bg-canvas: #EFE8D8;
-  --bg-base: #EFE8D8;
-  --bg-card: #FAF7EE;
-  --bg-elevated: #E5DDCB;
-  --bg-overlay: #DFD5C2;
+  /* EthAum Design System 2.0 — Light Theme (Default) */
+  --bg: #FAFBF9;
+  --surface: #FFFFFF;
+  --surface-alt: #E8F0EB;
+  --text: #202C30;
+  --text-heading: #174C4F;
+  --text-muted: #58686C;
+  --border: #DFE6E2;
+  --border-strong: #9DB3AE;
+  --action: #247C78;
+  --on-action: #FFFFFF;
+  --action-text: #1E6B67;
+  --info-bg: #E1EEF7;
+  --info-text: #2F5F87;
+  --warn-bg: #FBEFD5;
+  --warn-text: #7A5200;
+  --success-bg: #DFF1E5;
+  --success-text: #1F5A34;
+  --error-bg: #FBE3E1;
+  --error-text: #8A2A22;
 
-  --green-deep: #125737;
-  --green-rich: #188752;
-  --green-cta: #0FA75B;
-  --green-hover: #0C8F4D;
+  /* Radius Tokens */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
-  --copper: #8A6B48;
-  --copper-dim: #6E5334;
-  --copper-pale: #EAE2D2;
-  --copper-border: rgba(138, 107, 72, 0.25);
+  /* Backward Compatibility Bridge */
+  --bg-canvas: var(--bg);
+  --bg-base: var(--bg);
+  --bg-card: var(--surface);
+  --bg-elevated: var(--surface-alt);
+  --bg-overlay: var(--surface);
 
-  --text-primary: #16201B;
-  --text-secondary: #55635B;
-  --text-muted: #88948B;
-  --text-inverse: #FFFFFF;
+  --green-deep: #174C4F;
+  --green-rich: #247C78;
+  --green-cta: #247C78;
+  --green-hover: #1E6B67;
 
-  --border-hairline: rgba(30, 40, 35, 0.08);
-  --border-default: #DFD7C5;
-  --border-strong: #CFC4AF;
-  --grid-line: rgba(140, 115, 85, 0.15);
+  --copper: #58686C;
+  --copper-dim: #3E5A5D;
+  --copper-pale: #E8F0EB;
+  --copper-border: #DFE6E2;
+
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --text-inverse: var(--on-action);
+
+  --border-hairline: var(--border);
+  --border-default: var(--border);
+  --grid-line: rgba(23, 76, 79, 0.05);
 
   color-scheme: light;
 }
 
 .dark, [data-theme="dark"] {
-  /* Exact Design Tokens — Dark Mode (Deep Forest Obsidian) */
-  --bg-canvas: #060E09;
-  --bg-base: #0A1610;
-  --bg-card: #0E1E14;
-  --bg-elevated: #152A1B;
-  --bg-overlay: #1C3824;
+  /* EthAum Design System 2.0 — Dark Theme */
+  --bg: #0F1B1D;
+  --surface: #172A2D;
+  --surface-alt: #142427;
+  --text: #E4ECEA;
+  --text-heading: #F2F7F5;
+  --text-muted: #9FB2B0;
+  --border: #26393C;
+  --border-strong: #3E5A5D;
+  --action: #4FB3AC;
+  --on-action: #0B1A1C;
+  --action-text: #7CCBC4;
+  --info-bg: #1E3548;
+  --info-text: #A9CDEB;
+  --warn-bg: #3A2E14;
+  --warn-text: #F0CF8A;
+  --success-bg: #16341F;
+  --success-text: #9ED7B0;
+  --error-bg: #3F1D1A;
+  --error-text: #F2B1AA;
 
-  --green-deep: #1A5C38;
-  --green-rich: #16A358;
-  --green-cta: #12D058;
-  --green-hover: #0EA349;
+  /* Radius Tokens */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
-  --copper: #A67C52;
-  --copper-dim: #6B4F34;
-  --copper-pale: rgba(166, 124, 82, 0.12);
-  --copper-border: rgba(166, 124, 82, 0.22);
+  /* Backward Compatibility Bridge */
+  --bg-canvas: var(--bg);
+  --bg-base: var(--bg);
+  --bg-card: var(--surface);
+  --bg-elevated: var(--surface-alt);
+  --bg-overlay: var(--surface);
 
-  --text-primary: #EDE5CE;
-  --text-secondary: #9E8F74;
-  --text-muted: #526155;
-  --text-inverse: #060E09;
+  --green-deep: #4FB3AC;
+  --green-rich: #4FB3AC;
+  --green-cta: #4FB3AC;
+  --green-hover: #7CCBC4;
 
-  --border-hairline: rgba(255, 255, 255, 0.05);
-  --border-default: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.15);
-  --grid-line: rgba(255, 255, 255, 0.022);
+  --copper: #9FB2B0;
+  --copper-dim: #7CCBC4;
+  --copper-pale: #142427;
+  --copper-border: #26393C;
+
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --text-inverse: var(--on-action);
+
+  --border-hairline: var(--border);
+  --border-default: var(--border);
+  --grid-line: rgba(242, 247, 245, 0.03);
 
   color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: var(--bg-canvas);
-  color: var(--text-primary);
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 300;
-  font-size: 15px;
-  line-height: 1.75;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Typography Hierarchy Rules */
+/* Typography Hierarchy Rules per DESIGN.md */
 h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  line-height: 1.0;
-  color: var(--text-primary);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-heading);
 }
 
 h2 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  color: var(--text-primary);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-heading);
 }
 
 h3 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: var(--text-primary);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--text-heading);
 }
 
 h4 {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 500;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 600;
   letter-spacing: 0;
-  color: var(--text-primary);
-}
-
-/* Subtle Grid Background (40px, adaptive var(--grid-line) lines — Hero, Medical Case, CTA only) */
-.bg-grid-ethaum {
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-/* Hero Signature Arch Portal */
-.hero-portal-arch {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 9999px 9999px 0 0;
-  overflow: hidden;
-  background: linear-gradient(175deg, #1A6344 0%, #0F3D2A 55%, #082117 100%);
-  box-shadow: 0 24px 64px -12px rgba(18, 168, 92, 0.22);
-}
-
-.dark .hero-portal-arch, [data-theme="dark"] .hero-portal-arch {
-  background: linear-gradient(175deg, #1E704D 0%, #0D3825 50%, #05160E 100%);
-  box-shadow: 0 25px 80px -10px rgba(18, 208, 88, 0.32);
-}
-
-/* Section label pattern utility */
-.section-label {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--green-rich);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.section-label-line {
-  display: inline-block;
-  width: 24px;
-  height: 1px;
-  background: var(--green-rich);
+  color: var(--text-heading);
 }
 
 /* Primary Button Styling */
 .btn-primary-cta {
-  background-color: var(--green-cta);
-  color: var(--text-inverse);
-  border: none;
-  border-radius: 3px;
-  padding: 13px 28px;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 500;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  transition: background-color 150ms ease;
+  background-color: var(--action);
+  color: var(--on-action);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 8px);
+  min-height: 48px;
+  padding: 12px 24px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+  transition: all 150ms ease;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .btn-primary-cta:hover {
-  background-color: var(--green-hover);
+  opacity: 0.92;
+  box-shadow: 0 2px 8px rgba(36, 124, 120, 0.2);
 }
 
-/* Ghost / Secondary Button Styling */
+.btn-primary-cta:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
+}
+
+/* Secondary Button Styling */
 .btn-secondary-ghost {
   background-color: transparent;
-  border: 1px solid var(--border-default);
-  color: var(--text-secondary);
-  border-radius: 3px;
+  border: 1px solid var(--border-strong);
+  color: var(--text-heading);
+  border-radius: var(--radius-md, 8px);
+  min-height: 48px;
   padding: 12px 24px;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 400;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  transition: border-color 150ms ease, color 150ms ease;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+  transition: all 150ms ease;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .btn-secondary-ghost:hover {
-  border-color: var(--border-strong);
-  color: var(--text-primary);
+  background-color: var(--surface-alt);
+  color: var(--text-heading);
 }
 
-/* Global Card Styling Rules */
-.card-ethaum {
-  border-radius: 4px;
-  border: 1px solid var(--border-default);
-  background-color: var(--bg-card);
-  padding: 24px 32px;
-  transition: border-color 200ms ease, transform 200ms ease;
-}
-
-.card-ethaum:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
+.btn-secondary-ghost:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
 }
 
 /* Nav Link Underline on Hover */
 .nav-link-refined {
   position: relative;
-  color: var(--text-secondary);
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  transition: color 200ms ease;
+  color: var(--text-muted);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 150ms ease;
 }
 
 .nav-link-refined:hover {
-  color: var(--text-primary);
+  color: var(--text-heading);
 }
 
 .nav-link-refined::after {
@@ -259,14 +266,21 @@ h4 {
   bottom: -4px;
   left: 0;
   width: 0;
-  height: 1px;
-  background-color: var(--green-rich);
-  transition: width 200ms ease;
+  height: 2px;
+  background-color: var(--action);
+  transition: width 150ms ease;
+  border-radius: 1px;
 }
 
 .nav-link-refined:hover::after,
 .nav-link-refined.active::after {
   width: 100%;
+}
+
+/* Focus styles for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

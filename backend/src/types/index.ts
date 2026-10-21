@@ -650,3 +650,164 @@ export interface VideoConsultationSession {
 }
 
 
+/**
+ * Travel & Visa Assistance Types
+ */
+export type TravelStatus =
+  | 'PLANNING'
+  | 'BOOKED'
+  | 'IN_TRANSIT'
+  | 'ARRIVED'
+  | 'POST_PROCEDURE_RECOVERY'
+  | 'COMPLETED'
+
+export interface TravelChecklistItem {
+  id: string
+  task: string
+  completed: boolean
+  category: 'VISA' | 'MEDICAL' | 'LOGISTICS' | 'PACKING'
+  essential: boolean
+  notes?: string
+}
+
+export interface OfficialVisaResource {
+  country: string
+  destinationId: string
+  portalName: string
+  portalUrl: string
+  visaType: string
+  processingTime: string
+  invitationLetterRequired: boolean
+  keyRequirements: string[]
+  disclaimer: string
+}
+
+export interface FlightDetails {
+  airline?: string
+  flightNumber?: string
+  departureAirport?: string
+  arrivalAirport?: string
+  departureDate?: string
+  arrivalDate?: string
+  bookingReference?: string
+  isSelfArranged: boolean
+}
+
+export interface AccommodationDetails {
+  facilityName?: string
+  address?: string
+  checkInDate?: string
+  checkOutDate?: string
+  bookingReference?: string
+  companionIncluded: boolean
+  notes?: string
+  source: 'PATIENT_RECORDED' | 'HOSPITAL_COORDINATOR_REQUESTED'
+}
+
+export interface GroundTransferDetails {
+  transferType: 'HOSPITAL_VAN' | 'PRIVATE_CAR' | 'TAXI_RIDESHARE' | 'SELF_ARRANGED'
+  wheelchairAccessible: boolean
+  flightTrackingEnabled: boolean
+  driverNotes?: string
+  status: 'REQUESTED' | 'CONFIRMED' | 'NOT_NEEDED'
+}
+
+export interface TravelPlan {
+  id: string
+  caseId: string
+  patientId: string
+  destinationCountry: string
+  destinationCity: string
+  departureDate?: string
+  returnDate?: string
+  travelStatus: TravelStatus
+  visaInfo: OfficialVisaResource
+  checklist: TravelChecklistItem[]
+  flightDetails?: FlightDetails
+  accommodationDetails?: AccommodationDetails
+  groundTransfer?: GroundTransferDetails
+  coordinationNotes?: string
+  updatedAt: string
+  createdAt: string
+}
+
+/**
+ * Payment Gateway & Escrow Types
+ */
+export type PaymentStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'REFUNDED'
+
+export type PaymentPurpose =
+  | 'CONSULTATION_FEE'
+  | 'TREATMENT_DEPOSIT'
+  | 'HOSPITAL_ADMISSION'
+  | 'SECOND_OPINION'
+
+export type PaymentProviderName = 'razorpay' | 'stripe' | 'mock'
+
+export type RefundStatus = 'NONE' | 'PARTIAL' | 'FULL' | 'REQUESTED'
+
+export interface PaymentRecord {
+  id: string
+  paymentId: string
+  userId?: string
+  patientId: string
+  patientName?: string
+  caseId: string
+  bookingId?: string
+  appointmentId?: string
+  provider: PaymentProviderName
+  providerOrderId?: string
+  providerPaymentId?: string
+  amount: number
+  currency: string
+  status: PaymentStatus
+  purpose: PaymentPurpose
+  idempotencyKey?: string
+  receiptUrl?: string
+  failureReason?: string
+  metadata?: Record<string, any>
+  refundStatus: RefundStatus
+  refundedAmount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateOrderInput {
+  caseId: string
+  purpose: PaymentPurpose
+  bookingId?: string
+  appointmentId?: string
+  customNotes?: string
+  idempotencyKey?: string
+}
+
+export interface VerifyPaymentInput {
+  paymentId: string
+  providerOrderId: string
+  providerPaymentId: string
+  providerSignature: string
+}
+
+export interface PaymentConfigResponse {
+  enabledProvider: PaymentProviderName
+  keyId?: string
+  supportedCurrencies: string[]
+  testMode: boolean
+}
+
+export interface PaymentWebhookEventRecord {
+  id: string
+  eventId: string
+  provider: string
+  eventType: string
+  payload: Record<string, any>
+  status: 'PROCESSED' | 'IGNORED' | 'FAILED'
+  processedAt: string
+}
+

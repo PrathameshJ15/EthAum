@@ -96,7 +96,7 @@ export function JourneyTracker({
           title: 'Clinical Qualification & Gap Detection',
           description: 'Review structured clinical synthesis facts and verify pre-procedure qualification criteria.',
           actionLabel: 'Review Summary Facts',
-          tab: 'summary',
+          tab: 'overview',
           urgent: false,
         }
       case 3: // MATCHING
@@ -135,8 +135,8 @@ export function JourneyTracker({
         return {
           title: 'Review Admission Pass & Flight Details',
           description: 'Admission date confirmed (Nov 15). Coordinate airport limousine and traveling companion suite.',
-          actionLabel: 'View Inpatient Pass',
-          tab: 'overview',
+          actionLabel: 'Coordinate Travel & Logistics',
+          tab: 'travel',
           urgent: false,
         }
       case 8: // TREATMENT

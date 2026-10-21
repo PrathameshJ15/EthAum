@@ -7,6 +7,7 @@ import { apiRouter } from './routes/index.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { notFoundHandler } from './middleware/notFoundHandler.js'
 import { env } from './config/env.js'
+import { ForbiddenError } from './utils/apiError.js'
 
 export const app = express()
 
@@ -17,11 +18,25 @@ app.use(helmet())
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/.test(origin) || origin === env.FRONTEND_URL) {
-        callback(null, true)
-      } else {
-        callback(null, true)
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server, supertest)
+      if (!origin) {
+        return callback(null, true)
       }
+
+      const isConfiguredFrontend = origin === env.FRONTEND_URL
+      const isAllowedLocalOrLan = /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/.test(origin)
+
+      const isProduction = (process.env.NODE_ENV || env.NODE_ENV) === 'production'
+
+      if (isConfiguredFrontend || (!isProduction && isAllowedLocalOrLan)) {
+        return callback(null, true)
+      }
+
+      if (isProduction) {
+        return callback(new ForbiddenError(`Origin '${origin}' is not allowed by CORS policy`))
+      }
+
+      return callback(null, true)
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -45,8 +60,15 @@ const apiLimiter = rateLimit({
 })
 app.use('/api', apiLimiter)
 
-// Body parsing
-app.use(express.json({ limit: '10mb' }))
+// Body parsing with raw buffer retention for webhook signature verification
+app.use(
+  express.json({
+    limit: '10mb',
+    verify: (req: any, _res, buf) => {
+      req.rawBody = buf
+    },
+  })
+)
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 // Request logging (non-test environments)

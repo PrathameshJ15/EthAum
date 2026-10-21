@@ -5,7 +5,7 @@ import { videoConsultationService } from '../services/videoConsultationService.j
 import { doctorService } from '../services/doctorService.js'
 import { providerService } from '../services/providerService.js'
 import { sendSuccess } from '../utils/apiResponse.js'
-import { NotFoundError, ValidationError, UnauthorizedError } from '../utils/apiError.js'
+import { NotFoundError, ValidationError, UnauthorizedError, ForbiddenError } from '../utils/apiError.js'
 import { AppointmentStatus } from '../types/index.js'
 
 export const createAppointmentSchema = z.object({
@@ -62,12 +62,16 @@ export const appointmentController = {
   async listAppointments(req: Request, res: Response, next: NextFunction) {
     try {
       const caseId = req.query.caseId as string
-      const patientId = req.query.patientId as string
+      let patientId = req.query.patientId as string
       const status = req.query.status as AppointmentStatus | undefined
       let providerId = req.query.providerId as string
-      if (!providerId && req.user?.role === 'provider') {
+
+      if (req.user?.role === 'patient') {
+        patientId = req.user.patientId || req.user.id
+      } else if (req.user?.role === 'provider') {
         providerId = req.user.providerId || req.user.id
       }
+
       const appointments = await appointmentService.listAppointments({
         caseId,
         patientId,
@@ -86,6 +90,20 @@ export const appointmentController = {
       if (!apt) {
         throw new NotFoundError(`Appointment '${req.params.id}' not found`)
       }
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const patientId = user.patientId || user.id
+        if (apt.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You are not authorized to view this appointment')
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (apt.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You are not the assigned provider for this appointment')
+        }
+      }
+
       return sendSuccess(res, apt)
     } catch (err) {
       next(err)
@@ -105,7 +123,11 @@ export const appointmentController = {
 
   async createAppointment(req: Request, res: Response, next: NextFunction) {
     try {
-      const patientId = req.body.patientId || req.user?.patientId || req.user?.id || 'pat-1'
+      const patientId =
+        req.user?.role === 'patient'
+          ? req.user.patientId || req.user.id
+          : req.body.patientId || req.user?.patientId || req.user?.id || 'pat-1'
+
       let doctorName = req.body.doctorName
       let specialty = req.body.specialty
       if (req.body.doctorId && !doctorName) {
@@ -149,10 +171,34 @@ export const appointmentController = {
 
   async updateAppointment(req: Request, res: Response, next: NextFunction) {
     try {
-      const apt = await appointmentService.updateAppointment(req.params.id as string, req.body)
-      if (!apt) {
-        throw new NotFoundError(`Appointment '${req.params.id}' not found`)
+      const aptId = req.params.id as string
+      const existing = await appointmentService.getAppointmentById(aptId)
+      if (!existing) {
+        throw new NotFoundError(`Appointment '${aptId}' not found`)
       }
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const patientId = user.patientId || user.id
+        if (existing.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You are not authorized to modify this appointment')
+        }
+        if (
+          req.body.status &&
+          ['CONFIRMED', 'COMPLETED', 'Confirmed', 'Completed'].includes(req.body.status)
+        ) {
+          throw new ForbiddenError(
+            'Access denied: Only healthcare providers can confirm or complete consultations'
+          )
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (existing.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You are not the assigned provider for this appointment')
+        }
+      }
+
+      const apt = await appointmentService.updateAppointment(aptId, req.body)
       return sendSuccess(res, apt, 'Appointment updated successfully')
     } catch (err) {
       next(err)
@@ -161,12 +207,26 @@ export const appointmentController = {
 
   async confirmAppointment(req: Request, res: Response, next: NextFunction) {
     try {
-      const apt = await appointmentService.updateAppointment(req.params.id as string, {
+      const aptId = req.params.id as string
+      const existing = await appointmentService.getAppointmentById(aptId)
+      if (!existing) {
+        throw new NotFoundError(`Appointment '${aptId}' not found`)
+      }
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        throw new ForbiddenError('Access denied: Only healthcare providers can confirm consultations')
+      }
+      if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (existing.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You are not the assigned provider for this appointment')
+        }
+      }
+
+      const apt = await appointmentService.updateAppointment(aptId, {
         status: 'CONFIRMED',
       })
-      if (!apt) {
-        throw new NotFoundError(`Appointment '${req.params.id}' not found`)
-      }
       return sendSuccess(res, apt, 'Consultation confirmed by hospital')
     } catch (err) {
       next(err)
@@ -175,12 +235,28 @@ export const appointmentController = {
 
   async completeAppointment(req: Request, res: Response, next: NextFunction) {
     try {
-      const apt = await appointmentService.updateAppointment(req.params.id as string, {
+      const aptId = req.params.id as string
+      const existing = await appointmentService.getAppointmentById(aptId)
+      if (!existing) {
+        throw new NotFoundError(`Appointment '${aptId}' not found`)
+      }
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        throw new ForbiddenError(
+          'Access denied: Only healthcare providers can mark consultations as completed'
+        )
+      }
+      if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (existing.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You are not the assigned provider for this appointment')
+        }
+      }
+
+      const apt = await appointmentService.updateAppointment(aptId, {
         status: 'COMPLETED',
       })
-      if (!apt) {
-        throw new NotFoundError(`Appointment '${req.params.id}' not found`)
-      }
       return sendSuccess(res, apt, 'Consultation marked as completed')
     } catch (err) {
       next(err)
@@ -189,12 +265,28 @@ export const appointmentController = {
 
   async cancelAppointment(req: Request, res: Response, next: NextFunction) {
     try {
-      const apt = await appointmentService.updateAppointment(req.params.id as string, {
+      const aptId = req.params.id as string
+      const existing = await appointmentService.getAppointmentById(aptId)
+      if (!existing) {
+        throw new NotFoundError(`Appointment '${aptId}' not found`)
+      }
+
+      const user = req.user
+      if (user?.role === 'patient') {
+        const patientId = user.patientId || user.id
+        if (existing.patientId !== patientId) {
+          throw new ForbiddenError('Access denied: You are not authorized to cancel this appointment')
+        }
+      } else if (user?.role === 'provider') {
+        const providerId = user.providerId || user.id
+        if (existing.providerId !== providerId) {
+          throw new ForbiddenError('Access denied: You are not the assigned provider for this appointment')
+        }
+      }
+
+      const apt = await appointmentService.updateAppointment(aptId, {
         status: 'CANCELLED',
       })
-      if (!apt) {
-        throw new NotFoundError(`Appointment '${req.params.id}' not found`)
-      }
       return sendSuccess(res, apt, 'Consultation cancelled successfully')
     } catch (err) {
       next(err)
@@ -251,4 +343,3 @@ export const appointmentController = {
     }
   },
 }
-

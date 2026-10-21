@@ -3,23 +3,25 @@ import { Loader2 } from 'lucide-react'
 
 const VARIANTS = {
   primary:
-    'bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] border-0 shadow-none font-medium',
+    'bg-[var(--action)] text-[var(--on-action)] hover:opacity-92 border border-transparent font-semibold shadow-none',
   secondary:
-    'bg-transparent border border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] font-normal',
+    'bg-transparent border border-[var(--border-strong)] text-[var(--text-heading)] hover:bg-[var(--surface-alt)] font-semibold',
   outline:
-    'bg-transparent border border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] font-normal',
+    'bg-transparent border border-[var(--border-strong)] text-[var(--text-heading)] hover:bg-[var(--surface-alt)] font-semibold',
   ghost:
-    'bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] border-0 font-normal',
+    'bg-transparent text-[var(--text-heading)] hover:bg-[var(--surface-alt)] border-0 font-medium',
+  tertiary:
+    'bg-transparent text-[var(--action-text)] hover:underline border-0 p-0 min-h-0 font-semibold',
   copper:
-    'bg-[var(--copper-pale)] border border-[var(--copper-border)] text-[var(--copper)] hover:bg-[rgba(166,124,82,0.2)] font-normal',
+    'bg-[var(--surface-alt)] border border-[var(--border)] text-[var(--text-heading)] hover:bg-[var(--border)] font-medium',
   danger:
-    'bg-[#FDF2F2] dark:bg-[#2B1B1B] text-[#A33B39] dark:text-[#F5B4B3] border border-[#F6D0D0] dark:border-[#4A2423] hover:bg-[#FBEAEA] dark:hover:bg-[#382020] font-normal',
+    'bg-[var(--error-bg)] text-[var(--error-text)] border border-[var(--error-text)]/20 hover:bg-[var(--error-bg)]/80 font-medium',
 }
 
 const SIZES = {
-  sm: 'text-[12px] px-3.5 py-1.5 rounded-[3px] gap-1.5',
-  md: 'text-[13px] px-6 py-2.5 rounded-[3px] gap-2 tracking-[0.02em]',
-  lg: 'text-[13px] px-7 py-[13px] rounded-[3px] gap-2 tracking-[0.02em]',
+  sm: 'text-xs min-h-[44px] px-3.5 py-2 rounded-[var(--radius-md,8px)] gap-1.5',
+  md: 'text-sm min-h-[48px] px-5 py-2.5 rounded-[var(--radius-md,8px)] gap-2',
+  lg: 'text-base min-h-[52px] px-6 py-3 rounded-[var(--radius-md,8px)] gap-2.5',
 }
 
 export function Button({
@@ -37,7 +39,7 @@ export function Button({
 }) {
   const baseClasses =
     'inline-flex items-center justify-center font-sans transition-all duration-150 ease-out cursor-pointer select-none ' +
-    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--green-rich)] ' +
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--action)] focus-visible:ring-offset-2 ' +
     'disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none'
 
   const variantClass = VARIANTS[variant] || VARIANTS.primary

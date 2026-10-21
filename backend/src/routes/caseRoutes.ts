@@ -69,5 +69,93 @@ caseRoutes.get('/:id/aftercare', requireAuth, async (req, res, next) => {
   }
 })
 
+// Travel Assistance & Visa Coordination
+caseRoutes.get('/:id/travel', requireAuth, async (req, res, next) => {
+  try {
+    const { travelController } = await import('../controllers/travelController.js')
+    req.params.caseId = req.params.id
+    return travelController.getTravelPlan(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.put('/:id/travel', requireAuth, async (req, res, next) => {
+  try {
+    const forbiddenKeys = ['passportNumber', 'passport_number', 'ssn', 'nationalId', 'passportPhoto']
+    for (const fk of forbiddenKeys) {
+      if (fk in req.body && req.body[fk] !== undefined) {
+        const { ValidationError } = await import('../utils/apiError.js')
+        throw new ValidationError('Security restriction: EthAum does not store passport numbers or identity credentials.')
+      }
+    }
+    const { travelController, updateTravelPlanSchema } = await import('../controllers/travelController.js')
+    const parsed = updateTravelPlanSchema.parse(req.body)
+    req.body = parsed
+    req.params.caseId = req.params.id
+    return travelController.updateTravelPlan(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+// Case Payment Records
+caseRoutes.get('/:id/payments', requireAuth, async (req, res, next) => {
+  try {
+    const { paymentController } = await import('../controllers/paymentController.js')
+    req.query.caseId = req.params.id
+    return paymentController.listPayments(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+// Case HL7 FHIR Interoperability
+caseRoutes.get('/:id/fhir/preview', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.previewExport(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.get('/:id/fhir/export', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.exportBundle(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.post('/:id/fhir/import/stage', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.stageImport(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.post('/:id/fhir/import/confirm', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.confirmImport(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+caseRoutes.get('/:id/fhir/operations', requireAuth, async (req, res, next) => {
+  try {
+    const { fhirController } = await import('../controllers/fhirController.js')
+    return fhirController.getOperations(req, res, next)
+  } catch (err) {
+    next(err)
+  }
+})
+
+
 
 

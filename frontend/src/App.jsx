@@ -18,6 +18,7 @@ import { ProviderDetailPage } from './pages/ProviderDetailPage'
 import { DestinationsPage } from './pages/DestinationsPage'
 import { DestinationDetailPage } from './pages/DestinationDetailPage'
 import { HowItWorksPage } from './pages/HowItWorksPage'
+import { PrivacyPolicyPage, TermsOfServicePage } from './pages/LegalPage'
 
 // Auth Pages
 import { LoginPage } from './pages/auth/LoginPage'
@@ -31,13 +32,15 @@ import { CaseRecordsPage } from './pages/patient/CaseRecordsPage'
 import { ProviderPortalPage } from './pages/provider/ProviderPortalPage'
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage'
 
-// Automatically scrolls to top on route change
+// Automatically scrolls to top on route change unless navigating to a hash anchor
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  }, [pathname])
+    if (!hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }
+  }, [pathname, hash])
 
   return null
 }
@@ -62,7 +65,7 @@ function MainLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-canvas)] text-[var(--text-primary)] selection:bg-[var(--green-rich)] selection:text-[var(--text-inverse)] transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)] selection:bg-[var(--action)] selection:text-[var(--on-action)] transition-colors duration-150">
       <ScrollToTop />
 
       {/* Global Sticky Navbar */}
@@ -86,6 +89,8 @@ function MainLayout() {
           <Route path="/destinations" element={<DestinationsPage />} />
           <Route path="/destinations/:id" element={<DestinationDetailPage onCreateCase={handleOpenCreateCase} />} />
           <Route path="/how-it-works" element={<HowItWorksPage onCreateCase={handleOpenCreateCase} />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
 
           {/* Authentication Routes */}
           <Route path="/login" element={<LoginPage />} />

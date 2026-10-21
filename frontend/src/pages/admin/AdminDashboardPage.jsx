@@ -78,19 +78,19 @@ export function AdminDashboardPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-        <div className="p-4 bg-white rounded-[4px] border border-[var(--border-default)]">
+        <div className="p-4 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)]">
           <span className="text-[10px] text-[var(--text-primary)]/50 uppercase font-medium block">Registered Patients</span>
           <strong className="text-xl text-[var(--text-primary)] font-medium">1,842</strong>
         </div>
-        <div className="p-4 bg-white rounded-[4px] border border-[var(--border-default)]">
+        <div className="p-4 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)]">
           <span className="text-[10px] text-[var(--text-primary)]/50 uppercase font-medium block">Verified Hospitals</span>
           <strong className="text-xl text-[var(--text-primary)] font-medium">48 Centers</strong>
         </div>
-        <div className="p-4 bg-white rounded-[4px] border border-[var(--border-default)]">
+        <div className="p-4 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)]">
           <span className="text-[10px] text-[var(--text-primary)]/50 uppercase font-medium block">Active Medical Cases</span>
-          <strong className="text-xl text-[#2B5975] font-medium">129 In-Flight</strong>
+          <strong className="text-xl text-[#2B5975] dark:text-[#5fa8d3] font-medium">129 In-Flight</strong>
         </div>
-        <div className="p-4 bg-white rounded-[4px] border border-[var(--border-default)]">
+        <div className="p-4 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)]">
           <span className="text-[10px] text-[var(--text-primary)]/50 uppercase font-medium block">AI Scans Processed</span>
           <strong className="text-xl text-[var(--green-rich)] font-medium">4,912 DICOM/PDF</strong>
         </div>
@@ -100,7 +100,7 @@ export function AdminDashboardPage() {
       <Tabs
         tabs={[
           { id: 'providers', label: 'Hospital Verifications & Audits', badge: '1 Pending' },
-          { id: 'ai', label: 'Grok AI Service Telemetry' },
+          { id: 'ai', label: 'Groq AI Service Telemetry' },
           { id: 'security', label: 'Audit Logs & Record Security' },
         ]}
         activeTab={activeTab}
@@ -108,7 +108,7 @@ export function AdminDashboardPage() {
       />
 
       {activeTab === 'providers' && (
-        <div className="bg-white rounded-[4px] border border-[var(--border-default)] shadow-xs overflow-hidden">
+        <div className="bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] shadow-xs overflow-hidden">
           <div className="p-5 border-b border-[var(--border-hairline)]">
             <h3 className="text-base font-medium text-[var(--text-primary)]">Hospital Network Onboarding Queue</h3>
           </div>
@@ -124,7 +124,7 @@ export function AdminDashboardPage() {
                   <th className="p-4 text-right">Review Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EEF1EF]">
+              <tbody className="divide-y divide-[var(--border-hairline)]">
                 {pendingVerification.map((hosp) => (
                   <tr key={hosp.id}>
                     <td className="p-4 sm:px-6 font-medium text-[var(--text-primary)]">
@@ -135,11 +135,11 @@ export function AdminDashboardPage() {
                     <td className="p-4 text-[var(--text-primary)]/80">{hosp.specialty}</td>
                     <td className="p-4">
                       {hosp.status === 'verified' ? (
-                        <span className="text-[var(--green-rich)] font-medium bg-[#EBF5EE] px-2.5 py-0.5 rounded-full">
+                        <span className="text-[var(--green-rich)] font-medium bg-[#EBF5EE] dark:bg-[#1e3a2b] px-2.5 py-0.5 rounded-full">
                           Verified
                         </span>
                       ) : (
-                        <span className="text-[#B07D1E] font-medium bg-[#FEF7EA] px-2.5 py-0.5 rounded-full">
+                        <span className="text-[#B07D1E] dark:text-[#f3c267] font-medium bg-[#FEF7EA] dark:bg-[#3d2e14] px-2.5 py-0.5 rounded-full">
                           Awaiting JCI Verification
                         </span>
                       )}
@@ -166,9 +166,9 @@ export function AdminDashboardPage() {
       )}
 
       {activeTab === 'ai' && (
-        <div className="p-6 bg-white rounded-[4px] border border-[var(--border-default)] space-y-4 text-xs">
+        <div className="p-6 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4 text-xs">
           <h3 className="text-base font-medium text-[var(--text-primary)] flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[var(--green-rich)]" /> Grok AI Boundary Guardrails
+            <Sparkles className="w-5 h-5 text-[var(--green-rich)]" /> Groq AI Boundary Guardrails
           </h3>
           <p className="text-[var(--text-primary)]/75 leading-relaxed">
             All AI operations are strictly restricted to non-clinical administrative tasks: document categorization, missing document alerting, and provider matching explanations.
@@ -181,7 +181,7 @@ export function AdminDashboardPage() {
       )}
 
       {activeTab === 'security' && (
-        <div className="p-6 bg-white rounded-[4px] border border-[var(--border-default)] space-y-4 text-xs">
+        <div className="p-6 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4 text-xs">
           <h3 className="text-base font-medium text-[var(--text-primary)] flex items-center gap-2">
             <Lock className="w-5 h-5 text-[var(--green-rich)]" /> Immutable Audit Ledger
           </h3>
