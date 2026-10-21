@@ -120,9 +120,9 @@ export function Navbar({
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full bg-[var(--bg-canvas)]/92 backdrop-blur-md border-b border-[var(--border-hairline)] transition-colors duration-200 ${className}`.trim()}
+      className={`sticky top-0 z-40 w-full bg-[var(--surface)]/95 backdrop-blur-md border-b border-[var(--border)] transition-colors duration-150 ${className}`.trim()}
     >
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 h-18 sm:h-20 flex items-center justify-between gap-4">
+      <div className="max-w-[1200px] mx-auto px-6 sm:px-8 h-[72px] flex items-center justify-between gap-4">
         {/* Brand */}
         <div
           onClick={() => handleLinkClick('/')}
@@ -132,22 +132,25 @@ export function Navbar({
             <img
               src={brandLogo}
               alt={brandName}
-              className="w-8 h-8 sm:w-9 sm:h-9 object-contain transition-transform group-hover:scale-105"
+              className="w-8 h-8 object-contain transition-transform group-hover:scale-105"
             />
           ) : (
-            <div className="w-8 h-8 rounded-lg bg-[var(--green-rich)] text-[var(--text-inverse)] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[var(--radius-md,8px)] bg-[var(--action)] text-[var(--on-action)] flex items-center justify-center">
               <Activity className="w-4 h-4 stroke-[2.2]" />
             </div>
           )}
           <div className="text-left">
-            <span className="block text-xl sm:text-[22px] font-serif font-light text-[var(--text-primary)] leading-none tracking-tight">
-              Eth<span className="italic font-normal">A</span>um
+            <span className="block text-xl sm:text-[22px] font-heading font-extrabold text-[var(--text-heading)] leading-none tracking-tight">
+              EthAum
+            </span>
+            <span className="hidden sm:block text-[11px] font-sans text-[var(--text-muted)] tracking-normal mt-0.5">
+              Global Care. Closer to You.
             </span>
           </div>
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-7 lg:gap-9">
+        <nav className="hidden md:flex items-center gap-7 lg:gap-8">
           {navLinks.map((link) => {
             const isActive = isLinkActive(link.href)
 
@@ -156,8 +159,10 @@ export function Navbar({
                 key={link.label}
                 type="button"
                 onClick={() => handleLinkClick(link.href)}
-                className={`nav-link-refined cursor-pointer select-none ${
-                  isActive ? 'active text-[var(--text-primary)] font-medium' : ''
+                className={`nav-link-refined cursor-pointer select-none text-[15px] ${
+                  isActive
+                    ? 'active text-[var(--text-heading)] font-semibold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-heading)] font-medium'
                 }`}
               >
                 {link.label}
@@ -168,16 +173,15 @@ export function Navbar({
 
         {/* Desktop Right Actions */}
         <div className="hidden md:flex items-center gap-4">
-          {/* Theme Switcher Capsule Toggle */}
           <ThemeToggle />
 
           {activeUser ? (
-            <div className="flex items-center gap-2 pl-2 border-l border-[var(--border-hairline)]">
+            <div className="flex items-center gap-2 pl-2 border-l border-[var(--border)]">
               {/* Role-Specific Portal Button */}
               <button
                 type="button"
                 onClick={() => navigate(getPortalRoute())}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-[3px] bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:border-[var(--border-strong)] border border-[var(--border-default)] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] text-[var(--text-heading)] hover:bg-[var(--border)] border border-[var(--border)] transition-colors cursor-pointer"
               >
                 {role === 'provider' ? (
                   <Building2 className="w-3.5 h-3.5" />
@@ -190,16 +194,16 @@ export function Navbar({
               </button>
 
               {/* User Profile Badge */}
-              <div className="flex items-center gap-2 px-2.5 py-1 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[3px]">
-                <div className="w-6 h-6 rounded-full bg-[var(--green-rich)] text-[var(--text-inverse)] text-[10px] font-bold flex items-center justify-center">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
+                <div className="w-6 h-6 rounded-full bg-[var(--action)] text-[var(--on-action)] text-[11px] font-bold flex items-center justify-center">
                   {activeUser.name ? activeUser.name.charAt(0).toUpperCase() : 'U'}
                 </div>
                 <div className="text-left pr-1">
-                  <span className="block text-xs font-medium text-[var(--text-primary)] leading-tight max-w-[120px] truncate">
+                  <span className="block text-xs font-semibold text-[var(--text-heading)] leading-tight max-w-[120px] truncate">
                     {activeUser.name || activeUser.email}
                   </span>
-                  <span className="block text-[9px] font-normal uppercase tracking-wide text-[var(--copper)]">
-                    {role || 'User'}
+                  <span className="block text-[10px] font-medium uppercase tracking-wide text-[var(--action-text)]">
+                    {role || 'Patient'}
                   </span>
                 </div>
               </div>
@@ -209,7 +213,7 @@ export function Navbar({
                 type="button"
                 onClick={handleLogout}
                 title="Sign out of EthAum"
-                className="p-1.5 text-[var(--text-muted)] hover:text-[#A33B39] rounded-[3px] transition-colors cursor-pointer"
+                className="p-2 text-[var(--text-muted)] hover:text-[var(--error-text)] rounded-[var(--radius-md,8px)] transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -233,14 +237,14 @@ export function Navbar({
               variant="primary"
               size="sm"
               onClick={onCreateCase || (() => navigate('/create-case'))}
-              className="text-xs px-2.5 py-1.5"
+              className="text-xs px-3"
             >
-              Case
+              New Case
             </Button>
           )}
 
           <IconButton
-            icon={<Menu className="w-5 h-5 text-[var(--text-primary)]" />}
+            icon={<Menu className="w-5 h-5 text-[var(--text-heading)]" />}
             label="Open navigation menu"
             variant="ghost"
             size="sm"
@@ -258,7 +262,7 @@ export function Navbar({
             {brandLogo && (
               <img src={brandLogo} alt={brandName} className="w-6 h-6 object-contain" />
             )}
-            <span className="font-serif">Eth<span className="italic">A</span>um</span>
+            <span className="font-heading font-extrabold text-lg text-[var(--text-heading)]">EthAum</span>
           </div>
         }
         size="sm"
@@ -266,10 +270,10 @@ export function Navbar({
         <div className="flex flex-col h-full justify-between py-2">
           <div className="space-y-1">
             {activeUser && (
-              <div className="p-3 mb-3 bg-[var(--bg-elevated)] border border-[var(--border-hairline)] rounded-[4px] flex items-center justify-between">
+              <div className="p-3.5 mb-3 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium text-[var(--text-primary)]">{activeUser.name}</p>
-                  <p className="text-[10px] text-[var(--copper)] uppercase tracking-wider">{role}</p>
+                  <p className="text-sm font-semibold text-[var(--text-heading)]">{activeUser.name}</p>
+                  <p className="text-xs text-[var(--action-text)] uppercase font-semibold tracking-wider">{role}</p>
                 </div>
                 <button
                   type="button"
@@ -277,7 +281,7 @@ export function Navbar({
                     setMobileMenuOpen(false)
                     navigate(getPortalRoute())
                   }}
-                  className="px-2.5 py-1 text-xs font-medium bg-[var(--green-cta)] text-[var(--text-inverse)] rounded-[3px]"
+                  className="px-3 py-1.5 text-xs font-semibold bg-[var(--action)] text-[var(--on-action)] rounded-[var(--radius-md,8px)]"
                 >
                   Portal
                 </button>
@@ -292,11 +296,11 @@ export function Navbar({
                   key={link.label}
                   type="button"
                   onClick={() => handleLinkClick(link.href)}
-                  className={`w-full flex items-center justify-between px-4 py-3 text-sm rounded-xl font-medium text-left transition-colors cursor-pointer
+                  className={`w-full flex items-center justify-between px-4 py-3 text-[15px] rounded-[var(--radius-md,8px)] font-medium text-left transition-colors cursor-pointer
                     ${
                       isActive
-                        ? 'bg-[#E6EFEB] text-[#173E39] dark:bg-[#202B28] dark:text-[#F2F4F1] font-semibold'
-                        : 'text-[#172321] dark:text-[#B6C0BC] hover:bg-[#EEF1EF] dark:hover:bg-[#1A2421]'
+                        ? 'bg-[var(--surface-alt)] text-[var(--text-heading)] font-semibold border-l-2 border-[var(--action)]'
+                        : 'text-[var(--text-muted)] hover:bg-[var(--surface-alt)] hover:text-[var(--text-heading)]'
                     }`}
                 >
                   <span>{link.label}</span>
@@ -305,18 +309,17 @@ export function Navbar({
             })}
           </div>
 
-          <div className="pt-6 border-t border-[#EEF1EF] dark:border-[#2B3834] space-y-3">
-            {/* Mobile Theme Preference */}
-            <div className="flex items-center justify-between px-2 text-xs text-[#172321]/60 dark:text-[#89938F]">
-              <span>Appearance</span>
+          <div className="pt-6 border-t border-[var(--border)] space-y-3">
+            <div className="flex items-center justify-between px-2 text-xs text-[var(--text-muted)]">
+              <span>Theme Appearance</span>
               <ThemeToggle size="sm" />
             </div>
 
-            <div className="flex items-center justify-between px-2 text-xs text-[#172321]/60 dark:text-[#89938F]">
+            <div className="flex items-center justify-between px-2 text-xs text-[var(--text-muted)]">
               <span className="flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5" /> Regional Preference
+                <Globe className="w-3.5 h-3.5" /> Currency & Language
               </span>
-              <span className="font-semibold text-[#173E39] dark:text-[#83B2A3]">USD · EN</span>
+              <span className="font-semibold text-[var(--text-heading)]">USD · English</span>
             </div>
 
             {activeUser ? (
@@ -333,7 +336,7 @@ export function Navbar({
                 Sign Out ({activeUser.name?.split(' ')[0]})
               </Button>
             ) : (
-              <>
+              <div className="space-y-2 pt-2">
                 <Button
                   variant="outline"
                   size="md"
@@ -361,7 +364,7 @@ export function Navbar({
                 >
                   Create Medical Case
                 </Button>
-              </>
+              </div>
             )}
           </div>
         </div>

@@ -64,7 +64,7 @@ function MainLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-canvas)] text-[var(--text-primary)] selection:bg-[var(--green-rich)] selection:text-[var(--text-inverse)] transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)] selection:bg-[var(--action)] selection:text-[var(--on-action)] transition-colors duration-150">
       <ScrollToTop />
 
       {/* Global Sticky Navbar */}

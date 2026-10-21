@@ -11,6 +11,7 @@ export { EmptyState } from './common/EmptyState'
 export { ErrorState } from './common/ErrorState'
 export { ToastItem, ToastProvider } from './common/Toast'
 export { useToast } from './common/useToast'
+export { Photo } from './common/Photo'
 export { ThemeToggle } from './common/ThemeToggle'
 export { BackgroundGrid } from './common/BackgroundGrid'
 

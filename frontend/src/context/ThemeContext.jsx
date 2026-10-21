@@ -10,7 +10,7 @@ const ThemeContext = createContext({
 })
 
 export function ThemeProvider({ children }) {
-  // 1. Get initial preference from localStorage or default to 'system'
+  // 1. Get initial preference from localStorage or default to 'light' per DESIGN.md (Light first)
   const [theme, setThemeState] = useState(() => {
     try {
       const stored = localStorage.getItem(THEME_STORAGE_KEY)
@@ -20,7 +20,7 @@ export function ThemeProvider({ children }) {
     } catch {
       // localStorage may fail in private mode
     }
-    return 'system'
+    return 'light'
   })
 
   // 2. Track OS media query preference

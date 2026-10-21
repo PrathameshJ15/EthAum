@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
+import {
+  ShieldCheck,
+  Lock,
+  FileText,
+  CheckCircle2,
+  Video,
+  ArrowRight,
+  Building2,
+  Calendar,
+  Clock,
+  Sparkles,
+  Check,
+} from 'lucide-react'
+import { Photo, StatusBadge, Button, Card } from '../components'
 
 export function HomePage({ onCreateCase }) {
   const navigate = useNavigate()
@@ -19,143 +33,114 @@ export function HomePage({ onCreateCase }) {
     }
   }, [location.hash])
 
-  // Timeline Active Step State in "How EthAum Coordinates Your Care"
-  const [activeJourneyStep, setActiveJourneyStep] = useState(1) // Step 02: Create Medical Case
-
   // Active Tab in Medical Case Preview Mockup
   const [activeCaseTab, setActiveCaseTab] = useState('overview')
 
   // FAQ Accordion State
   const [expandedFaqIndex, setExpandedFaqIndex] = useState(0)
 
-  // 6 Journey Steps matching reference
+  // 4-Step Journey per DESIGN.md Section 6
   const journeySteps = [
     {
       number: '01',
-      name: 'Discover',
-      description: 'Browse treatments and destinations matched to your condition.',
+      title: 'Discover Treatments',
+      description: 'Explore clinically validated procedures and JCI/NABH accredited quaternary medical centers across 47 countries.',
     },
     {
       number: '02',
-      name: 'Create Medical Case',
-      description: 'Open your secure Medical Case — your central healthcare record.',
+      title: 'Open Medical Case',
+      description: 'Create your private sovereign dossier — your encrypted, central healthcare record that you control completely.',
     },
     {
       number: '03',
-      name: 'Upload Records',
-      description: 'Upload diagnoses, scans, and reports. EthAum organizes and verifies them for every provider.',
+      title: 'Upload Records',
+      description: 'Securely upload MRIs, blood panels, and clinical histories. Grant or revoke doctor access with a single click.',
     },
     {
       number: '04',
-      name: 'AI Coordination',
-      description: 'EthAum matches your records to appropriate accredited providers globally.',
-    },
-    {
-      number: '05',
-      name: 'Compare Quotes',
-      description: 'Receive transparent quotes. Compare inclusions and pricing side by side.',
-    },
-    {
-      number: '06',
-      name: 'Treatment & Aftercare',
-      description: 'Travel with confidence. Aftercare is coordinated through your Medical Case.',
+      title: 'Compare & Aftercare',
+      description: 'Receive itemized institutional quotes with zero markup, consult via video, and coordinate recovery directives.',
     },
   ]
 
-  // Direct Institutional Quotes comparison data matching reference
-  const quoteComparisonCards = [
+  // Direct Institutional Quotes comparison table data matching real specifications
+  const quoteComparisonRows = [
     {
       provider: 'Fortis Memorial Research Institute',
       city: 'Gurgaon, India',
       accreditation: 'NABH',
-      price: '$3,100',
-      priceNote: 'USD · all-inclusive',
-      inclusions: [
-        'Pre-surgical consultation',
-        '5-night hospital stay',
-        'Post-operative care',
-      ],
-      isRecommended: false,
+      stay: '5 nights inpatient',
+      price: '$3,100 USD',
+      inclusions: 'Pre-op diagnostic workup, surgeon fees, 5-night private room, medications, airport transfer',
+      recommended: false,
     },
     {
       provider: 'Bumrungrad International Hospital',
       city: 'Bangkok, Thailand',
       accreditation: 'JCI Accredited',
-      price: '$4,200',
-      priceNote: 'USD · all-inclusive',
-      inclusions: [
-        'Pre-surgical consultation',
-        '7-night hospital stay',
-        'Cardiac rehabilitation included',
-        '24-month aftercare coordination',
-      ],
-      isRecommended: true,
+      stay: '7 nights inpatient',
+      price: '$4,200 USD',
+      inclusions: 'Chief surgeon consultation, 7-night VIP suite, cardiac rehab program, 24-mo remote aftercare',
+      recommended: true,
     },
     {
       provider: 'Anadolu Medical Center',
       city: 'Istanbul, Turkey',
       accreditation: 'JCI Accredited',
-      price: '$5,800',
-      priceNote: 'USD · all-inclusive',
-      inclusions: [
-        'Pre-surgical consultation',
-        '6-night hospital stay',
-        'Post-operative care',
-      ],
-      isRecommended: false,
+      stay: '6 nights inpatient',
+      price: '$5,800 USD',
+      inclusions: 'Johns Hopkins affiliate protocol, 6-night stay, dedicated international concierge, translation',
+      recommended: false,
     },
   ]
 
-  // FAQ List matching reference
+  // Real clinical & operational FAQ matching DESIGN.md rules
   const faqItems = [
     {
-      q: 'What exactly is a Medical Case?',
-      a: 'A Medical Case is your secure, verified healthcare record on EthAum. It stores your diagnoses, scans, and reports in one place, and shares them directly with matched providers — so you never have to re-explain your history.',
+      q: 'What is a Medical Case on EthAum?',
+      a: 'A Medical Case is your secure, patient-owned healthcare dossier. It holds your medical history, imaging scans, and specialist summaries in one place. You choose exactly which hospitals can view your records, and you can revoke access at any time.',
     },
     {
-      q: 'How does EthAum verify providers?',
-      a: 'All providers on EthAum hold internationally recognized accreditations — JCI, NABH, or equivalent. Our team reviews credentials, patient outcomes, and facility standards before any provider joins the platform.',
+      q: 'How does EthAum verify healthcare providers?',
+      a: 'All participating hospitals hold internationally recognized quaternary accreditations — Joint Commission International (JCI), NABH, or equivalent national standards. We verify medical licensing, clinical safety records, and surgeon credentials before onboarding.',
     },
     {
-      q: 'Is my medical data secure?',
-      a: 'Your records are encrypted end-to-end and shared only with providers you explicitly authorize. EthAum is HIPAA-compliant and GDPR-compliant. You retain complete ownership of your data at all times.',
+      q: 'Are my medical records private and HIPAA compliant?',
+      a: 'Yes. All documents are encrypted in transit (TLS 1.3) and at rest (AES-256). EthAum enforces strict HIPAA and GDPR compliance with zero third-party data sharing. Only authorized clinicians can view your files.',
     },
     {
-      q: 'Does EthAum charge patients to use the platform?',
-      a: 'Creating a Medical Case and receiving quotes is free for patients. EthAum earns a coordination fee from providers only when a treatment is confirmed. You will never pay to explore your options.',
+      q: 'Does EthAum add markups to hospital treatment prices?',
+      a: 'No. EthAum quotes come directly from the hospital administration with full itemization of surgeon fees, room charges, and medications. You pay the exact same price as a direct patient, with zero hidden markups.',
     },
   ]
 
   return (
-    <div className="w-full bg-[var(--bg-canvas)] text-[var(--text-secondary)] selection:bg-[var(--green-rich)] selection:text-[var(--text-inverse)] transition-colors duration-200">
+    <div className="w-full bg-[var(--bg)] text-[var(--text)] transition-colors duration-150">
       {/* ==================================================
-          1. HERO SECTION (With Signature Arched Portal)
+          2. HERO SECTION (Split Layout per DESIGN.md)
           ================================================== */}
-      <section id="hero" className="relative pt-[70px] sm:pt-[90px] lg:pt-[120px] pb-[60px] lg:pb-[90px] bg-[var(--bg-base)] border-b border-[var(--border-hairline)] overflow-hidden transition-colors duration-200">
-        {/* Subtle Square Grid Background */}
-        <div className="absolute inset-0 bg-grid-ethaum pointer-events-none" />
-
-        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-            {/* Left Content */}
+      <section id="hero" className="relative pt-12 sm:pt-16 lg:pt-20 pb-16 lg:pb-24 border-b border-[var(--border)] overflow-hidden">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+            {/* Left Content Column (7 cols) */}
             <div className="lg:col-span-7">
-              {/* Eyebrow line */}
-              <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-5 flex items-center gap-2.5 font-sans">
-                <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-                International Healthcare Platform
-              </p>
+              {/* Eyebrow Label */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm,6px)] bg-[var(--surface-alt)] border border-[var(--border)] text-xs font-semibold text-[var(--action-text)] tracking-wider uppercase mb-6">
+                <span className="w-2 h-2 rounded-full bg-[var(--action)]" />
+                <span>International Healthcare Coordination</span>
+              </div>
 
-              {/* H1 headline */}
-              <h1 className="text-4xl sm:text-6xl lg:text-[72px] xl:text-[80px] font-serif font-light text-[var(--text-primary)] leading-[1.04] tracking-[-0.03em] max-w-[620px]">
-                World-class healthcare,<br className="hidden sm:inline" /> without borders.
+              {/* H1 Headline per DESIGN.md: 60px desktop, 38px mobile, Manrope 800 */}
+              <h1 className="text-[38px] sm:text-[48px] lg:text-[60px] font-heading font-extrabold text-[var(--text-heading)] leading-[1.08] tracking-[-0.025em] max-w-[620px]">
+                Global care, closer to you.
               </h1>
 
-              {/* Body paragraph */}
-              <p className="mt-6 text-[15px] sm:text-base font-light text-[var(--text-secondary)] leading-[1.75] max-w-[460px] font-sans">
-                EthAum coordinates your complete care journey — verified providers, organized records, and transparent pricing across 47 countries.
+              {/* Paragraph max 520px per DESIGN.md */}
+              <p className="mt-6 text-base sm:text-lg font-normal text-[var(--text-muted)] leading-[1.6] max-w-[520px]">
+                EthAum coordinates your complete care journey — patient-controlled medical records, verified accredited hospitals, and transparent institutional quotes across 47 countries.
               </p>
 
-              {/* CTA row */}
+              {/* Primary Action + Tertiary Link */}
               <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <button
                   onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
@@ -171,175 +156,64 @@ export function HomePage({ onCreateCase }) {
                     el?.scrollIntoView({ behavior: 'smooth' })
                     window.history.pushState(null, '', '/#treatments')
                   }}
-                  className="text-[13px] font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1.5 py-2.5 px-3 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--action-text)] hover:underline py-3 px-2 cursor-pointer"
                 >
-                  Explore treatments →
+                  <span>Explore accredited treatments</span>
+                  <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
 
-              {/* Trust bar */}
-              <div className="mt-12 pt-6 border-t border-[var(--border-hairline)] flex flex-wrap items-center gap-3.5 text-xs font-sans text-[var(--text-muted)]">
-                <span>12,000+ verified treatments</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--green-rich)] shrink-0 hidden sm:inline-block" />
-                <span className="hidden sm:inline-block">JCI-accredited centers</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--green-rich)] shrink-0 hidden md:inline-block" />
-                <span className="hidden md:inline-block">47 countries</span>
-              </div>
-            </div>
-
-            {/* Right Signature Arch Portal Visual (Matches Reference Screenshots) */}
-            <div className="hidden lg:flex lg:col-span-5 justify-center lg:justify-end items-center relative">
-              <div className="w-[310px] xl:w-[350px] h-[430px] xl:h-[470px] relative">
-                {/* Soft ambient green lighting */}
-                <div className="absolute inset-0 -top-8 rounded-t-full bg-[var(--green-rich)]/15 blur-3xl pointer-events-none" />
-
-                {/* Arch portal */}
-                <div className="hero-portal-arch relative flex flex-col justify-end p-7 border border-[var(--border-default)]">
-                  {/* Concentric inner arches */}
-                  <div className="absolute inset-3 rounded-t-full border border-white/10 pointer-events-none" />
-                  <div className="absolute inset-7 rounded-t-full border border-white/5 pointer-events-none" />
-
-                  {/* Glass card floating inside arch */}
-                  <div className="relative z-10 bg-[var(--bg-canvas)]/90 backdrop-blur-md border border-[var(--border-hairline)] p-4 rounded-[4px] shadow-sm">
-                    <div className="text-[10px] uppercase tracking-[0.1em] text-[var(--green-rich)] font-sans font-medium mb-1">
-                      Global Care Network
-                    </div>
-                    <div className="text-sm font-serif text-[var(--text-primary)]">
-                      47 Countries · 12,000+ Treatments
-                    </div>
-                    <div className="text-[11px] font-sans text-[var(--text-muted)] mt-1">
-                      Single Unified Medical Case
-                    </div>
-                  </div>
+              {/* Trust Indicators */}
+              <div className="mt-10 pt-6 border-t border-[var(--border)] flex flex-wrap items-center gap-6 text-xs font-medium text-[var(--text-muted)]">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-[var(--action)]" />
+                  <span>JCI & NABH Accredited Centers</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-[var(--action)]" />
+                  <span>HIPAA & GDPR Sovereign Vault</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[var(--action)]" />
+                  <span>Direct Hospital Pricing</span>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* ==================================================
-          2. POPULAR CROSS-BORDER TREATMENTS (Asymmetric Layout)
-          ================================================== */}
-      <section id="treatments" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-          <div>
-            <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
-              <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-              Popular Cross-Border Treatments
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-normal text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1]">
-              Treatments patients travel the world for.
-            </h2>
-          </div>
-          <Link
-            to="/treatments"
-            className="text-[13px] font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1.5 shrink-0"
-          >
-            View all treatments →
-          </Link>
-        </div>
-
-        {/* Asymmetric Bento Grid matching reference */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Featured Card (Left - 7 cols) */}
-          <div className="lg:col-span-7 bg-[var(--bg-card)] border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-[4px] p-6 sm:p-8 flex flex-col justify-between transition-all duration-200 group">
-            <div>
-              {/* Image Container with subtle emerald tint */}
-              <div className="aspect-[16/10] w-full overflow-hidden rounded-[3px] mb-6 relative bg-[var(--bg-base)]">
-                <img
-                  src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=1200&q=80"
-                  alt="Cardiac Bypass Surgery"
-                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+            {/* Right Photography + Genuine Preview Overlay (5 cols) */}
+            <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
+              <div className="w-full max-w-[460px] relative">
+                {/* Clinical Documentary Photo */}
+                <Photo
+                  src=""
+                  alt="Doctor and patient consultation in a calm, clinical healthcare room"
+                  subject="Clinical Consultation & Patient Review"
+                  aspectRatio="4/5"
+                  priority={true}
+                  className="w-full shadow-sm"
                 />
-                <div className="absolute top-3 left-3 bg-[var(--bg-canvas)]/90 backdrop-blur-xs border border-[var(--border-hairline)] px-2.5 py-1 rounded-[3px] text-[10px] uppercase font-sans tracking-[0.08em] text-[var(--green-rich)] font-medium">
-                  JCI Accredited
-                </div>
-              </div>
 
-              <h3 className="text-2xl sm:text-3xl font-serif font-normal text-[var(--text-primary)] tracking-[-0.02em] mb-2.5">
-                Cardiac Bypass Surgery
-              </h3>
-
-              <p className="text-sm font-light text-[var(--text-secondary)] font-sans leading-relaxed mb-6">
-                Internationally accredited cardiac care — with coordinated records, specialist consultation, and structured aftercare in Bangkok's leading facilities.
-              </p>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-[var(--border-hairline)]">
-              <div className="text-sm font-sans font-normal text-[var(--copper)] tabular-nums">
-                From $4,200 USD
-              </div>
-              <Link
-                to="/treatments/cardiac-bypass"
-                className="text-[13px] font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:underline transition-colors inline-flex items-center gap-1"
-              >
-                Explore treatment →
-              </Link>
-            </div>
-          </div>
-
-          {/* Stacked Cards (Right - 5 cols) */}
-          <div className="lg:col-span-5 flex flex-col gap-6">
-            {/* Top Right Card: Hip Replacement */}
-            <div className="flex-1 bg-[var(--bg-card)] border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-[4px] p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 group">
-              <div>
-                <div className="aspect-[16/8] w-full overflow-hidden rounded-[3px] mb-4 bg-[var(--bg-base)]">
-                  <img
-                    src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80"
-                    alt="Hip Replacement"
-                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                  />
+                {/* Overlapping Genuine Product Preview Card */}
+                <div className="absolute -bottom-6 -left-4 sm:-left-6 right-6 sm:right-auto sm:w-[320px] bg-[var(--surface)] border border-[var(--border)] p-4 sm:p-5 rounded-[var(--radius-lg,12px)] shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+                  <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] mb-3">
+                    <span className="text-xs font-semibold text-[var(--text-heading)]">Case #MC-2024-0891</span>
+                    <StatusBadge status="ACTIVE" size="sm" />
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between text-[var(--text-muted)]">
+                      <span>Procedure</span>
+                      <span className="font-semibold text-[var(--text-heading)]">Cardiac Consultation</span>
+                    </div>
+                    <div className="flex justify-between text-[var(--text-muted)]">
+                      <span>Matched Center</span>
+                      <span className="font-medium text-[var(--text-heading)]">Bumrungrad (JCI)</span>
+                    </div>
+                    <div className="flex justify-between text-[var(--text-muted)]">
+                      <span>Verified Quote</span>
+                      <span className="font-semibold text-[var(--action-text)]">$4,200 USD</span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-lg font-medium text-[var(--text-primary)] font-sans mb-1">
-                  Hip Replacement
-                </h4>
-                <div className="text-xs text-[var(--text-muted)] font-sans mb-3">
-                  Orthopaedics · Germany
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-3 border-t border-[var(--border-hairline)]">
-                <div className="text-xs font-sans text-[var(--copper)] tabular-nums">
-                  From $8,500 USD
-                </div>
-                <Link
-                  to="/treatments/knee-replacement"
-                  className="text-xs font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:underline transition-colors"
-                >
-                  Explore treatment →
-                </Link>
-              </div>
-            </div>
-
-            {/* Bottom Right Card: Full Dental Implants */}
-            <div className="flex-1 bg-[var(--bg-card)] border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-[4px] p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 group">
-              <div>
-                <div className="aspect-[16/8] w-full overflow-hidden rounded-[3px] mb-4 bg-[var(--bg-base)]">
-                  <img
-                    src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80"
-                    alt="Full Dental Implants"
-                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                  />
-                </div>
-                <h4 className="text-lg font-medium text-[var(--text-primary)] font-sans mb-1">
-                  Full Dental Implants
-                </h4>
-                <div className="text-xs text-[var(--text-muted)] font-sans mb-3">
-                  Dental · Turkey
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-3 border-t border-[var(--border-hairline)]">
-                <div className="text-xs font-sans text-[var(--copper)] tabular-nums">
-                  From $1,800 USD
-                </div>
-                <Link
-                  to="/treatments/dental-implants-all-on-4"
-                  className="text-xs font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:underline transition-colors"
-                >
-                  Explore treatment →
-                </Link>
               </div>
             </div>
           </div>
@@ -347,244 +221,182 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          3. LEADING MEDICAL TOURISM HUBS (Destinations)
+          3. PLAIN-LANGUAGE TRANSPARENCY STRIP
           ================================================== */}
-      <section id="destinations" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 border-t border-[var(--border-hairline)] text-left">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-          <div>
-            <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
-              <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-              Leading Medical Tourism Hubs
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-normal text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1]">
-              Where patients choose to receive their care.
-            </h2>
+      <section className="py-8 bg-[var(--surface-alt)] border-b border-[var(--border)]">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 rounded-full bg-[var(--action)]/15 text-[var(--action)] flex items-center justify-center shrink-0 mt-0.5">
+                <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[var(--text-heading)]">Itemized Hospital Quotes</h4>
+                <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+                  Real numbers with doctor fees, room nights, and surgical inclusions stated upfront.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 rounded-full bg-[var(--action)]/15 text-[var(--action)] flex items-center justify-center shrink-0 mt-0.5">
+                <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[var(--text-heading)]">Instant Access Revocation</h4>
+                <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+                  You decide which doctors view your scans. Grant or revoke record access at any time.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 rounded-full bg-[var(--action)]/15 text-[var(--action)] flex items-center justify-center shrink-0 mt-0.5">
+                <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[var(--text-heading)]">Non-Diagnostic Safety</h4>
+                <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+                  AI assists only with document indexing and missing scan detection. Real doctors make decisions.
+                </p>
+              </div>
+            </div>
           </div>
-          <Link
-            to="/destinations"
-            className="text-[13px] font-sans text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1.5 shrink-0"
-          >
-            All destinations →
-          </Link>
-        </div>
-
-        {/* 3 Destinations: Thailand, Turkey, India */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Thailand */}
-          <Link
-            to="/destinations/thailand"
-            className="group relative min-h-[300px] sm:min-h-[340px] rounded-[4px] overflow-hidden border border-[var(--border-default)] hover:border-[var(--border-strong)] transition-all duration-200 flex flex-col justify-end p-6"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=800&q=80"
-              alt="Thailand"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-canvas)] via-[var(--bg-canvas)]/50 to-transparent pointer-events-none" />
-
-            <div className="relative z-10">
-              <h3 className="text-2xl font-serif font-normal text-[var(--text-primary)] mb-1">
-                Thailand
-              </h3>
-              <p className="text-xs font-sans text-[var(--text-muted)] tracking-[0.04em]">
-                68 verified centers · JCI Accredited
-              </p>
-            </div>
-          </Link>
-
-          {/* Turkey */}
-          <Link
-            to="/destinations/turkey"
-            className="group relative min-h-[300px] sm:min-h-[340px] rounded-[4px] overflow-hidden border border-[var(--border-default)] hover:border-[var(--border-strong)] transition-all duration-200 flex flex-col justify-end p-6"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80"
-              alt="Turkey"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-canvas)] via-[var(--bg-canvas)]/50 to-transparent pointer-events-none" />
-
-            <div className="relative z-10">
-              <h3 className="text-2xl font-serif font-normal text-[var(--text-primary)] mb-1">
-                Turkey
-              </h3>
-              <p className="text-xs font-sans text-[var(--text-muted)] tracking-[0.04em]">
-                42 verified centers
-              </p>
-            </div>
-          </Link>
-
-          {/* India */}
-          <Link
-            to="/destinations/india"
-            className="group relative min-h-[300px] sm:min-h-[340px] rounded-[4px] overflow-hidden border border-[var(--border-default)] hover:border-[var(--border-strong)] transition-all duration-200 flex flex-col justify-end p-6"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80"
-              alt="India"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-canvas)] via-[var(--bg-canvas)]/50 to-transparent pointer-events-none" />
-
-            <div className="relative z-10">
-              <h3 className="text-2xl font-serif font-normal text-[var(--text-primary)] mb-1">
-                India
-              </h3>
-              <p className="text-xs font-sans text-[var(--text-muted)] tracking-[0.04em]">
-                91 verified centers
-              </p>
-            </div>
-          </Link>
         </div>
       </section>
 
       {/* ==================================================
-          4. HOW ETHAUM COORDINATES YOUR CARE (Journey & Mockup)
+          4. FOUR-STEP JOURNEY (Numbered Columns with Top Rule)
           ================================================== */}
-      <section id="how-it-works" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--bg-base)] border-t border-b border-[var(--border-hairline)] transition-colors duration-200 text-left">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
-            <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            How EthAum Coordinates Your Care
+      <section id="how-it-works" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
+        <div className="mb-14">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
+            Clinical Care Pathway
           </p>
-
-          <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-normal text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] mb-12">
-            Your journey, step by step.
+          <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+            How EthAum coordinates your cross-border care.
           </h2>
+          <p className="mt-3 text-base text-[var(--text-muted)] max-w-xl">
+            A structured, transparent pathway designed for clarity and medical safety from first consultation to final recovery.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left Column: 6 Journey Steps */}
-            <div className="lg:col-span-5 relative pl-6">
-              {/* Vertical connector line */}
-              <div className="absolute left-[7px] top-2 bottom-6 w-[1px] bg-[var(--border-default)]" />
+        {/* 4 Numbered Columns with Top Rules (Not cards, per DESIGN.md) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {journeySteps.map((step) => (
+            <div key={step.number} className="pt-6 border-t-2 border-[var(--border-strong)]">
+              <span className="text-xs font-semibold text-[var(--action)] tracking-wider">
+                STEP {step.number}
+              </span>
+              <h3 className="text-lg font-heading font-bold text-[var(--text-heading)] mt-2 mb-2">
+                {step.title}
+              </h3>
+              <p className="text-sm font-normal text-[var(--text-muted)] leading-relaxed">
+                {step.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-              <div className="space-y-6">
-                {journeySteps.map((step, idx) => {
-                  const isActive = activeJourneyStep === idx
-                  return (
-                    <div
-                      key={step.number}
-                      onClick={() => setActiveJourneyStep(idx)}
-                      className={`relative cursor-pointer transition-all duration-200 rounded-[3px] py-2 px-3 ${
-                        isActive
-                          ? 'border-l-2 border-[var(--green-rich)] bg-[var(--bg-elevated)] pl-4 -ml-4'
-                          : 'hover:bg-[var(--bg-card)]/40'
-                      }`}
-                    >
-                      <div className="text-[11px] font-normal text-[var(--copper)] font-sans tracking-[0.1em] mb-1">
-                        {step.number}
-                      </div>
+      {/* ==================================================
+          5. POPULAR TREATMENTS & PROVIDER DISCOVERY
+          ================================================== */}
+      <section id="treatments" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+                Accredited Clinical Specialties
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+                Verified procedures patients travel for.
+              </h2>
+            </div>
+            <Link
+              to="/treatments"
+              className="text-sm font-semibold text-[var(--action-text)] hover:underline inline-flex items-center gap-1 shrink-0"
+            >
+              <span>View full procedure directory</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
 
-                      <div className="text-base font-medium text-[var(--text-primary)] font-sans mb-1">
-                        {step.name}
-                      </div>
-
-                      <p className="text-sm font-light text-[var(--text-secondary)] font-sans leading-relaxed">
-                        {step.description}
-                      </p>
-                    </div>
-                  )
-                })}
+          {/* Editorial Asymmetric Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Featured Procedure (7 cols) */}
+            <div className="lg:col-span-7 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6 sm:p-8 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[var(--action-text)]">Cardiology · Quaternary Care</span>
+                  <StatusBadge status="VERIFIED" customLabel="JCI Accredited Facility" size="sm" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-heading font-bold text-[var(--text-heading)] mb-3">
+                  Cardiac Bypass Surgery (CABG)
+                </h3>
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-6">
+                  Comprehensive cardiovascular surgical packages in Bangkok's leading JCI-accredited cardiac institutes. Pre-operative angiography review, telemetry recovery, and 24-month remote cardiologist follow-up.
+                </p>
+                <div className="grid grid-cols-2 gap-4 p-4 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)] mb-6 text-xs">
+                  <div>
+                    <span className="text-[var(--text-muted)] block">Estimated Inpatient Stay</span>
+                    <span className="font-semibold text-[var(--text-heading)] mt-0.5 block">5–7 Days Inpatient</span>
+                  </div>
+                  <div>
+                    <span className="text-[var(--text-muted)] block">Institutional Cost</span>
+                    <span className="font-bold text-[var(--action-text)] mt-0.5 block">From $4,200 USD</span>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-[var(--border)] flex items-center justify-between">
+                <span className="text-xs text-[var(--text-muted)]">Includes pre-surgical workup & aftercare</span>
+                <Link to="/treatments/cardiac-bypass" className="text-sm font-semibold text-[var(--action-text)] hover:underline">
+                  View procedure specs →
+                </Link>
               </div>
             </div>
 
-            {/* Right Column: Realistic Medical Case Mockup Card */}
-            <div className="hidden lg:block lg:col-span-7 sticky top-28">
-              <div className="bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[4px] p-6 sm:p-7">
-                {/* Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-[var(--border-hairline)] mb-5">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs uppercase font-sans tracking-[0.08em] text-[var(--text-muted)]">
-                      Medical Case #MC-2024-0891
-                    </span>
-                    <span className="px-2 py-0.5 rounded-[3px] bg-[var(--green-rich)]/15 border border-[var(--green-rich)]/30 text-[var(--green-rich)] text-[10px] font-medium font-sans">
-                      Active
-                    </span>
-                  </div>
-                </div>
-
-                {/* Tabs */}
-                <div className="flex items-center gap-6 border-b border-[var(--border-hairline)] mb-5 text-xs font-sans">
-                  {['overview', 'records', 'quotes'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveCaseTab(tab)}
-                      className={`pb-2.5 capitalize cursor-pointer transition-colors ${
-                        activeCaseTab === tab
-                          ? 'text-[var(--text-primary)] font-medium border-b-2 border-[var(--green-rich)]'
-                          : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Case Info Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-5 text-xs font-sans">
-                  <div className="p-3 bg-[var(--bg-base)] border border-[var(--border-hairline)] rounded-[3px]">
-                    <div className="text-[10px] uppercase text-[var(--text-muted)] tracking-[0.06em]">Patient</div>
-                    <div className="text-[13px] font-medium text-[var(--text-primary)] mt-0.5">Priya Mehta</div>
-                  </div>
-                  <div className="p-3 bg-[var(--bg-base)] border border-[var(--border-hairline)] rounded-[3px]">
-                    <div className="text-[10px] uppercase text-[var(--text-muted)] tracking-[0.06em]">Treatment</div>
-                    <div className="text-[13px] font-medium text-[var(--text-primary)] mt-0.5">Cardiac Consultation</div>
-                  </div>
-                  <div className="p-3 bg-[var(--bg-base)] border border-[var(--border-hairline)] rounded-[3px]">
-                    <div className="text-[10px] uppercase text-[var(--text-muted)] tracking-[0.06em]">Stage</div>
-                    <div className="text-[13px] font-medium text-[var(--text-primary)] mt-0.5">Records Uploaded</div>
-                  </div>
-                  <div className="p-3 bg-[var(--bg-base)] border border-[var(--border-hairline)] rounded-[3px]">
-                    <div className="text-[10px] uppercase text-[var(--text-muted)] tracking-[0.06em]">Quotes received</div>
-                    <div className="text-[13px] font-medium text-[var(--text-primary)] mt-0.5">3 providers</div>
-                  </div>
-                </div>
-
-                {/* Journey Progress */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between text-xs font-sans text-[var(--text-muted)] mb-2">
-                    <span>Journey Progress</span>
-                    <span className="text-[var(--green-rich)] font-medium">Stage 3 of 6</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-[var(--bg-base)] rounded-full overflow-hidden">
-                    <div className="h-full bg-[var(--green-rich)] rounded-full w-[50%]" />
-                  </div>
-                </div>
-
-                {/* Medical Records Table */}
+            {/* Stacked Procedures (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col gap-6">
+              <div className="flex-1 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6 flex flex-col justify-between">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.08em] text-[var(--text-muted)] font-sans mb-3">
-                    Medical Records
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Orthopaedics</span>
+                    <span className="text-xs font-bold text-[var(--text-heading)]">From $8,500 USD</span>
                   </div>
-                  <div className="border border-[var(--border-hairline)] rounded-[3px] divide-y divide-[var(--border-hairline)] bg-[var(--bg-base)] text-xs font-sans">
-                    <div className="p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="px-1.5 py-0.5 rounded-[2px] bg-[var(--copper-pale)] border border-[var(--copper-border)] text-[var(--copper)] text-[10px] font-mono">
-                          PDF
-                        </span>
-                        <span className="text-[var(--text-primary)]">Cardiology_Report_2024.pdf</span>
-                      </div>
-                      <span className="text-[var(--text-muted)]">12 Mar</span>
-                    </div>
-                    <div className="p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="px-1.5 py-0.5 rounded-[2px] bg-[var(--copper-pale)] border border-[var(--copper-border)] text-[var(--copper)] text-[10px] font-mono">
-                          IMG
-                        </span>
-                        <span className="text-[var(--text-primary)]">ECG_scan_latest.jpg</span>
-                      </div>
-                      <span className="text-[var(--text-muted)]">08 Mar</span>
-                    </div>
-                    <div className="p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="px-1.5 py-0.5 rounded-[2px] bg-[var(--copper-pale)] border border-[var(--copper-border)] text-[var(--copper)] text-[10px] font-mono">
-                          PDF
-                        </span>
-                        <span className="text-[var(--text-primary)]">Blood_work_panel.pdf</span>
-                      </div>
-                      <span className="text-[var(--text-muted)]">01 Mar</span>
-                    </div>
+                  <h4 className="text-lg font-heading font-bold text-[var(--text-heading)] mb-1">
+                    Total Knee & Hip Arthroplasty
+                  </h4>
+                  <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                    Robotic-assisted joint replacement in accredited German & Indian orthopedic centers.
+                  </p>
+                </div>
+                <div className="pt-4 mt-4 border-t border-[var(--border)] flex justify-between items-center text-xs">
+                  <span className="text-[var(--text-muted)]">NABH / ISO 9001 Certified</span>
+                  <Link to="/treatments/knee-replacement" className="font-semibold text-[var(--action-text)] hover:underline">
+                    Details →
+                  </Link>
+                </div>
+              </div>
+
+              <div className="flex-1 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Maxillofacial & Dental</span>
+                    <span className="text-xs font-bold text-[var(--text-heading)]">From $1,800 USD</span>
                   </div>
+                  <h4 className="text-lg font-heading font-bold text-[var(--text-heading)] mb-1">
+                    All-on-4 Full Dental Restoration
+                  </h4>
+                  <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                    Surgical titanium implants and immediate 3D-scanned zirconia prosthetics in Istanbul.
+                  </p>
+                </div>
+                <div className="pt-4 mt-4 border-t border-[var(--border)] flex justify-between items-center text-xs">
+                  <span className="text-[var(--text-muted)]">JCI Accredited Facility</span>
+                  <Link to="/treatments/dental-implants-all-on-4" className="font-semibold text-[var(--action-text)] hover:underline">
+                    Details →
+                  </Link>
                 </div>
               </div>
             </div>
@@ -593,324 +405,339 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          5. THE MEDICAL CASE (The patient's journey, organized in one place)
+          6. PATIENT-CONTROLLED RECORDS & SOVEREIGNTY
           ================================================== */}
-      <section id="providers" className="scroll-mt-20 sm:scroll-mt-24 relative py-24 lg:py-28 bg-[var(--bg-canvas)] border-b border-[var(--border-hairline)] overflow-hidden text-left">
-        {/* Faint Square Grid Background */}
-        <div className="absolute inset-0 bg-grid-ethaum pointer-events-none" />
+      <section id="destinations" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* Left Column Text (6 cols) */}
+          <div className="lg:col-span-6">
+            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
+              Patient Data Sovereignty
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] mb-6">
+              Your health records. Completely under your control.
+            </h2>
+            <p className="text-base text-[var(--text-muted)] leading-relaxed mb-8">
+              International healthcare often forces patients to repeatedly resend sensitive files via unencrypted emails. With EthAum, you store diagnostic scans in an encrypted sovereign vault and grant temporary access to specific hospitals.
+            </p>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            {/* Left Column (5 cols) */}
-            <div className="lg:col-span-5">
-              <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
-                <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-                The Medical Case
-              </p>
-
-              <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-light text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] mb-6">
-                The patient's journey, organized in one place.
-              </h2>
-
-              <p className="text-sm sm:text-base font-light text-[var(--text-secondary)] font-sans leading-relaxed mb-8">
-                EthAum's Medical Case gives every patient a secure, verified record of their complete cross-border care journey — from first diagnosis to final aftercare.
-              </p>
-
-              {/* 4 Dash Items */}
-              <div className="space-y-3 font-sans text-sm text-[var(--text-primary)] mb-8">
-                <div className="flex items-center gap-3">
-                  <span className="text-[var(--copper)] font-mono">&mdash;</span>
-                  <span>Secure, verified medical records</span>
+            <div className="space-y-4 text-sm font-medium text-[var(--text-heading)] mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-[var(--action)]/15 text-[var(--action)] flex items-center justify-center shrink-0">
+                  <Check className="w-3 h-3 stroke-[2.5]" />
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[var(--copper)] font-mono">&mdash;</span>
-                  <span>Multi-provider quote comparison</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[var(--copper)] font-mono">&mdash;</span>
-                  <span>AI-assisted provider coordination</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[var(--copper)] font-mono">&mdash;</span>
-                  <span>Structured aftercare management</span>
-                </div>
+                <span>End-to-end encrypted storage with immutable access audit trails</span>
               </div>
-
-              <div>
-                <button
-                  onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
-                  className="btn-primary-cta"
-                >
-                  Create Medical Case
-                </button>
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-[var(--action)]/15 text-[var(--action)] flex items-center justify-center shrink-0">
+                  <Check className="w-3 h-3 stroke-[2.5]" />
+                </div>
+                <span>Revoke provider file permissions with one click at any time</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-[var(--action)]/15 text-[var(--action)] flex items-center justify-center shrink-0">
+                  <Check className="w-3 h-3 stroke-[2.5]" />
+                </div>
+                <span>Automated missing pre-op diagnostic checklist detection</span>
               </div>
             </div>
 
-            {/* Right Column (7 cols): Matched Providers Preview Card */}
-            <div className="lg:col-span-7">
-              <div className="bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[4px] p-6 sm:p-8">
-                <div className="flex items-center justify-between pb-4 border-b border-[var(--border-hairline)] mb-6">
-                  <h4 className="text-base font-medium text-[var(--text-primary)] font-sans">
-                    Matched Providers — Cardiac Bypass
-                  </h4>
-                  <span className="text-xs font-sans text-[var(--green-rich)]">
-                    3 Verified Matches
+            <div>
+              <button
+                onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
+                className="btn-primary-cta"
+              >
+                Open Your Sovereign Vault
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column Visual (6 cols) */}
+          <div className="lg:col-span-6">
+            <Card className="border-[var(--border)] p-6 bg-[var(--surface)]">
+              <div className="flex items-center justify-between pb-4 border-b border-[var(--border)] mb-4">
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-[var(--action)]" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-heading)]">
+                    Access Permission Manager
+                  </span>
+                </div>
+                <StatusBadge status="ACTIVE" customLabel="Vault Encrypted" size="sm" />
+              </div>
+
+              <div className="space-y-3">
+                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-semibold text-[var(--text-heading)] block">Bumrungrad Hospital</span>
+                    <span className="text-[var(--text-muted)] text-[11px]">Access granted: 3 diagnostic scans</span>
+                  </div>
+                  <span className="px-2 py-1 text-[11px] font-semibold text-[var(--action-text)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
+                    Authorized
                   </span>
                 </div>
 
-                <div className="space-y-4 font-sans">
-                  {/* Provider 1: Bumrungrad */}
-                  <div className="p-4 bg-[var(--bg-base)] border border-[var(--border-hairline)] rounded-[3px] flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-[var(--text-primary)]">
-                        Bumrungrad International Hospital
-                      </div>
-                      <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                        Bangkok, Thailand · JCI Accredited
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-base font-medium text-[var(--copper)] tabular-nums">$4,200</div>
-                      <div className="text-[10px] text-[var(--text-muted)]">USD</div>
-                    </div>
+                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-semibold text-[var(--text-heading)] block">Anadolu Medical Center</span>
+                    <span className="text-[var(--text-muted)] text-[11px]">Access granted: Cardiac MRI report</span>
                   </div>
+                  <span className="px-2 py-1 text-[11px] font-semibold text-[var(--action-text)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
+                    Authorized
+                  </span>
+                </div>
 
-                  {/* Provider 2: Anadolu */}
-                  <div className="p-4 bg-[var(--bg-base)] border border-[var(--border-hairline)] rounded-[3px] flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-[var(--text-primary)]">
-                        Anadolu Medical Center
-                      </div>
-                      <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                        Istanbul, Turkey · JCI Accredited
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-base font-medium text-[var(--copper)] tabular-nums">$5,800</div>
-                      <div className="text-[10px] text-[var(--text-muted)]">USD</div>
-                    </div>
+                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-xs opacity-70">
+                  <div>
+                    <span className="font-semibold text-[var(--text-heading)] block">Fortis Healthcare</span>
+                    <span className="text-[var(--text-muted)] text-[11px]">Access revoked on patient request</span>
                   </div>
-
-                  {/* Provider 3: Fortis */}
-                  <div className="p-4 bg-[var(--bg-base)] border border-[var(--border-hairline)] rounded-[3px] flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-[var(--text-primary)]">
-                        Fortis Memorial Research Institute
-                      </div>
-                      <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                        Gurgaon, India · NABH
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-base font-medium text-[var(--copper)] tabular-nums">$3,100</div>
-                      <div className="text-[10px] text-[var(--text-muted)]">USD</div>
-                    </div>
-                  </div>
+                  <span className="px-2 py-1 text-[11px] font-semibold text-[var(--text-muted)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
+                    Revoked
+                  </span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Below Section: 3 Horizontal Feature Pills */}
-          <div className="mt-14 pt-8 border-t border-[var(--border-hairline)] flex flex-wrap items-center justify-center gap-4">
-            <div className="text-[13px] font-sans text-[var(--text-secondary)] border border-[var(--border-default)] px-5 py-2 rounded-[3px] bg-[var(--bg-card)]">
-              Secure Records
-            </div>
-            <div className="text-[13px] font-sans text-[var(--text-secondary)] border border-[var(--border-default)] px-5 py-2 rounded-[3px] bg-[var(--bg-card)]">
-              Provider Comparison
-            </div>
-            <div className="text-[13px] font-sans text-[var(--text-secondary)] border border-[var(--border-default)] px-5 py-2 rounded-[3px] bg-[var(--bg-card)]">
-              Aftercare Support
-            </div>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* ==================================================
-          6. QUOTE COMPARISON (See what treatment actually costs)
+          7. MEDICAL CASE WORKFLOW PREVIEW
           ================================================== */}
-      <section id="quotes" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--bg-base)] border-t border-b border-[var(--border-hairline)] transition-colors duration-200 text-left">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
-            <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Quote Comparison
-          </p>
+      <section id="providers" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
+          <div className="max-w-2xl mb-12">
+            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+              Centralized Healthcare Record
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+              Inside your EthAum Medical Case.
+            </h2>
+            <p className="text-base text-[var(--text-muted)] mt-2">
+              Every appointment, specialist finding, itemized quote, and recovery directive lives in a single coordinated interface.
+            </p>
+          </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-normal text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] mb-3">
-            See what treatment actually costs.
+          <Card className="border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[var(--border)] gap-4 mb-6">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Medical Dossier</span>
+                <h3 className="text-xl font-heading font-bold text-[var(--text-heading)] mt-0.5">
+                  Case #MC-2024-0891 · Priya Mehta
+                </h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <StatusBadge status="QUOTES_RECEIVED" size="md" />
+              </div>
+            </div>
+
+            {/* Case Info Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-xs">
+              <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
+                <span className="text-[var(--text-muted)] block">Treatment Requested</span>
+                <span className="font-semibold text-[var(--text-heading)] text-sm mt-0.5 block">Cardiac Consultation</span>
+              </div>
+              <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
+                <span className="text-[var(--text-muted)] block">Clinical Stage</span>
+                <span className="font-semibold text-[var(--text-heading)] text-sm mt-0.5 block">Quotes Received</span>
+              </div>
+              <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
+                <span className="text-[var(--text-muted)] block">Verified Records</span>
+                <span className="font-semibold text-[var(--text-heading)] text-sm mt-0.5 block">3 Scans in Vault</span>
+              </div>
+              <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
+                <span className="text-[var(--text-muted)] block">Hospital Inquiries</span>
+                <span className="font-semibold text-[var(--action-text)] text-sm mt-0.5 block">3 Accredited Matches</span>
+              </div>
+            </div>
+
+            {/* In-Case Navigation Tabs Mockup */}
+            <div className="flex items-center gap-6 border-b border-[var(--border)] mb-6 text-sm">
+              {['overview', 'records', 'quotes'].map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveCaseTab(tab)}
+                  className={`pb-3 capitalize font-semibold cursor-pointer transition-colors ${
+                    activeCaseTab === tab
+                      ? 'text-[var(--text-heading)] border-b-2 border-[var(--action)]'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-heading)]'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab Body */}
+            {activeCaseTab === 'overview' && (
+              <div className="space-y-3 text-xs text-[var(--text-muted)]">
+                <p className="leading-relaxed">
+                  Patient presented with angina and coronary artery disease symptoms. Cardiac diagnostic reports and angiogram scans submitted on 12 Mar 2024. Three accredited quaternary hospitals have issued comprehensive itemized treatment proposals.
+                </p>
+              </div>
+            )}
+            {activeCaseTab === 'records' && (
+              <div className="divide-y divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-md,8px)] text-xs">
+                <div className="p-3 flex items-center justify-between">
+                  <span className="font-semibold text-[var(--text-heading)]">Cardiology_Report_2024.pdf</span>
+                  <span className="text-[var(--text-muted)]">Verified · 12 Mar</span>
+                </div>
+                <div className="p-3 flex items-center justify-between">
+                  <span className="font-semibold text-[var(--text-heading)]">Coronary_Angiogram_Scan.dcm</span>
+                  <span className="text-[var(--text-muted)]">Verified · 08 Mar</span>
+                </div>
+              </div>
+            )}
+            {activeCaseTab === 'quotes' && (
+              <div className="text-xs text-[var(--text-muted)]">
+                <p>3 itemized institutional quotes available in Quote Comparison table below.</p>
+              </div>
+            )}
+          </Card>
+        </div>
+      </section>
+
+      {/* ==================================================
+          8. QUOTE COMPARISON TABLE (Per DESIGN.md Section 6)
+          ================================================== */}
+      <section id="quotes" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
+        <div className="mb-12">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+            Institutional Pricing Transparency
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+            Compare quotes side by side.
           </h2>
-
-          <p className="text-sm font-light text-[var(--text-secondary)] font-sans max-w-xl mb-12">
-            Transparent pricing from three accredited providers for cardiac bypass surgery.
+          <p className="text-base text-[var(--text-muted)] mt-2 max-w-xl">
+            Real institutional pricing from accredited medical centers. Compare stays, inclusions, and hospital credentials with complete transparency.
           </p>
+        </div>
 
-          {/* 3 Side-by-Side Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            {quoteComparisonCards.map((card, idx) => (
-              <div
-                key={idx}
-                className={`bg-[var(--bg-card)] border rounded-[4px] p-7 sm:p-8 flex flex-col justify-between transition-all duration-200 ${
-                  card.isRecommended
-                    ? 'border-[var(--green-rich)] relative shadow-xs'
-                    : 'border-[var(--border-default)]'
-                }`}
-              >
-                <div>
-                  {card.isRecommended && (
-                    <div className="mb-4 inline-block px-2.5 py-0.5 rounded-[2px] bg-[var(--green-rich)]/15 border border-[var(--green-rich)]/30 text-[var(--green-rich)] text-[10px] font-medium font-sans uppercase tracking-[0.08em]">
-                      Recommended
-                    </div>
-                  )}
+        {/* Structured Table Container per DESIGN.md */}
+        <div className="overflow-x-auto border border-[var(--border)] rounded-[var(--radius-lg,12px)] bg-[var(--surface)]">
+          <table className="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs font-bold uppercase text-[var(--text-muted)] tracking-wider">
+                <th className="py-4 px-6">Hospital & Location</th>
+                <th className="py-4 px-6">Accreditation</th>
+                <th className="py-4 px-6">Stay Duration</th>
+                <th className="py-4 px-6">Package Inclusions</th>
+                <th className="py-4 px-6 text-right">All-Inclusive Cost</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border)]">
+              {quoteComparisonRows.map((row, idx) => (
+                <tr key={idx} className={row.recommended ? 'bg-[var(--action)]/5' : ''}>
+                  <td className="py-4 px-6">
+                    <div className="font-semibold text-[var(--text-heading)]">{row.provider}</div>
+                    <div className="text-xs text-[var(--text-muted)]">{row.city}</div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <StatusBadge status="VERIFIED" customLabel={row.accreditation} size="sm" />
+                  </td>
+                  <td className="py-4 px-6 text-xs text-[var(--text-muted)] font-medium">
+                    {row.stay}
+                  </td>
+                  <td className="py-4 px-6 text-xs text-[var(--text-muted)] max-w-xs leading-relaxed">
+                    {row.inclusions}
+                  </td>
+                  <td className="py-4 px-6 text-right font-heading font-bold text-base text-[var(--text-heading)] tabular-nums">
+                    {row.price}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-                  <h3 className="text-lg font-medium text-[var(--text-primary)] font-sans mb-1">
-                    {card.provider}
-                  </h3>
-                  <p className="text-xs text-[var(--text-muted)] font-sans mb-6">
-                    {card.city} · {card.accreditation}
-                  </p>
-
-                  <div className="mb-6">
-                    <div className="text-3xl sm:text-4xl font-serif text-[var(--copper)] tabular-nums mb-1 font-normal">
-                      {card.price}
-                    </div>
-                    <div className="text-xs text-[var(--text-muted)] font-sans font-light">
-                      {card.priceNote}
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-[var(--border-hairline)] space-y-2.5 mb-8">
-                    {card.inclusions.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2.5 text-xs font-sans font-light text-[var(--text-secondary)]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--green-rich)] shrink-0" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
+      {/* ==================================================
+          9. CONSULTATION AND AFTERCARE
+          ================================================== */}
+      <section className="py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+                Continuous Clinical Coordination
+              </p>
+              <h2 className="text-3xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] mb-4">
+                Specialist tele-consultation before you travel. Structured aftercare when you return.
+              </h2>
+              <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-6">
+                EthAum coordinates private video sessions with your operating surgeon before departure. Following treatment, your Medical Case transfers clinical discharge directives, medication schedules, and rehabilitation plans back to your home general practitioner.
+              </p>
+              <div className="space-y-3 text-xs font-medium text-[var(--text-heading)]">
+                <div className="flex items-center gap-2.5">
+                  <Video className="w-4 h-4 text-[var(--action)]" />
+                  <span>Secure HIPAA video consultation with operating surgeon</span>
                 </div>
-
-                <div>
-                  <button
-                    onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
-                    className={`w-full py-2.5 px-4 text-xs font-sans rounded-[3px] transition-colors cursor-pointer text-center ${
-                      card.isRecommended
-                        ? 'bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] font-medium'
-                        : 'border border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] font-normal'
-                    }`}
-                  >
-                    Select provider
-                  </button>
+                <div className="flex items-center gap-2.5">
+                  <Calendar className="w-4 h-4 text-[var(--action)]" />
+                  <span>Daily post-operative milestone and wound care tracking</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <Clock className="w-4 h-4 text-[var(--action)]" />
+                  <span>24-month structured digital aftercare monitoring</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ==================================================
-          7. VERIFIED PATIENT JOURNEYS (Testimonials)
-          ================================================== */}
-      <section id="testimonials" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-left">
-        <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
-          <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-          Verified Patient Journeys
-        </p>
-
-        <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-normal text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] mb-12">
-          From patients who made the journey.
-        </h2>
-
-        {/* Featured Large Quote */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <div className="w-10 h-[1px] bg-[var(--copper)]/30 mx-auto mb-6" />
-
-          <blockquote className="text-xl sm:text-2xl font-serif font-light italic text-[var(--text-primary)] leading-[1.5] mb-6">
-            "EthAum organized everything I was afraid to face alone — the records, the quotes, the questions. I arrived in Bangkok knowing exactly where I was going and why."
-          </blockquote>
-
-          <div className="w-10 h-[1px] bg-[var(--copper)]/30 mx-auto mb-6" />
-
-          <div className="text-[15px] font-medium text-[var(--text-primary)] font-sans">
-            Priya Mehta
-          </div>
-          <div className="text-xs text-[var(--text-secondary)] font-sans mt-0.5">
-            Cardiac Bypass Surgery · Bumrungrad International
-          </div>
-          <div className="text-[11px] text-[var(--text-muted)] uppercase tracking-[0.08em] font-sans mt-0.5">
-            India
-          </div>
-        </div>
-
-        {/* 2 Supporting Quotes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-[var(--border-hairline)] max-w-4xl mx-auto">
-          <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[4px]">
-            <p className="text-sm font-light text-[var(--text-secondary)] font-sans leading-relaxed mb-4">
-              "Seeing three providers side by side, with real numbers and real inclusions, made the decision clear."
-            </p>
-            <div className="text-[13px] font-medium text-[var(--text-primary)] font-sans">
-              James O'Brien
             </div>
-            <div className="text-xs text-[var(--text-muted)] font-sans mt-0.5">
-              Ireland · Hip Replacement · Germany
-            </div>
-          </div>
 
-          <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[4px]">
-            <p className="text-sm font-light text-[var(--text-secondary)] font-sans leading-relaxed mb-4">
-              "The Turkish surgeon received all 18 months of my reports before I even arrived. That alone changed everything."
-            </p>
-            <div className="text-[13px] font-medium text-[var(--text-primary)] font-sans">
-              Layla Hassan
-            </div>
-            <div className="text-xs text-[var(--text-muted)] font-sans mt-0.5">
-              UAE · Dental Implants · Turkey
+            <div>
+              <Card className="border-[var(--border)] p-6 bg-[var(--surface)]">
+                <div className="flex items-center justify-between pb-4 border-b border-[var(--border)] mb-4">
+                  <div className="flex items-center gap-2">
+                    <Video className="w-4 h-4 text-[var(--action)]" />
+                    <span className="text-xs font-bold text-[var(--text-heading)] uppercase">Tele-Consultation Active</span>
+                  </div>
+                  <span className="text-xs text-[var(--action-text)] font-semibold">14:00 UTC · Confirmed</span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-4">
+                  Chief of Cardiac Surgery, Dr. Somchai Prasert (Bumrungrad) will review coronary angiogram slices and discuss minimally invasive bypass options.
+                </p>
+                <div className="p-3 bg-[var(--surface-alt)] rounded-[var(--radius-md,8px)] border border-[var(--border)] flex justify-between items-center text-xs">
+                  <span className="text-[var(--text-heading)] font-semibold">Secure Video Link Encrypted</span>
+                  <span className="text-[var(--action-text)] font-semibold">Ready to connect</span>
+                </div>
+              </Card>
             </div>
           </div>
         </div>
       </section>
 
       {/* ==================================================
-          8. FREQUENTLY ASKED QUESTIONS (FAQ)
+          10. FREQUENTLY ASKED QUESTIONS (Accordion)
           ================================================== */}
-      <section id="faq" className="scroll-mt-20 sm:scroll-mt-24 py-20 max-w-4xl mx-auto px-6 sm:px-8 border-t border-[var(--border-hairline)] text-left">
-        <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-3 flex items-center gap-2.5 font-sans">
-          <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
+      <section id="faq" className="scroll-mt-20 sm:scroll-mt-24 py-20 max-w-[800px] mx-auto px-6 sm:px-8 text-left">
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
           Frequently Asked Questions
         </p>
-
-        <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-normal text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] mb-10">
-          Questions patients ask before they begin.
+        <h2 className="text-3xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] mb-10">
+          Everything patients ask before they begin.
         </h2>
 
-        <div className="divide-y divide-[var(--border-hairline)]">
+        <div className="divide-y divide-[var(--border)] border-t border-b border-[var(--border)]">
           {faqItems.map((item, idx) => {
             const isExpanded = expandedFaqIndex === idx
             return (
-              <div
-                key={idx}
-                className={`py-5 transition-all duration-200 ${
-                  isExpanded ? 'border-l-2 border-[var(--copper)] pl-4 -ml-4' : ''
-                }`}
-              >
+              <div key={idx} className="py-5">
                 <button
+                  type="button"
                   onClick={() => setExpandedFaqIndex(isExpanded ? null : idx)}
                   className="w-full flex items-center justify-between text-left gap-4 cursor-pointer group"
                 >
-                  <span className="text-base font-normal text-[var(--text-primary)] font-sans group-hover:text-[var(--text-secondary)] transition-colors">
+                  <span className="text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--action-text)] transition-colors">
                     {item.q}
                   </span>
-                  <span
-                    className={`text-xl font-light text-[var(--copper)] shrink-0 transition-transform duration-200 select-none ${
-                      isExpanded ? 'rotate-45' : ''
-                    }`}
-                  >
-                    +
+                  <span className="text-xl font-light text-[var(--action)] shrink-0 select-none">
+                    {isExpanded ? '−' : '+'}
                   </span>
                 </button>
-
                 {isExpanded && (
-                  <div className="mt-3 text-[14px] sm:text-[15px] font-light text-[var(--text-secondary)] font-sans leading-[1.75]">
+                  <p className="mt-3 text-sm text-[var(--text-muted)] leading-[1.6]">
                     {item.a}
-                  </div>
+                  </p>
                 )}
               </div>
             )
@@ -919,31 +746,23 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          9. FINAL CTA SECTION (Ready to explore...)
+          11. FINAL CTA BAND (Deep Teal per DESIGN.md Section 6)
           ================================================== */}
-      <section className="relative py-24 lg:py-28 bg-[var(--bg-canvas)] border-t border-[var(--border-hairline)] overflow-hidden text-center transition-colors duration-200">
-        {/* Subtle Square Grid Background */}
-        <div className="absolute inset-0 bg-grid-ethaum pointer-events-none" />
-
-        <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8">
-          <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-4 inline-flex items-center gap-2.5 font-sans">
-            <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Get started today
-            <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
+      <section className="py-20 lg:py-24 bg-[var(--text-heading)] text-white text-center">
+        <div className="max-w-[720px] mx-auto px-6 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--action-text)] mb-3">
+            Start Your Journey
           </p>
-
-          <h2 className="text-3xl sm:text-5xl lg:text-[56px] font-serif font-light text-[var(--text-primary)] leading-[1.1] tracking-[-0.03em] max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-white tracking-[-0.025em] leading-[1.15]">
             Ready to explore world-class care options?
           </h2>
-
-          <p className="mt-5 text-[15px] sm:text-base font-light text-[var(--text-secondary)] font-sans leading-[1.75] max-w-[420px] mx-auto">
-            Create your Medical Case in minutes. No commitment, no cost to patients — just clarity.
+          <p className="mt-4 text-base text-white/80 leading-relaxed max-w-lg mx-auto">
+            Open your secure Medical Case in minutes. No commitment, zero markup, patient-controlled records.
           </p>
-
           <div className="mt-8 flex justify-center">
             <button
               onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
-              className="btn-primary-cta"
+              className="bg-[var(--action)] text-white font-semibold text-base py-3.5 px-8 rounded-[var(--radius-md,8px)] hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
             >
               Create a Medical Case
             </button>

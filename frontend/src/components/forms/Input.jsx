@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react'
+import { AlertCircle } from 'lucide-react'
 
 export const Input = forwardRef(function Input(
   {
@@ -23,16 +24,16 @@ export const Input = forwardRef(function Input(
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-xs font-semibold text-[#173E39] dark:text-[#F2F4F1] mb-1.5 select-none"
+          className="block text-[15px] font-semibold text-[var(--text-heading)] mb-1.5 select-none"
         >
           {label}
-          {required && <span className="text-[#A33B39] dark:text-[#F5B4B3] ml-1">*</span>}
+          {required && <span className="text-[var(--error-text)] ml-1">*</span>}
         </label>
       )}
 
       <div className="relative flex items-center">
         {leftIcon && (
-          <span className="absolute left-3.5 text-[#172321]/45 dark:text-[#89938F] pointer-events-none flex items-center">
+          <span className="absolute left-3.5 text-[var(--text-muted)] pointer-events-none flex items-center">
             {leftIcon}
           </span>
         )}
@@ -43,30 +44,33 @@ export const Input = forwardRef(function Input(
           type={type}
           disabled={disabled}
           required={required}
-          className={`w-full bg-white dark:bg-[#1A2421] text-sm text-[#172321] dark:text-[#F2F4F1] placeholder-[#172321]/40 dark:placeholder-[#89938F] border rounded-xl transition-all duration-150 py-2.5 outline-none
+          className={`w-full h-12 bg-[var(--surface)] text-base text-[var(--text)] placeholder-[var(--text-muted)]/60 border rounded-[var(--radius-md,8px)] transition-all duration-150 outline-none
             ${leftIcon ? 'pl-10' : 'pl-3.5'}
             ${rightIcon ? 'pr-10' : 'pr-3.5'}
             ${
               error
-                ? 'border-[#A33B39] dark:border-[#E06A68] focus:ring-2 focus:ring-[#A33B39]/20 focus:border-[#A33B39]'
-                : 'border-[#E5E7E4] dark:border-[#2B3834] hover:border-[#CBDED6] dark:hover:border-[#3E4F4A] focus:ring-2 focus:ring-[#315B55]/15 dark:focus:ring-[#6F9F91]/20 focus:border-[#315B55] dark:focus:border-[#6F9F91]'
+                ? 'border-[var(--error-text)] focus:ring-2 focus:ring-[var(--error-text)]/30'
+                : 'border-[var(--border-strong)] hover:border-[var(--text-heading)] focus:ring-2 focus:ring-[var(--action)] focus:ring-offset-2'
             }
-            disabled:bg-[#EEF1EF] dark:disabled:bg-[#151C1A] disabled:cursor-not-allowed disabled:text-[#172321]/50 dark:disabled:text-[#89938F]
+            disabled:bg-[var(--surface-alt)] disabled:cursor-not-allowed disabled:text-[var(--text-muted)]
             ${className}`.trim()}
           {...props}
         />
 
         {rightIcon && (
-          <span className="absolute right-3.5 text-[#172321]/45 dark:text-[#89938F] flex items-center">
+          <span className="absolute right-3.5 text-[var(--text-muted)] flex items-center">
             {rightIcon}
           </span>
         )}
       </div>
 
       {error ? (
-        <p className="mt-1.5 text-xs text-[#A33B39] dark:text-[#F5B4B3] font-medium">{error}</p>
+        <p className="mt-1.5 text-sm text-[var(--error-text)] font-medium flex items-center gap-1.5">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+        </p>
       ) : helperText ? (
-        <p className="mt-1.5 text-xs text-[#172321]/60 dark:text-[#89938F]">{helperText}</p>
+        <p className="mt-1.5 text-sm text-[var(--text-muted)]">{helperText}</p>
       ) : null}
     </div>
   )
