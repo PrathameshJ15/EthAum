@@ -18,7 +18,12 @@ export function Photo({
   className = '',
   decorative = false,
 }) {
-  const [error, setError] = useState(!src)
+  const [loadError, setLoadError] = useState(false)
+
+  // Reset load error whenever src prop changes
+  React.useEffect(() => {
+    setLoadError(false)
+  }, [src])
 
   const aspectClass = {
     '4/5': 'aspect-[4/5]',
@@ -28,7 +33,7 @@ export function Photo({
     '16/9': 'aspect-[16/9]',
   }[aspectRatio] || 'aspect-[16/10]'
 
-  if (error || !src) {
+  if (loadError || !src) {
     return (
       <div
         className={`w-full ${aspectClass} rounded-[var(--radius-lg,12px)] border border-[var(--border)] bg-[var(--surface-alt)] flex flex-col items-center justify-center p-6 text-center select-none ${className}`.trim()}
@@ -58,7 +63,7 @@ export function Photo({
           alt={decorative ? '' : alt}
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority ? 'high' : 'auto'}
-          onError={() => setError(true)}
+          onError={() => setLoadError(true)}
           className="w-full h-full object-cover transition-opacity duration-300 dark:brightness-90"
         />
       </div>

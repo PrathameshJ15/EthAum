@@ -59,7 +59,7 @@ export function Navbar({
       return
     }
 
-    const sectionIds = ['treatments', 'destinations', 'how-it-works', 'providers']
+    const sectionIds = ['how-it-works', 'treatments', 'destinations', 'providers']
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 160
       let current = ''

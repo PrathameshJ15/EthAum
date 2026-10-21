@@ -12,6 +12,8 @@ import {
   Clock,
   Sparkles,
   Check,
+  MapPin,
+  Award,
 } from 'lucide-react'
 import { Photo, StatusBadge, Button, Card } from '../components'
 
@@ -94,6 +96,37 @@ export function HomePage({ onCreateCase }) {
     },
   ]
 
+  // Leading Medical Tourism Hubs with local authentic photos
+  const destinations = [
+    {
+      name: 'Thailand',
+      city: 'Bangkok & Phuket',
+      image: '/images/dest-bangkok.webp',
+      centers: '68 Verified Centers',
+      accreditation: 'JCI Quaternary Hub',
+      specialties: 'Cardiology, Orthopaedics, Executive Health',
+      href: '/destinations/thailand',
+    },
+    {
+      name: 'Turkey',
+      city: 'Istanbul & Ankara',
+      image: '/images/dest-istanbul.webp',
+      centers: '54 Verified Centers',
+      accreditation: 'JCI & Johns Hopkins Affiliate',
+      specialties: 'Oncology, Transplants, Neuro-Rehab',
+      href: '/destinations/turkey',
+    },
+    {
+      name: 'India',
+      city: 'Delhi, Mumbai, Bengaluru',
+      image: '/images/dest-delhi.webp',
+      centers: '82 Verified Centers',
+      accreditation: 'NABH & JCI Quaternary',
+      specialties: 'Cardiac Surgery, Joint Replacement, Bone Marrow',
+      href: '/destinations/india',
+    },
+  ]
+
   // Real clinical & operational FAQ matching DESIGN.md rules
   const faqItems = [
     {
@@ -124,29 +157,30 @@ export function HomePage({ onCreateCase }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
             {/* Left Content Column (7 cols) */}
             <div className="lg:col-span-7">
-              {/* Eyebrow Label */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm,6px)] bg-[var(--surface-alt)] border border-[var(--border)] text-xs font-semibold text-[var(--action-text)] tracking-wider uppercase mb-6">
+              {/* Eyebrow Label per DESIGN.md: 13px, 600, uppercase */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm,6px)] bg-[var(--surface-alt)] border border-[var(--border)] text-[13px] font-semibold text-[var(--action-text)] tracking-[0.08em] uppercase mb-6">
                 <span className="w-2 h-2 rounded-full bg-[var(--action)]" />
-                <span>International Healthcare Coordination</span>
+                <span>Accredited Quaternary Healthcare · Zero Markup</span>
               </div>
 
               {/* H1 Headline per DESIGN.md: 60px desktop, 38px mobile, Manrope 800 */}
-              <h1 className="text-[38px] sm:text-[48px] lg:text-[60px] font-heading font-extrabold text-[var(--text-heading)] leading-[1.08] tracking-[-0.025em] max-w-[620px]">
-                Global care, closer to you.
+              <h1 className="text-[38px] sm:text-[46px] lg:text-[58px] font-heading font-extrabold text-[var(--text-heading)] leading-[1.08] tracking-[-0.025em] max-w-[620px]">
+                Global Care. Closer to You.
               </h1>
 
-              {/* Paragraph max 520px per DESIGN.md */}
+              {/* Paragraph max 520px per DESIGN.md: 18px desktop, line-height 1.6 */}
               <p className="mt-6 text-base sm:text-lg font-normal text-[var(--text-muted)] leading-[1.6] max-w-[520px]">
-                EthAum coordinates your complete care journey — patient-controlled medical records, verified accredited hospitals, and transparent institutional quotes across 47 countries.
+                EthAum coordinates your cross-border care journey — patient-controlled medical records, verified quaternary hospitals, and transparent institutional quotes across 47 countries.
               </p>
 
-              {/* Primary Action + Tertiary Link */}
+              {/* Primary Action + Secondary Button */}
               <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <button
+                  type="button"
                   onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
                   className="btn-primary-cta"
                 >
-                  Create Medical Case
+                  Open Medical Case
                 </button>
                 <a
                   href="#treatments"
@@ -156,25 +190,25 @@ export function HomePage({ onCreateCase }) {
                     el?.scrollIntoView({ behavior: 'smooth' })
                     window.history.pushState(null, '', '/#treatments')
                   }}
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--action-text)] hover:underline py-3 px-2 cursor-pointer"
+                  className="btn-secondary-ghost inline-flex items-center gap-2"
                 >
-                  <span>Explore accredited treatments</span>
+                  <span>Explore Treatments</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
 
-              {/* Trust Indicators */}
-              <div className="mt-10 pt-6 border-t border-[var(--border)] flex flex-wrap items-center gap-6 text-xs font-medium text-[var(--text-muted)]">
+              {/* Trust Indicators: clinical info never below 14px */}
+              <div className="mt-10 pt-6 border-t border-[var(--border)] flex flex-wrap items-center gap-6 text-sm font-medium text-[var(--text-muted)]">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[var(--action)]" />
-                  <span>JCI & NABH Accredited Centers</span>
+                  <ShieldCheck className="w-4 h-4 text-[var(--action)] shrink-0" />
+                  <span>JCI & NABH Accredited</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-[var(--action)]" />
+                  <Lock className="w-4 h-4 text-[var(--action)] shrink-0" />
                   <span>HIPAA & GDPR Sovereign Vault</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--action)]" />
+                  <CheckCircle2 className="w-4 h-4 text-[var(--action)] shrink-0" />
                   <span>Direct Hospital Pricing</span>
                 </div>
               </div>
@@ -183,10 +217,10 @@ export function HomePage({ onCreateCase }) {
             {/* Right Photography + Genuine Preview Overlay (5 cols) */}
             <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
               <div className="w-full max-w-[460px] relative">
-                {/* Clinical Documentary Photo */}
+                {/* Clinical Documentary Photo: Real high-res NCI clinical photography */}
                 <Photo
-                  src=""
-                  alt="Doctor and patient consultation in a calm, clinical healthcare room"
+                  src="/images/hero-consultation.webp"
+                  alt="Senior consulting physician reviewing medical case documentation with patient across a desk in a calm, modern consultation room"
                   subject="Clinical Consultation & Patient Review"
                   aspectRatio="4/5"
                   priority={true}
@@ -194,23 +228,23 @@ export function HomePage({ onCreateCase }) {
                 />
 
                 {/* Overlapping Genuine Product Preview Card */}
-                <div className="absolute -bottom-6 -left-4 sm:-left-6 right-6 sm:right-auto sm:w-[320px] bg-[var(--surface)] border border-[var(--border)] p-4 sm:p-5 rounded-[var(--radius-lg,12px)] shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+                <div className="absolute -bottom-6 -left-4 sm:-left-6 right-6 sm:right-auto sm:w-[320px] bg-[var(--surface)] border border-[var(--border)] p-5 rounded-[var(--radius-lg,12px)] shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-10">
                   <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] mb-3">
-                    <span className="text-xs font-semibold text-[var(--text-heading)]">Case #MC-2024-0891</span>
+                    <span className="text-sm font-bold text-[var(--text-heading)]">Case #MC-2024-0891</span>
                     <StatusBadge status="ACTIVE" size="sm" />
                   </div>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between text-[var(--text-muted)]">
+                  <div className="space-y-2.5 text-sm">
+                    <div className="flex justify-between items-center text-[var(--text-muted)]">
                       <span>Procedure</span>
                       <span className="font-semibold text-[var(--text-heading)]">Cardiac Consultation</span>
                     </div>
-                    <div className="flex justify-between text-[var(--text-muted)]">
+                    <div className="flex justify-between items-center text-[var(--text-muted)]">
                       <span>Matched Center</span>
                       <span className="font-medium text-[var(--text-heading)]">Bumrungrad (JCI)</span>
                     </div>
-                    <div className="flex justify-between text-[var(--text-muted)]">
+                    <div className="flex justify-between items-center text-[var(--text-muted)]">
                       <span>Verified Quote</span>
-                      <span className="font-semibold text-[var(--action-text)]">$4,200 USD</span>
+                      <span className="font-bold tabular-nums text-[var(--action-text)]">$4,200 USD</span>
                     </div>
                   </div>
                 </div>
@@ -232,7 +266,7 @@ export function HomePage({ onCreateCase }) {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-[var(--text-heading)]">Itemized Hospital Quotes</h4>
-                <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+                <p className="text-sm text-[var(--text-muted)] mt-0.5 leading-relaxed">
                   Real numbers with doctor fees, room nights, and surgical inclusions stated upfront.
                 </p>
               </div>
@@ -244,7 +278,7 @@ export function HomePage({ onCreateCase }) {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-[var(--text-heading)]">Instant Access Revocation</h4>
-                <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+                <p className="text-sm text-[var(--text-muted)] mt-0.5 leading-relaxed">
                   You decide which doctors view your scans. Grant or revoke record access at any time.
                 </p>
               </div>
@@ -256,7 +290,7 @@ export function HomePage({ onCreateCase }) {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-[var(--text-heading)]">Non-Diagnostic Safety</h4>
-                <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+                <p className="text-sm text-[var(--text-muted)] mt-0.5 leading-relaxed">
                   AI assists only with document indexing and missing scan detection. Real doctors make decisions.
                 </p>
               </div>
@@ -270,13 +304,13 @@ export function HomePage({ onCreateCase }) {
           ================================================== */}
       <section id="how-it-works" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
         <div className="mb-14">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
             Clinical Care Pathway
           </p>
-          <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+          <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15]">
             How EthAum coordinates your cross-border care.
           </h2>
-          <p className="mt-3 text-base text-[var(--text-muted)] max-w-xl">
+          <p className="mt-3 text-base sm:text-[17px] text-[var(--text-muted)] leading-[1.6] max-w-xl">
             A structured, transparent pathway designed for clarity and medical safety from first consultation to final recovery.
           </p>
         </div>
@@ -300,16 +334,16 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          5. POPULAR TREATMENTS & PROVIDER DISCOVERY
+          5. POPULAR TREATMENTS & PROCEDURES
           ================================================== */}
       <section id="treatments" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
         <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+              <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
                 Accredited Clinical Specialties
               </p>
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+              <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15]">
                 Verified procedures patients travel for.
               </h2>
             </div>
@@ -337,19 +371,19 @@ export function HomePage({ onCreateCase }) {
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-6">
                   Comprehensive cardiovascular surgical packages in Bangkok's leading JCI-accredited cardiac institutes. Pre-operative angiography review, telemetry recovery, and 24-month remote cardiologist follow-up.
                 </p>
-                <div className="grid grid-cols-2 gap-4 p-4 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)] mb-6 text-xs">
+                <div className="grid grid-cols-2 gap-4 p-4 rounded-[var(--radius-md,8px)] bg-[var(--surface-alt)] border border-[var(--border)] mb-6 text-sm">
                   <div>
-                    <span className="text-[var(--text-muted)] block">Estimated Inpatient Stay</span>
+                    <span className="text-[var(--text-muted)] block text-xs">Estimated Inpatient Stay</span>
                     <span className="font-semibold text-[var(--text-heading)] mt-0.5 block">5–7 Days Inpatient</span>
                   </div>
                   <div>
-                    <span className="text-[var(--text-muted)] block">Institutional Cost</span>
-                    <span className="font-bold text-[var(--action-text)] mt-0.5 block">From $4,200 USD</span>
+                    <span className="text-[var(--text-muted)] block text-xs">Institutional Cost</span>
+                    <span className="font-bold tabular-nums text-[var(--action-text)] mt-0.5 block">From $4,200 USD</span>
                   </div>
                 </div>
               </div>
               <div className="pt-4 border-t border-[var(--border)] flex items-center justify-between">
-                <span className="text-xs text-[var(--text-muted)]">Includes pre-surgical workup & aftercare</span>
+                <span className="text-sm text-[var(--text-muted)]">Includes pre-surgical workup & aftercare</span>
                 <Link to="/treatments/cardiac-bypass" className="text-sm font-semibold text-[var(--action-text)] hover:underline">
                   View procedure specs →
                 </Link>
@@ -362,17 +396,17 @@ export function HomePage({ onCreateCase }) {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Orthopaedics</span>
-                    <span className="text-xs font-bold text-[var(--text-heading)]">From $8,500 USD</span>
+                    <span className="text-sm font-bold tabular-nums text-[var(--text-heading)]">From $8,500 USD</span>
                   </div>
                   <h4 className="text-lg font-heading font-bold text-[var(--text-heading)] mb-1">
                     Total Knee & Hip Arthroplasty
                   </h4>
-                  <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">
                     Robotic-assisted joint replacement in accredited German & Indian orthopedic centers.
                   </p>
                 </div>
-                <div className="pt-4 mt-4 border-t border-[var(--border)] flex justify-between items-center text-xs">
-                  <span className="text-[var(--text-muted)]">NABH / ISO 9001 Certified</span>
+                <div className="pt-4 mt-4 border-t border-[var(--border)] flex justify-between items-center text-sm">
+                  <span className="text-[var(--text-muted)] text-xs">NABH / ISO 9001 Certified</span>
                   <Link to="/treatments/knee-replacement" className="font-semibold text-[var(--action-text)] hover:underline">
                     Details →
                   </Link>
@@ -383,17 +417,17 @@ export function HomePage({ onCreateCase }) {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Maxillofacial & Dental</span>
-                    <span className="text-xs font-bold text-[var(--text-heading)]">From $1,800 USD</span>
+                    <span className="text-sm font-bold tabular-nums text-[var(--text-heading)]">From $1,800 USD</span>
                   </div>
                   <h4 className="text-lg font-heading font-bold text-[var(--text-heading)] mb-1">
                     All-on-4 Full Dental Restoration
                   </h4>
-                  <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">
                     Surgical titanium implants and immediate 3D-scanned zirconia prosthetics in Istanbul.
                   </p>
                 </div>
-                <div className="pt-4 mt-4 border-t border-[var(--border)] flex justify-between items-center text-xs">
-                  <span className="text-[var(--text-muted)]">JCI Accredited Facility</span>
+                <div className="pt-4 mt-4 border-t border-[var(--border)] flex justify-between items-center text-sm">
+                  <span className="text-[var(--text-muted)] text-xs">JCI Accredited Facility</span>
                   <Link to="/treatments/dental-implants-all-on-4" className="font-semibold text-[var(--action-text)] hover:underline">
                     Details →
                   </Link>
@@ -405,20 +439,202 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          6. PATIENT-CONTROLLED RECORDS & SOVEREIGNTY
+          6. LEADING QUATERNARY DESTINATIONS
           ================================================== */}
       <section id="destinations" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+          <div>
+            <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+              Global Healthcare Destinations
+            </p>
+            <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15]">
+              Quaternary medical centers by country.
+            </h2>
+            <p className="text-base text-[var(--text-muted)] mt-2 max-w-xl">
+              Strictly accredited hospital districts with proven surgical safety records and dedicated international patient concierges.
+            </p>
+          </div>
+          <Link
+            to="/destinations"
+            className="text-sm font-semibold text-[var(--action-text)] hover:underline inline-flex items-center gap-1 shrink-0"
+          >
+            <span>Explore all 47 countries</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {destinations.map((dest) => (
+            <Link
+              key={dest.name}
+              to={dest.href}
+              className="group bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-[var(--radius-lg,12px)] overflow-hidden transition-all flex flex-col"
+            >
+              <div className="w-full aspect-[16/10] overflow-hidden bg-[var(--surface-alt)] relative">
+                <img
+                  src={dest.image}
+                  alt={`Medical tourism district in ${dest.name}`}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 dark:brightness-90"
+                />
+              </div>
+              <div className="p-6 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-xs font-semibold text-[var(--action-text)]">{dest.centers}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-[var(--radius-sm,6px)] bg-[var(--surface-alt)] text-[var(--text-heading)] font-medium">
+                      {dest.accreditation}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-heading font-bold text-[var(--text-heading)] mb-1">
+                    {dest.name}
+                  </h3>
+                  <p className="text-sm text-[var(--text-muted)] mb-3">
+                    {dest.city}
+                  </p>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    Specialties: <span className="text-[var(--text-heading)] font-medium">{dest.specialties}</span>
+                  </p>
+                </div>
+                <div className="pt-4 mt-4 border-t border-[var(--border)] flex items-center justify-between text-sm font-semibold text-[var(--action-text)]">
+                  <span>View destination centers</span>
+                  <span>→</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ==================================================
+          7. VERIFIED QUATERNARY PROVIDERS
+          ================================================== */}
+      <section id="providers" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+            <div>
+              <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+                Accredited Hospital Network
+              </p>
+              <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15]">
+                Verified quaternary medical centers.
+              </h2>
+              <p className="text-base text-[var(--text-muted)] mt-2 max-w-xl">
+                Every listed institution is independently audited for clinical hygiene, surgeon board certifications, and zero hidden hospital markups.
+              </p>
+            </div>
+            <Link
+              to="/providers"
+              className="text-sm font-semibold text-[var(--action-text)] hover:underline inline-flex items-center gap-1 shrink-0"
+            >
+              <span>View all verified hospitals</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="p-6 bg-[var(--surface)] border-[var(--border)] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] mb-4">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-[var(--action)]" />
+                    <span className="text-xs font-semibold text-[var(--text-muted)]">Bangkok, Thailand</span>
+                  </div>
+                  <StatusBadge status="VERIFIED" customLabel="JCI Accredited" size="sm" />
+                </div>
+                <h3 className="text-xl font-heading font-bold text-[var(--text-heading)] mb-2">
+                  Bumrungrad International Hospital
+                </h3>
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">
+                  Quaternary multidisciplinary center with 580 inpatient beds, robotic cardiac suite, and dedicated international patient wing.
+                </p>
+                <div className="space-y-1.5 text-xs text-[var(--text-muted)]">
+                  <div>Specialties: <span className="font-medium text-[var(--text-heading)]">Cardiology, Oncology, Orthopaedics</span></div>
+                  <div>Average response time: <span className="font-semibold text-[var(--action-text)]">Under 4 hours</span></div>
+                </div>
+              </div>
+              <div className="pt-4 mt-6 border-t border-[var(--border)] flex items-center justify-between text-sm">
+                <span className="text-xs text-[var(--text-muted)]">NABH / JCI Verified</span>
+                <Link to="/providers/bumrungrad" className="font-semibold text-[var(--action-text)] hover:underline">
+                  Hospital Profile →
+                </Link>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-[var(--surface)] border-[var(--border)] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] mb-4">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-[var(--action)]" />
+                    <span className="text-xs font-semibold text-[var(--text-muted)]">Gurgaon, India</span>
+                  </div>
+                  <StatusBadge status="VERIFIED" customLabel="NABH Accredited" size="sm" />
+                </div>
+                <h3 className="text-xl font-heading font-bold text-[var(--text-heading)] mb-2">
+                  Fortis Memorial Research Institute
+                </h3>
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">
+                  Top-ranked quaternary healthcare destination renowned for advanced robotics, neurosciences, and complex paediatric cardiac interventions.
+                </p>
+                <div className="space-y-1.5 text-xs text-[var(--text-muted)]">
+                  <div>Specialties: <span className="font-medium text-[var(--text-heading)]">Neuro-Spine, Cardiac Surgery, Transplants</span></div>
+                  <div>Average response time: <span className="font-semibold text-[var(--action-text)]">Under 6 hours</span></div>
+                </div>
+              </div>
+              <div className="pt-4 mt-6 border-t border-[var(--border)] flex items-center justify-between text-sm">
+                <span className="text-xs text-[var(--text-muted)]">NABH Certified Quaternary</span>
+                <Link to="/providers/fortis" className="font-semibold text-[var(--action-text)] hover:underline">
+                  Hospital Profile →
+                </Link>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-[var(--surface)] border-[var(--border)] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] mb-4">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-[var(--action)]" />
+                    <span className="text-xs font-semibold text-[var(--text-muted)]">Istanbul, Turkey</span>
+                  </div>
+                  <StatusBadge status="VERIFIED" customLabel="JCI & Johns Hopkins" size="sm" />
+                </div>
+                <h3 className="text-xl font-heading font-bold text-[var(--text-heading)] mb-2">
+                  Anadolu Medical Center
+                </h3>
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">
+                  Affiliated with Johns Hopkins Medicine, delivering oncology, bone marrow transplants, and stereotactic radiosurgery with European clinical standards.
+                </p>
+                <div className="space-y-1.5 text-xs text-[var(--text-muted)]">
+                  <div>Specialties: <span className="font-medium text-[var(--text-heading)]">Comprehensive Oncology, Bone Marrow</span></div>
+                  <div>Average response time: <span className="font-semibold text-[var(--action-text)]">Under 4 hours</span></div>
+                </div>
+              </div>
+              <div className="pt-4 mt-6 border-t border-[var(--border)] flex items-center justify-between text-sm">
+                <span className="text-xs text-[var(--text-muted)]">Johns Hopkins Affiliate</span>
+                <Link to="/providers/anadolu" className="font-semibold text-[var(--action-text)] hover:underline">
+                  Hospital Profile →
+                </Link>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================================================
+          8. PATIENT-CONTROLLED RECORDS & SOVEREIGNTY
+          ================================================== */}
+      <section id="records" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column Text (6 cols) */}
           <div className="lg:col-span-6">
-            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
               Patient Data Sovereignty
             </p>
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] mb-6">
+            <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] mb-6">
               Your health records. Completely under your control.
             </h2>
-            <p className="text-base text-[var(--text-muted)] leading-relaxed mb-8">
-              International healthcare often forces patients to repeatedly resend sensitive files via unencrypted emails. With EthAum, you store diagnostic scans in an encrypted sovereign vault and grant temporary access to specific hospitals.
+            <p className="text-base sm:text-[17px] text-[var(--text-muted)] leading-[1.6] mb-8">
+              Cross-border healthcare often forces patients to repeatedly resend sensitive files via unencrypted emails. With EthAum, you store diagnostic scans in an encrypted sovereign vault and grant temporary access to specific hospitals.
             </p>
 
             <div className="space-y-4 text-sm font-medium text-[var(--text-heading)] mb-8">
@@ -444,6 +660,7 @@ export function HomePage({ onCreateCase }) {
 
             <div>
               <button
+                type="button"
                 onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
                 className="btn-primary-cta"
               >
@@ -466,32 +683,32 @@ export function HomePage({ onCreateCase }) {
               </div>
 
               <div className="space-y-3">
-                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-xs">
+                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-sm">
                   <div>
                     <span className="font-semibold text-[var(--text-heading)] block">Bumrungrad Hospital</span>
-                    <span className="text-[var(--text-muted)] text-[11px]">Access granted: 3 diagnostic scans</span>
+                    <span className="text-[var(--text-muted)] text-xs">Access granted: 3 diagnostic scans</span>
                   </div>
-                  <span className="px-2 py-1 text-[11px] font-semibold text-[var(--action-text)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
+                  <span className="px-2.5 py-1 text-xs font-semibold text-[var(--action-text)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
                     Authorized
                   </span>
                 </div>
 
-                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-xs">
+                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-sm">
                   <div>
                     <span className="font-semibold text-[var(--text-heading)] block">Anadolu Medical Center</span>
-                    <span className="text-[var(--text-muted)] text-[11px]">Access granted: Cardiac MRI report</span>
+                    <span className="text-[var(--text-muted)] text-xs">Access granted: Cardiac MRI report</span>
                   </div>
-                  <span className="px-2 py-1 text-[11px] font-semibold text-[var(--action-text)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
+                  <span className="px-2.5 py-1 text-xs font-semibold text-[var(--action-text)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
                     Authorized
                   </span>
                 </div>
 
-                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-xs opacity-70">
+                <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)] flex items-center justify-between text-sm opacity-70">
                   <div>
                     <span className="font-semibold text-[var(--text-heading)] block">Fortis Healthcare</span>
-                    <span className="text-[var(--text-muted)] text-[11px]">Access revoked on patient request</span>
+                    <span className="text-[var(--text-muted)] text-xs">Access revoked on patient request</span>
                   </div>
-                  <span className="px-2 py-1 text-[11px] font-semibold text-[var(--text-muted)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
+                  <span className="px-2.5 py-1 text-xs font-semibold text-[var(--text-muted)] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-sm,6px)]">
                     Revoked
                   </span>
                 </div>
@@ -502,15 +719,15 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          7. MEDICAL CASE WORKFLOW PREVIEW
+          9. MEDICAL CASE WORKFLOW PREVIEW
           ================================================== */}
-      <section id="providers" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
+      <section id="case-preview" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
         <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
           <div className="max-w-2xl mb-12">
-            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
               Centralized Healthcare Record
             </p>
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+            <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15]">
               Inside your EthAum Medical Case.
             </h2>
             <p className="text-base text-[var(--text-muted)] mt-2">
@@ -532,22 +749,22 @@ export function HomePage({ onCreateCase }) {
             </div>
 
             {/* Case Info Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-xs">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-sm">
               <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
-                <span className="text-[var(--text-muted)] block">Treatment Requested</span>
-                <span className="font-semibold text-[var(--text-heading)] text-sm mt-0.5 block">Cardiac Consultation</span>
+                <span className="text-[var(--text-muted)] block text-xs">Treatment Requested</span>
+                <span className="font-semibold text-[var(--text-heading)] mt-0.5 block">Cardiac Consultation</span>
               </div>
               <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
-                <span className="text-[var(--text-muted)] block">Clinical Stage</span>
-                <span className="font-semibold text-[var(--text-heading)] text-sm mt-0.5 block">Quotes Received</span>
+                <span className="text-[var(--text-muted)] block text-xs">Clinical Stage</span>
+                <span className="font-semibold text-[var(--text-heading)] mt-0.5 block">Quotes Received</span>
               </div>
               <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
-                <span className="text-[var(--text-muted)] block">Verified Records</span>
-                <span className="font-semibold text-[var(--text-heading)] text-sm mt-0.5 block">3 Scans in Vault</span>
+                <span className="text-[var(--text-muted)] block text-xs">Verified Records</span>
+                <span className="font-semibold text-[var(--text-heading)] mt-0.5 block">3 Scans in Vault</span>
               </div>
               <div className="p-3.5 bg-[var(--surface-alt)] border border-[var(--border)] rounded-[var(--radius-md,8px)]">
-                <span className="text-[var(--text-muted)] block">Hospital Inquiries</span>
-                <span className="font-semibold text-[var(--action-text)] text-sm mt-0.5 block">3 Accredited Matches</span>
+                <span className="text-[var(--text-muted)] block text-xs">Hospital Inquiries</span>
+                <span className="font-semibold text-[var(--action-text)] mt-0.5 block">3 Accredited Matches</span>
               </div>
             </div>
 
@@ -571,26 +788,26 @@ export function HomePage({ onCreateCase }) {
 
             {/* Tab Body */}
             {activeCaseTab === 'overview' && (
-              <div className="space-y-3 text-xs text-[var(--text-muted)]">
-                <p className="leading-relaxed">
+              <div className="space-y-3 text-sm text-[var(--text-muted)] leading-relaxed">
+                <p>
                   Patient presented with angina and coronary artery disease symptoms. Cardiac diagnostic reports and angiogram scans submitted on 12 Mar 2024. Three accredited quaternary hospitals have issued comprehensive itemized treatment proposals.
                 </p>
               </div>
             )}
             {activeCaseTab === 'records' && (
-              <div className="divide-y divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-md,8px)] text-xs">
+              <div className="divide-y divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-md,8px)] text-sm">
                 <div className="p-3 flex items-center justify-between">
                   <span className="font-semibold text-[var(--text-heading)]">Cardiology_Report_2024.pdf</span>
-                  <span className="text-[var(--text-muted)]">Verified · 12 Mar</span>
+                  <span className="text-xs text-[var(--text-muted)]">Verified · 12 Mar</span>
                 </div>
                 <div className="p-3 flex items-center justify-between">
                   <span className="font-semibold text-[var(--text-heading)]">Coronary_Angiogram_Scan.dcm</span>
-                  <span className="text-[var(--text-muted)]">Verified · 08 Mar</span>
+                  <span className="text-xs text-[var(--text-muted)]">Verified · 08 Mar</span>
                 </div>
               </div>
             )}
             {activeCaseTab === 'quotes' && (
-              <div className="text-xs text-[var(--text-muted)]">
+              <div className="text-sm text-[var(--text-muted)]">
                 <p>3 itemized institutional quotes available in Quote Comparison table below.</p>
               </div>
             )}
@@ -599,14 +816,14 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          8. QUOTE COMPARISON TABLE (Per DESIGN.md Section 6)
+          10. QUOTE COMPARISON TABLE (Per DESIGN.md Section 6)
           ================================================== */}
       <section id="quotes" className="scroll-mt-20 sm:scroll-mt-24 py-20 lg:py-24 max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
         <div className="mb-12">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
             Institutional Pricing Transparency
           </p>
-          <h2 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em]">
+          <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15]">
             Compare quotes side by side.
           </h2>
           <p className="text-base text-[var(--text-muted)] mt-2 max-w-xl">
@@ -636,10 +853,10 @@ export function HomePage({ onCreateCase }) {
                   <td className="py-4 px-6">
                     <StatusBadge status="VERIFIED" customLabel={row.accreditation} size="sm" />
                   </td>
-                  <td className="py-4 px-6 text-xs text-[var(--text-muted)] font-medium">
+                  <td className="py-4 px-6 text-sm text-[var(--text-muted)] font-medium">
                     {row.stay}
                   </td>
-                  <td className="py-4 px-6 text-xs text-[var(--text-muted)] max-w-xs leading-relaxed">
+                  <td className="py-4 px-6 text-sm text-[var(--text-muted)] max-w-xs leading-relaxed">
                     {row.inclusions}
                   </td>
                   <td className="py-4 px-6 text-right font-heading font-bold text-base text-[var(--text-heading)] tabular-nums">
@@ -653,22 +870,22 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          9. CONSULTATION AND AFTERCARE
+          11. CONSULTATION AND AFTERCARE
           ================================================== */}
       <section className="py-20 lg:py-24 bg-[var(--surface-alt)] border-t border-b border-[var(--border)] text-left">
         <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+              <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
                 Continuous Clinical Coordination
               </p>
-              <h2 className="text-3xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] mb-4">
+              <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] mb-4">
                 Specialist tele-consultation before you travel. Structured aftercare when you return.
               </h2>
-              <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-6">
+              <p className="text-base text-[var(--text-muted)] leading-relaxed mb-6">
                 EthAum coordinates private video sessions with your operating surgeon before departure. Following treatment, your Medical Case transfers clinical discharge directives, medication schedules, and rehabilitation plans back to your home general practitioner.
               </p>
-              <div className="space-y-3 text-xs font-medium text-[var(--text-heading)]">
+              <div className="space-y-3.5 text-sm font-medium text-[var(--text-heading)]">
                 <div className="flex items-center gap-2.5">
                   <Video className="w-4 h-4 text-[var(--action)]" />
                   <span>Secure HIPAA video consultation with operating surgeon</span>
@@ -689,14 +906,14 @@ export function HomePage({ onCreateCase }) {
                 <div className="flex items-center justify-between pb-4 border-b border-[var(--border)] mb-4">
                   <div className="flex items-center gap-2">
                     <Video className="w-4 h-4 text-[var(--action)]" />
-                    <span className="text-xs font-bold text-[var(--text-heading)] uppercase">Tele-Consultation Active</span>
+                    <span className="text-xs font-bold text-[var(--text-heading)] uppercase tracking-wider">Tele-Consultation Active</span>
                   </div>
                   <span className="text-xs text-[var(--action-text)] font-semibold">14:00 UTC · Confirmed</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-4">
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">
                   Chief of Cardiac Surgery, Dr. Somchai Prasert (Bumrungrad) will review coronary angiogram slices and discuss minimally invasive bypass options.
                 </p>
-                <div className="p-3 bg-[var(--surface-alt)] rounded-[var(--radius-md,8px)] border border-[var(--border)] flex justify-between items-center text-xs">
+                <div className="p-3.5 bg-[var(--surface-alt)] rounded-[var(--radius-md,8px)] border border-[var(--border)] flex justify-between items-center text-sm">
                   <span className="text-[var(--text-heading)] font-semibold">Secure Video Link Encrypted</span>
                   <span className="text-[var(--action-text)] font-semibold">Ready to connect</span>
                 </div>
@@ -707,13 +924,13 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          10. FREQUENTLY ASKED QUESTIONS (Accordion)
+          12. FREQUENTLY ASKED QUESTIONS (Accordion)
           ================================================== */}
       <section id="faq" className="scroll-mt-20 sm:scroll-mt-24 py-20 max-w-[800px] mx-auto px-6 sm:px-8 text-left">
-        <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
+        <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--action)] mb-2">
           Frequently Asked Questions
         </p>
-        <h2 className="text-3xl font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] mb-10">
+        <h2 className="text-3xl sm:text-[38px] font-heading font-bold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] mb-10">
           Everything patients ask before they begin.
         </h2>
 
@@ -727,7 +944,7 @@ export function HomePage({ onCreateCase }) {
                   onClick={() => setExpandedFaqIndex(isExpanded ? null : idx)}
                   className="w-full flex items-center justify-between text-left gap-4 cursor-pointer group"
                 >
-                  <span className="text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--action-text)] transition-colors">
+                  <span className="text-base sm:text-[17px] font-semibold text-[var(--text-heading)] group-hover:text-[var(--action-text)] transition-colors">
                     {item.q}
                   </span>
                   <span className="text-xl font-light text-[var(--action)] shrink-0 select-none">
@@ -735,7 +952,7 @@ export function HomePage({ onCreateCase }) {
                   </span>
                 </button>
                 {isExpanded && (
-                  <p className="mt-3 text-sm text-[var(--text-muted)] leading-[1.6]">
+                  <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)] leading-[1.6]">
                     {item.a}
                   </p>
                 )}
@@ -746,11 +963,11 @@ export function HomePage({ onCreateCase }) {
       </section>
 
       {/* ==================================================
-          11. FINAL CTA BAND (Deep Teal per DESIGN.md Section 6)
+          13. FINAL CTA BAND (Deep Teal per DESIGN.md Section 6)
           ================================================== */}
       <section className="py-20 lg:py-24 bg-[var(--text-heading)] text-white text-center">
         <div className="max-w-[720px] mx-auto px-6 sm:px-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--action-text)] mb-3">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.1em] text-[var(--action-text)] mb-3">
             Start Your Journey
           </p>
           <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-white tracking-[-0.025em] leading-[1.15]">
@@ -761,8 +978,9 @@ export function HomePage({ onCreateCase }) {
           </p>
           <div className="mt-8 flex justify-center">
             <button
+              type="button"
               onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
-              className="bg-[var(--action)] text-white font-semibold text-base py-3.5 px-8 rounded-[var(--radius-md,8px)] hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
+              className="bg-[var(--action)] text-white font-semibold text-base py-3 px-8 min-h-[48px] rounded-[var(--radius-md,8px)] hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
             >
               Create a Medical Case
             </button>
