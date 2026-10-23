@@ -52,29 +52,30 @@ export function Drawer({
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-[#172321]/45 dark:bg-black/65 backdrop-blur-[2px] transition-opacity duration-200"
+        className="fixed inset-0 bg-[#172321]/50 dark:bg-black/70 backdrop-blur-[2px] transition-opacity duration-200"
       />
 
       {/* Drawer Surface */}
       <div
-        className={`relative w-full ${sizeClass} bg-[var(--bg-card)] text-[var(--text-primary)] shadow-2xl z-10 flex flex-col h-full text-left transition-transform duration-300 ease-out border-l border-[var(--border-default)]
-          ${isRight ? 'ml-auto' : 'mr-auto border-r border-l-0'} ${className}`}
+        tabIndex={-1}
+        className={`relative w-full ${sizeClass} bg-[var(--surface)] text-[var(--text)] shadow-2xl z-10 flex flex-col h-full text-left rtl:text-right transition-transform duration-300 ease-out border-l rtl:border-l-0 rtl:border-r border-[var(--border)]
+          ${isRight ? 'ml-auto rtl:mr-auto rtl:ml-0' : 'mr-auto rtl:ml-auto rtl:mr-0 border-r border-l-0'} ${className}`}
       >
         {/* Header */}
-        <div className="flex items-start justify-between p-5 border-b border-[var(--border-hairline)] shrink-0">
+        <div className="flex items-center justify-between p-5 border-b border-[var(--border)] shrink-0">
           <div>
-            {title && <h2 className="text-base font-medium text-[var(--text-primary)]">{title}</h2>}
+            {title && <h2 className="text-base font-semibold text-[var(--text-heading)]">{title}</h2>}
             {description && (
-              <p className="text-xs text-[var(--text-secondary)] font-light mt-0.5 leading-relaxed">{description}</p>
+              <p className="text-xs text-[var(--text-muted)] font-normal mt-0.5 leading-relaxed">{description}</p>
             )}
           </div>
           <IconButton
-            icon={<X className="w-4 h-4" />}
+            icon={<X className="w-5 h-5" />}
             label="Close drawer"
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            className="text-[var(--text-muted)] hover:text-[var(--text-heading)]"
           />
         </div>
 
@@ -83,7 +84,7 @@ export function Drawer({
 
         {/* Footer */}
         {footer && (
-          <div className="p-4 border-t border-[var(--border-hairline)] bg-[var(--bg-base)] shrink-0 flex items-center justify-end gap-3">
+          <div className="p-4 border-t border-[var(--border)] bg-[var(--surface-alt)] shrink-0 flex items-center justify-end gap-3">
             {footer}
           </div>
         )}

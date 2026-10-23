@@ -304,10 +304,10 @@ export function Navbar({
                   key={link.label}
                   type="button"
                   onClick={() => handleLinkClick(link.href)}
-                  className={`w-full flex items-center justify-between px-4 py-3 text-[15px] rounded-[var(--radius-md,8px)] font-medium text-left transition-colors cursor-pointer
+                  className={`w-full min-h-[44px] flex items-center justify-between px-4 py-3 text-[15px] rounded-[var(--radius-md,8px)] font-medium text-left rtl:text-right transition-colors cursor-pointer
                     ${
                       isActive
-                        ? 'bg-[var(--surface-alt)] text-[var(--text-heading)] font-semibold border-l-2 border-[var(--action)]'
+                        ? 'bg-[var(--surface-alt)] text-[var(--text-heading)] font-semibold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[var(--action)]'
                         : 'text-[var(--text-muted)] hover:bg-[var(--surface-alt)] hover:text-[var(--text-heading)]'
                     }`}
                 >

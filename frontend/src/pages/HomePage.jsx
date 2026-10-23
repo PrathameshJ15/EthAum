@@ -166,7 +166,7 @@ export function HomePage({ onCreateCase }) {
               </div>
 
               {/* H1 Headline per DESIGN.md: 60px desktop, 38px mobile, Manrope 800 */}
-              <h1 className="text-[38px] sm:text-[46px] lg:text-[58px] font-heading font-extrabold text-[var(--text-heading)] leading-[1.08] tracking-[-0.025em] max-w-[620px]">
+              <h1 className="text-[32px] xs:text-[38px] sm:text-[46px] lg:text-[58px] font-heading font-extrabold text-[var(--text-heading)] leading-[1.12] sm:leading-[1.08] tracking-[-0.025em] max-w-[620px]">
                 {t('home.hero.title', 'Global Care. Closer to You.')}
               </h1>
 
@@ -192,7 +192,7 @@ export function HomePage({ onCreateCase }) {
                     el?.scrollIntoView({ behavior: 'smooth' })
                     window.history.pushState(null, '', '/#treatments')
                   }}
-                  className="btn-secondary-ghost inline-flex items-center gap-2"
+                  className="btn-secondary-ghost w-full sm:w-auto min-h-[48px] justify-center inline-flex items-center gap-2"
                 >
 <span>{t('home.hero.startConsultation', 'Explore Treatments')}</span>
                   <ArrowRight className="w-4 h-4 rtl:rotate-180" />
@@ -230,7 +230,7 @@ export function HomePage({ onCreateCase }) {
                 />
 
                 {/* Overlapping Genuine Product Preview Card */}
-                <div className="absolute -bottom-6 -left-4 sm:-left-6 right-6 sm:right-auto sm:w-[320px] bg-[var(--surface)] border border-[var(--border)] p-5 rounded-[var(--radius-lg,12px)] shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-10">
+                <div className="mt-4 sm:mt-0 sm:absolute sm:-bottom-6 sm:-left-6 sm:right-auto sm:w-[320px] bg-[var(--surface)] border border-[var(--border)] p-4 sm:p-5 rounded-[var(--radius-lg,12px)] shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-10">
                   <div className="flex items-center justify-between pb-3 border-b border-[var(--border)] mb-3">
                     <span className="text-sm font-bold text-[var(--text-heading)]">Case #MC-2024-0891</span>
                     <StatusBadge status="ACTIVE" size="sm" />
@@ -557,7 +557,7 @@ export function HomePage({ onCreateCase }) {
               </div>
               <div className="pt-4 mt-6 border-t border-[var(--border)] flex items-center justify-between text-sm">
                 <span className="text-xs text-[var(--text-muted)]">NABH / JCI Verified</span>
-                <Link to="/providers/bumrungrad" className="font-semibold text-[var(--action-text)] hover:underline">
+                <Link to="/providers/bumrungrad-partner-bangkok" className="font-semibold text-[var(--action-text)] hover:underline">
                   Hospital Profile →
                 </Link>
               </div>
@@ -585,7 +585,7 @@ export function HomePage({ onCreateCase }) {
               </div>
               <div className="pt-4 mt-6 border-t border-[var(--border)] flex items-center justify-between text-sm">
                 <span className="text-xs text-[var(--text-muted)]">NABH Certified Quaternary</span>
-                <Link to="/providers/fortis" className="font-semibold text-[var(--action-text)] hover:underline">
+                <Link to="/providers/apex-joint-delhi" className="font-semibold text-[var(--action-text)] hover:underline">
                   Hospital Profile →
                 </Link>
               </div>
@@ -613,7 +613,7 @@ export function HomePage({ onCreateCase }) {
               </div>
               <div className="pt-4 mt-6 border-t border-[var(--border)] flex items-center justify-between text-sm">
                 <span className="text-xs text-[var(--text-muted)]">Johns Hopkins Affiliate</span>
-                <Link to="/providers/anadolu" className="font-semibold text-[var(--action-text)] hover:underline">
+                <Link to="/providers/acibadem-heart-istanbul" className="font-semibold text-[var(--action-text)] hover:underline">
                   Hospital Profile →
                 </Link>
               </div>

@@ -58,10 +58,10 @@ export function LanguageSelector({ variant = 'capsule', className = '', showLabe
                 key={lang.code}
                 type="button"
                 onClick={() => handleSelectLanguage(lang.code)}
-                className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-[4px] border transition-colors cursor-pointer select-none ${
+                className={`w-full flex items-center justify-between min-h-[44px] px-3.5 py-2.5 text-xs rounded-[var(--radius-md,8px)] border transition-colors cursor-pointer select-none ${
                   isSelected
-                    ? 'bg-[var(--green-rich)]/12 border-[var(--green-rich)] text-[var(--green-rich)] font-medium dark:bg-[var(--green-rich)]/20 dark:text-[var(--green-cta)]'
-                    : 'bg-[var(--bg-card)] border-[var(--border-hairline)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-default)]'
+                    ? 'bg-[var(--action)]/10 border-[var(--action)] text-[var(--action-text)] font-semibold'
+                    : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text)] hover:border-[var(--border-strong)]'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -88,7 +88,7 @@ export function LanguageSelector({ variant = 'capsule', className = '', showLabe
         aria-expanded={isOpen}
         aria-label={`Select language. Current language: ${currentLanguageMeta.name}`}
         onClick={() => setIsOpen((prev) => !prev)}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[var(--bg-card)] border border-[var(--border-default)] text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-all cursor-pointer select-none focus:outline-none focus:ring-1 focus:ring-[var(--green-rich)]"
+        className="inline-flex items-center gap-1.5 min-h-[40px] px-3 py-1.5 text-xs font-semibold rounded-[var(--radius-md,8px)] bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] hover:border-[var(--border-strong)] transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[var(--action)]"
       >
         <span className="text-xs leading-none">{currentLanguageMeta.flag}</span>
         {showLabel && (
@@ -108,7 +108,7 @@ export function LanguageSelector({ variant = 'capsule', className = '', showLabe
         <div
           role="listbox"
           aria-labelledby="language-selector-button"
-          className="absolute end-0 mt-1.5 w-48 rounded-[4px] bg-[var(--bg-card)] border border-[var(--border-strong)] shadow-xl z-50 py-1.5 focus:outline-none animate-in fade-in zoom-in-95 duration-100"
+          className="absolute end-0 mt-1.5 w-52 rounded-[var(--radius-md,8px)] bg-[var(--surface)] border border-[var(--border)] shadow-xl z-50 py-1.5 focus:outline-none animate-in fade-in zoom-in-95 duration-100"
         >
           <div className="px-3 py-1 border-b border-[var(--border-hairline)] mb-1">
             <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--text-muted)]">
@@ -124,10 +124,10 @@ export function LanguageSelector({ variant = 'capsule', className = '', showLabe
                 aria-selected={isSelected}
                 type="button"
                 onClick={() => handleSelectLanguage(lang.code)}
-                className={`w-full flex items-center justify-between px-3 py-1.5 text-xs text-start transition-colors cursor-pointer select-none ${
+                className={`w-full flex items-center justify-between min-h-[40px] px-3.5 py-2 text-xs text-start transition-colors cursor-pointer select-none ${
                   isSelected
-                    ? 'bg-[var(--green-rich)]/12 text-[var(--green-rich)] font-semibold dark:bg-[var(--green-rich)]/20 dark:text-[var(--green-cta)]'
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]'
+                    ? 'bg-[var(--action)]/10 text-[var(--action-text)] font-semibold'
+                    : 'text-[var(--text)] hover:bg-[var(--surface-alt)]'
                 }`}
               >
                 <div className="flex items-center gap-2">

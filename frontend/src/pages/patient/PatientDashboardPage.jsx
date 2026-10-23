@@ -237,7 +237,7 @@ export function PatientDashboardPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="flex sm:grid sm:grid-cols-4 lg:grid-cols-8 gap-3 overflow-x-auto pb-2 -mx-1 px-1 no-scrollbar scroll-smooth snap-x">
           {journeyMilestones.map((step, idx) => {
             const isCompleted = step.state === 'completed'
             const isActive = step.state === 'active'
@@ -245,7 +245,7 @@ export function PatientDashboardPage() {
             return (
               <div
                 key={step.id}
-                className={`p-3.5 rounded-[var(--radius-md,8px)] border text-left transition-colors ${
+                className={`shrink-0 w-[145px] sm:w-auto snap-start p-3.5 rounded-[var(--radius-md,8px)] border text-left rtl:text-right transition-colors ${
                   isActive
                     ? 'bg-[var(--action)]/10 border-[var(--action)]'
                     : isCompleted
