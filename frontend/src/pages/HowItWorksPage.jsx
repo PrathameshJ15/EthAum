@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { Breadcrumb } from '../components'
 import { HOW_IT_WORKS_STEPS } from '../data/howItWorksData'
+import { useTranslation } from '../i18n'
 
 const STEP_ICONS = {
   Search: <Search className="w-4 h-4" />,
@@ -27,6 +28,7 @@ const STEP_ICONS = {
 }
 
 export function HowItWorksPage({ onCreateCase }) {
+  const { t } = useTranslation()
   const [activeStepIdx, setActiveStepIdx] = useState(0)
   const currentStep = HOW_IT_WORKS_STEPS[activeStepIdx]
 
@@ -34,8 +36,8 @@ export function HowItWorksPage({ onCreateCase }) {
     <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16 space-y-12 text-left">
       <Breadcrumb
         items={[
-          { label: 'Marketplace', href: '/' },
-          { label: 'How It Works', current: true },
+          { label: t('nav.marketplace', 'Marketplace'), href: '/' },
+          { label: t('nav.howItWorks', 'How It Works'), current: true },
         ]}
       />
 
@@ -43,15 +45,15 @@ export function HowItWorksPage({ onCreateCase }) {
       <div>
         <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-4 flex items-center gap-2.5 font-sans">
           <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-          The Care Journey
+          {t('howItWorks.badge', 'The Care Journey')}
         </p>
 
         <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-serif font-light text-[var(--text-primary)] tracking-[-0.025em] leading-[1.1] max-w-2xl">
-          Coordinated Healthcare Across Borders
+          {t('howItWorks.heading', 'Coordinated Healthcare Across Borders')}
         </h1>
 
         <p className="mt-4 text-sm sm:text-base font-light text-[var(--text-secondary)] font-sans max-w-xl leading-relaxed">
-          A structured, transparent pathway designed to protect patient health records, eliminate unbudgeted medical expenses, and maintain clinical continuity worldwide.
+          {t('howItWorks.subtitle', 'A structured, transparent pathway designed to protect patient health records, eliminate unbudgeted medical expenses, and maintain clinical continuity worldwide.')}
         </p>
       </div>
 
@@ -61,13 +63,13 @@ export function HowItWorksPage({ onCreateCase }) {
           <ShieldCheck className="w-5 h-5 shrink-0 text-[var(--green-rich)] mt-0.5" />
           <div>
             <span className="text-sm font-medium block text-[var(--text-primary)] mb-1 font-sans">
-              EthAum AI Coordination Philosophy
+              {t('howItWorks.aiTitle', 'EthAum AI Coordination Philosophy')}
             </span>
-            AI organizes records, normalizes quotes, and highlights missing scans. EthAum AI never diagnoses, prescribes medication, or replaces a board-certified doctor.
+            {t('howItWorks.aiDesc', 'AI organizes records, normalizes quotes, and highlights missing scans. EthAum AI never diagnoses, prescribes medication, or replaces a board-certified doctor.')}
           </div>
         </div>
         <span className="text-[11px] font-sans px-3 py-1 rounded-[3px] bg-[var(--copper-pale)] border border-[var(--copper-border)] text-[var(--copper)] shrink-0">
-          Grok Engine · Coordination Only
+          {t('howItWorks.aiBadge', 'Grok Engine · Coordination Only')}
         </span>
       </div>
 
@@ -106,7 +108,7 @@ export function HowItWorksPage({ onCreateCase }) {
                 {currentStep.badge}
               </span>
               <span className="text-xs text-[var(--text-muted)] font-sans">
-                Milestone {currentStep.stepNumber} of 8
+                {t('howItWorks.milestone', `Milestone ${currentStep.stepNumber} of 8`, { current: currentStep.stepNumber })}
               </span>
             </div>
 
@@ -134,24 +136,24 @@ export function HowItWorksPage({ onCreateCase }) {
             <div className="pt-4 flex items-center gap-3">
               <button
                 onClick={() => onCreateCase?.()}
-                className="bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] px-6 py-2.5 text-xs font-medium font-sans tracking-[0.02em]"
+                className="bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] px-6 py-2.5 text-xs font-medium font-sans tracking-[0.02em] cursor-pointer"
               >
-                Start Your Medical Case
+                {t('howItWorks.startCase', 'Start Your Medical Case')}
               </button>
 
               {activeStepIdx < HOW_IT_WORKS_STEPS.length - 1 ? (
                 <button
                   onClick={() => setActiveStepIdx((prev) => prev + 1)}
-                  className="border border-[var(--border-default)] hover:border-[var(--border-strong)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 rounded-[3px] px-4 py-2.5 text-xs font-sans"
+                  className="border border-[var(--border-default)] hover:border-[var(--border-strong)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 rounded-[3px] px-4 py-2.5 text-xs font-sans cursor-pointer inline-flex items-center gap-1"
                 >
-                  Next: {HOW_IT_WORKS_STEPS[activeStepIdx + 1].title.split(' ')[0]} &rarr;
+                  {t('howItWorks.next', 'Next')}: {HOW_IT_WORKS_STEPS[activeStepIdx + 1].title.split(' ')[0]} <span className="inline-block rtl:rotate-180">&rarr;</span>
                 </button>
               ) : (
                 <button
                   onClick={() => setActiveStepIdx(0)}
-                  className="border border-[var(--border-default)] hover:border-[var(--border-strong)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 rounded-[3px] px-4 py-2.5 text-xs font-sans"
+                  className="border border-[var(--border-default)] hover:border-[var(--border-strong)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 rounded-[3px] px-4 py-2.5 text-xs font-sans cursor-pointer"
                 >
-                  Back to Step 1
+                  {t('howItWorks.backToStep1', 'Back to Step 1')}
                 </button>
               )}
             </div>
@@ -179,9 +181,9 @@ export function HowItWorksPage({ onCreateCase }) {
             </div>
 
             <div className="p-3.5 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-hairline)] text-xs text-[var(--text-secondary)] font-sans space-y-1">
-              <p className="font-medium text-[var(--text-primary)]">Patient Protection Check</p>
+              <p className="font-medium text-[var(--text-primary)]">{t('howItWorks.patientProtection', 'Patient Protection Check')}</p>
               <p className="text-[var(--text-muted)] leading-relaxed text-[11px] font-light">
-                Hospital coordinators cannot download or redistribute your scans without your explicit cryptographic consent.
+                {t('howItWorks.protectionDetail', 'Hospital coordinators cannot download or redistribute your scans without your explicit cryptographic consent.')}
               </p>
             </div>
           </div>
@@ -193,10 +195,10 @@ export function HowItWorksPage({ onCreateCase }) {
         <div>
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-2 flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Comprehensive Architecture
+            {t('howItWorks.architectureBadge', 'Comprehensive Architecture')}
           </p>
           <h3 className="text-2xl font-serif font-light text-[var(--text-primary)]">
-            All 8 Milestones at a Glance
+            {t('howItWorks.allMilestones', 'All 8 Milestones at a Glance')}
           </h3>
         </div>
 

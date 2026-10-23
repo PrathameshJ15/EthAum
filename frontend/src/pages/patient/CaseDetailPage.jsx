@@ -55,6 +55,7 @@ import {
   TreatmentBookingModal,
   JourneyTracker,
   AftercareModule,
+  VideoConsultationRoom,
   PaymentCheckoutModal,
   FhirInteroperabilityCard,
 } from '../../components'
@@ -202,6 +203,18 @@ export function CaseDetailPage() {
   const [isLoadingAppointments, setIsLoadingAppointments] = useState(false)
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [consultationModalType, setConsultationModalType] = useState('consultation') // 'consultation' | 'follow-up'
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [activeVideoAppointment, setActiveVideoAppointment] = useState(null)
+
+  const handleOpenVideoRoom = (apt) => {
+    setActiveVideoAppointment(apt)
+    setIsVideoModalOpen(true)
+  }
+
+  const handleVideoSessionEnded = () => {
+    loadAppointments()
+    loadCaseDetails()
+  }
 
   // =========================================================================
   // Treatment Booking State (After Consultation -> Inpatient Admission Booking)
@@ -1990,9 +2003,7 @@ export function CaseDetailPage() {
                               <Button
                                 variant="primary"
                                 size="sm"
-                                onClick={() => {
-                                  window.open(apt.meetingUrl || 'https://meet.ethaum.sovereign/room-ET8492', '_blank')
-                                }}
+                                onClick={() => handleOpenVideoRoom(apt)}
                                 leftIcon={<Play className="w-3.5 h-3.5" />}
                               >
                                 Enter Video Room Now
@@ -2678,6 +2689,14 @@ export function CaseDetailPage() {
         onClose={() => setIsBookingModalOpen(false)}
         caseData={medicalCase}
         onSuccess={handleBookingSuccess}
+      />
+
+      {/* Video Consultation & Telemedicine Room (E2EE HIPAA / Daily.co) */}
+      <VideoConsultationRoom
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        appointment={activeVideoAppointment}
+        onSessionEnded={handleVideoSessionEnded}
       />
 
       {/* Real Gateway Payment Checkout Modal */}

@@ -626,6 +626,31 @@ export interface CaseJourneySummary {
 }
 
 /**
+ * Video Consultation & Telemedicine Types
+ */
+export type VideoSessionStatus = 'SCHEDULED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'EXPIRED'
+
+export interface VideoConsultationSession {
+  sessionId: string
+  appointmentId: string
+  caseId: string
+  roomName: string
+  roomUrl: string
+  provider: 'daily' | 'webrtc-e2ee'
+  status: VideoSessionStatus
+  sessionToken: string
+  participantRole: 'patient' | 'doctor' | 'provider' | 'admin'
+  participantName: string
+  isOwner: boolean
+  enableRecording: boolean // MUST REMAIN FALSE BY DEFAULT
+  enableScreenshare: boolean
+  enableChat: boolean
+  createdAt: string
+  expiresAt: string
+}
+
+
+/**
  * Travel & Visa Assistance Types
  */
 export type TravelStatus =

@@ -34,6 +34,18 @@ export const appointmentService = {
   async cancelAppointment(id) {
     return await apiClient.post(`/appointments/${id}/cancel`)
   },
+
+  async createOrJoinVideoSession(id) {
+    return await apiClient.post(`/appointments/${id}/video-session`)
+  },
+
+  async getVideoSession(id) {
+    return await apiClient.get(`/appointments/${id}/video-session`)
+  },
+
+  async endVideoSession(id, notes) {
+    return await apiClient.post(`/appointments/${id}/video-session/end`, { notes })
+  },
 }
 
 export default appointmentService

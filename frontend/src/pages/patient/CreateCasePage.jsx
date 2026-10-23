@@ -34,11 +34,13 @@ import { useAuth } from '../../context/AuthContext'
 import { caseService } from '../../services/caseService'
 import { TREATMENTS_DATA } from '../../data/treatmentsData'
 import { DESTINATIONS_DATA } from '../../data/destinationsData'
+import { useTranslation } from '../../i18n'
 
 export function CreateCasePage() {
   const navigate = useNavigate()
   const { addToast } = useToast()
   const { user } = useAuth()
+  const { t } = useTranslation()
 
   // Current Step: 1 = Basic Info, 2 = Treatment & Destination, 3 = Medical Info, 4 = Review
   const [currentStep, setCurrentStep] = useState(1)
@@ -254,8 +256,8 @@ export function CreateCasePage() {
       {/* Breadcrumb Navigation */}
       <Breadcrumb
         items={[
-          { label: 'Patient Dashboard', href: '/dashboard' },
-          { label: 'Create Medical Case', current: true },
+          { label: t('nav.dashboard', 'Patient Dashboard'), href: '/dashboard' },
+          { label: t('cases.createCase', 'Create Medical Case'), current: true },
         ]}
       />
 
@@ -263,9 +265,9 @@ export function CreateCasePage() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-[var(--border-default)] dark:border-[var(--border-default)]">
         <div>
           <SectionHeading
-            eyebrow="Case Intake Dossier"
-            title="Create a Sovereign Medical Case"
-            description="Your medical information is encrypted and stored in your private vault. Hospitals can only view records you explicitly permission."
+            eyebrow={t('cases.eyebrow', 'Case Intake Dossier')}
+            title={t('cases.createTitle', 'Create a Sovereign Medical Case')}
+            description={t('cases.createDesc', 'Your medical information is encrypted and stored in your private vault. Hospitals can only view records you explicitly permission.')}
           />
         </div>
 
@@ -276,7 +278,7 @@ export function CreateCasePage() {
           leftIcon={<Save className="w-4 h-4" />}
           title="Save progress locally"
         >
-          Save Draft
+          {t('cases.saveDraft', 'Save Draft')}
         </Button>
       </div>
 

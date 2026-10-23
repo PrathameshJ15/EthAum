@@ -16,10 +16,12 @@ import {
   Award,
 } from 'lucide-react'
 import { Photo, StatusBadge, Button, Card } from '../components'
+import { useTranslation } from '../i18n'
 
 export function HomePage({ onCreateCase }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const { t } = useTranslation()
 
   // Smooth scroll to section if hash exists in URL on mount or hash change
   useEffect(() => {
@@ -153,24 +155,24 @@ export function HomePage({ onCreateCase }) {
           2. HERO SECTION (Split Layout per DESIGN.md)
           ================================================== */}
       <section id="hero" className="relative pt-12 sm:pt-16 lg:pt-20 pb-16 lg:pb-24 border-b border-[var(--border)] overflow-hidden">
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 text-left rtl:text-right">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
             {/* Left Content Column (7 cols) */}
             <div className="lg:col-span-7">
               {/* Eyebrow Label per DESIGN.md: 13px, 600, uppercase */}
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm,6px)] bg-[var(--surface-alt)] border border-[var(--border)] text-[13px] font-semibold text-[var(--action-text)] tracking-[0.08em] uppercase mb-6">
                 <span className="w-2 h-2 rounded-full bg-[var(--action)]" />
-                <span>Accredited Quaternary Healthcare · Zero Markup</span>
+                <span>{t('home.hero.badge', 'Accredited Quaternary Healthcare · Zero Markup')}</span>
               </div>
 
               {/* H1 Headline per DESIGN.md: 60px desktop, 38px mobile, Manrope 800 */}
               <h1 className="text-[38px] sm:text-[46px] lg:text-[58px] font-heading font-extrabold text-[var(--text-heading)] leading-[1.08] tracking-[-0.025em] max-w-[620px]">
-                Global Care. Closer to You.
+                {t('home.hero.title', 'Global Care. Closer to You.')}
               </h1>
 
               {/* Paragraph max 520px per DESIGN.md: 18px desktop, line-height 1.6 */}
               <p className="mt-6 text-base sm:text-lg font-normal text-[var(--text-muted)] leading-[1.6] max-w-[520px]">
-                EthAum coordinates your cross-border care journey — patient-controlled medical records, verified quaternary hospitals, and transparent institutional quotes across 47 countries.
+                {t('home.hero.subtitle', 'EthAum coordinates your cross-border care journey — patient-controlled medical records, verified quaternary hospitals, and transparent institutional quotes across 47 countries.')}
               </p>
 
               {/* Primary Action + Secondary Button */}
@@ -180,7 +182,7 @@ export function HomePage({ onCreateCase }) {
                   onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
                   className="btn-primary-cta"
                 >
-                  Open Medical Case
+{t('home.hero.createCaseCta', 'Open Medical Case')}
                 </button>
                 <a
                   href="#treatments"
@@ -192,8 +194,8 @@ export function HomePage({ onCreateCase }) {
                   }}
                   className="btn-secondary-ghost inline-flex items-center gap-2"
                 >
-                  <span>Explore Treatments</span>
-                  <ArrowRight className="w-4 h-4" />
+<span>{t('home.hero.startConsultation', 'Explore Treatments')}</span>
+                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
                 </a>
               </div>
 
@@ -968,13 +970,13 @@ export function HomePage({ onCreateCase }) {
       <section className="py-20 lg:py-24 bg-[var(--text-heading)] text-white text-center">
         <div className="max-w-[720px] mx-auto px-6 sm:px-8">
           <p className="text-[13px] font-semibold uppercase tracking-[0.1em] text-[var(--action-text)] mb-3">
-            Start Your Journey
+            {t('home.cta.badge', 'Start Your Journey')}
           </p>
           <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-white tracking-[-0.025em] leading-[1.15]">
-            Ready to explore world-class care options?
+            {t('home.cta.title', 'Ready to explore world-class care options?')}
           </h2>
           <p className="mt-4 text-base text-white/80 leading-relaxed max-w-lg mx-auto">
-            Open your secure Medical Case in minutes. No commitment, zero markup, patient-controlled records.
+            {t('home.cta.subtitle', 'Open your secure Medical Case in minutes. No commitment, zero markup, patient-controlled records.')}
           </p>
           <div className="mt-8 flex justify-center">
             <button
@@ -982,8 +984,14 @@ export function HomePage({ onCreateCase }) {
               onClick={() => (onCreateCase ? onCreateCase() : navigate('/create-case'))}
               className="bg-[var(--action)] text-white font-semibold text-base py-3 px-8 min-h-[48px] rounded-[var(--radius-md,8px)] hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
             >
-              Create a Medical Case
+              {t('home.cta.button', 'Create Your Medical Case')}
             </button>
+          </div>
+
+          <div className="mt-10 pt-6 border-t border-[var(--border-hairline)] max-w-xl mx-auto">
+            <p className="text-[11px] text-[var(--text-muted)] font-sans italic leading-relaxed">
+              {t('common.disclaimer')}
+            </p>
           </div>
         </div>
       </section>

@@ -1,10 +1,12 @@
 import React from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Activity } from 'lucide-react'
+import { useTranslation } from '../../i18n'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
 export function Footer({ onNavigate }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -41,7 +43,7 @@ export function Footer({ onNavigate }) {
 
   return (
     <footer className="w-full bg-[var(--surface-alt)] text-[var(--text)] pt-16 pb-12 border-t border-[var(--border)] mt-auto transition-colors duration-150">
-      <div className="max-w-[1200px] mx-auto px-6 sm:px-8 text-left">
+      <div className="max-w-[1200px] mx-auto px-6 sm:px-8 text-left rtl:text-right">
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 lg:gap-8 pb-12 border-b border-[var(--border)]">
           {/* Brand Info (2 cols) */}
@@ -57,34 +59,34 @@ export function Footer({ onNavigate }) {
               </span>
             </Link>
             <p className="text-sm font-normal text-[var(--text-muted)] leading-relaxed max-w-sm">
-              International healthcare coordination — patient-controlled medical records, accredited hospital matching, and transparent institutional quotes.
+              {t('brand.tagline', 'International healthcare coordination — patient-controlled medical records, accredited hospital matching, and transparent institutional quotes.')}
             </p>
           </div>
 
           {/* Product Column */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--text-heading)] font-heading">
-              Product
+              {t('nav.treatments', 'Product')}
             </h4>
             <ul className="space-y-2.5 text-sm text-[var(--text-muted)]">
               <li>
                 <Link to="/#treatments" onClick={(e) => handleLinkClick('/#treatments', e)} className="hover:text-[var(--text-heading)] transition-colors">
-                  Treatments
+                  {t('nav.treatments', 'Treatments')}
                 </Link>
               </li>
               <li>
                 <Link to="/#destinations" onClick={(e) => handleLinkClick('/#destinations', e)} className="hover:text-[var(--text-heading)] transition-colors">
-                  Destinations
+                  {t('nav.destinations', 'Destinations')}
                 </Link>
               </li>
               <li>
                 <Link to="/#providers" onClick={(e) => handleLinkClick('/#providers', e)} className="hover:text-[var(--text-heading)] transition-colors">
-                  Providers
+                  {t('nav.providers', 'Providers')}
                 </Link>
               </li>
               <li>
                 <Link to="/create-case" onClick={(e) => handleLinkClick('/create-case', e)} className="hover:text-[var(--text-heading)] transition-colors">
-                  Medical Case
+                  {t('nav.case', 'Medical Case')}
                 </Link>
               </li>
             </ul>

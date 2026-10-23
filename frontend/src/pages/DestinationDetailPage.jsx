@@ -12,10 +12,12 @@ import { Breadcrumb } from '../components'
 import { DESTINATIONS_DATA } from '../data/destinationsData'
 import { PROVIDERS_DATA } from '../data/providersData'
 import { TREATMENTS_DATA } from '../data/treatmentsData'
+import { useTranslation } from '../i18n'
 
 export function DestinationDetailPage({ onCreateCase }) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const destination = DESTINATIONS_DATA.find((d) => d.id === id) || DESTINATIONS_DATA[0]
 
@@ -34,8 +36,8 @@ export function DestinationDetailPage({ onCreateCase }) {
     <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16 space-y-12 text-left">
       <Breadcrumb
         items={[
-          { label: 'Marketplace', href: '/' },
-          { label: 'Destinations', href: '/destinations' },
+          { label: t('nav.marketplace', 'Marketplace'), href: '/' },
+          { label: t('nav.destinations', 'Destinations'), href: '/destinations' },
           { label: destination.name, current: true },
         ]}
       />
@@ -54,7 +56,7 @@ export function DestinationDetailPage({ onCreateCase }) {
         <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 z-10">
           <div>
             <span className="text-[11px] font-sans px-2.5 py-0.5 rounded-[3px] bg-[var(--copper-pale)] border border-[var(--copper-border)] text-[var(--copper)] uppercase tracking-[0.06em] mb-2 inline-block">
-              {destination.jciHospitalsCount}+ JCI Centers
+              {destination.jciHospitalsCount}+ {t('destinations.jciCenters', 'JCI Centers')}
             </span>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-[#EDE5CE]">
               {destination.name}
@@ -66,9 +68,9 @@ export function DestinationDetailPage({ onCreateCase }) {
 
           <button
             onClick={() => onCreateCase ? onCreateCase() : navigate('/create-case')}
-            className="bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] px-6 py-2.5 text-xs font-medium font-sans tracking-[0.02em] shrink-0"
+            className="bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] px-6 py-2.5 text-xs font-medium font-sans tracking-[0.02em] shrink-0 cursor-pointer"
           >
-            Create Medical Case
+            {t('destinations.createCase', 'Create Medical Case')}
           </button>
         </div>
       </div>
@@ -78,7 +80,7 @@ export function DestinationDetailPage({ onCreateCase }) {
         {/* Left Column (7 Cols) */}
         <div className="lg:col-span-7 space-y-6">
           <div className="p-6 sm:p-8 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4">
-            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">Destination Overview</h3>
+            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">{t('destinations.overview', 'Destination Overview')}</h3>
             <p className="text-sm font-light text-[var(--text-secondary)] font-sans leading-relaxed">
               {destination.description}
             </p>
@@ -88,7 +90,7 @@ export function DestinationDetailPage({ onCreateCase }) {
           </div>
 
           <div className="p-6 sm:p-8 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4">
-            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">Clinical Specialties</h3>
+            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">{t('destinations.clinicalSpecialties', 'Clinical Specialties')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {destination.primarySpecialties.map((spec) => (
                 <div key={spec} className="p-3 bg-[var(--bg-base)] rounded-[3px] border border-[var(--border-hairline)] text-xs font-sans text-[var(--text-secondary)] flex items-center gap-2">
@@ -102,12 +104,12 @@ export function DestinationDetailPage({ onCreateCase }) {
 
         {/* Right Column (5 Cols): Logistics */}
         <div className="lg:col-span-5 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] p-6 sm:p-8 space-y-5">
-          <h3 className="text-lg font-serif font-light text-[var(--text-primary)]">Travel & Medical Visa Logistics</h3>
+          <h3 className="text-lg font-serif font-light text-[var(--text-primary)]">{t('destinations.logisticsTitle', 'Travel & Medical Visa Logistics')}</h3>
 
           <div className="space-y-4 text-xs font-sans">
             <div>
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Medical Visa Protocol
+                {t('destinations.visaProtocol', 'Medical Visa Protocol')}
               </span>
               <p className="text-[var(--text-secondary)] font-light leading-relaxed">
                 {destination.travelInfo.visaPolicy}
@@ -116,7 +118,7 @@ export function DestinationDetailPage({ onCreateCase }) {
 
             <div className="pt-3 border-t border-[var(--border-hairline)]">
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Flight Times (Direct Routes)
+                {t('destinations.flightTimes', 'Flight Times (Direct Routes)')}
               </span>
               <p className="text-[var(--text-secondary)] font-light">US: {destination.travelInfo.flightTimeUS}</p>
               <p className="text-[var(--text-secondary)] font-light mt-0.5">UK: {destination.travelInfo.flightTimeUK}</p>
@@ -124,7 +126,7 @@ export function DestinationDetailPage({ onCreateCase }) {
 
             <div className="pt-3 border-t border-[var(--border-hairline)]">
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Language & Translation
+                {t('destinations.languageTranslation', 'Language & Translation')}
               </span>
               <p className="text-[var(--text-secondary)] font-light leading-relaxed">
                 {destination.travelInfo.language}
@@ -133,7 +135,7 @@ export function DestinationDetailPage({ onCreateCase }) {
 
             <div className="pt-3 border-t border-[var(--border-hairline)]">
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Average Savings
+                {t('destinations.averageSavings', 'Average Savings')}
               </span>
               <span className="text-sm font-normal text-[var(--copper)] tabular-nums">
                 {destination.avgSavings} vs US Domestic Hospital Rates
@@ -148,10 +150,10 @@ export function DestinationDetailPage({ onCreateCase }) {
         <div>
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-2 flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Accredited Centers
+            {t('destinations.accreditedCenters', 'Accredited Centers')}
           </p>
           <h3 className="text-2xl font-serif font-light text-[var(--text-primary)]">
-            Partner Hospitals in {destination.name}
+            {t('destinations.partnerHospitals', `Partner Hospitals in ${destination.name}`, { name: destination.name })}
           </h3>
         </div>
 
@@ -188,7 +190,7 @@ export function DestinationDetailPage({ onCreateCase }) {
 
               <div className="pt-3 border-t border-[var(--border-hairline)] flex items-center justify-between">
                 <span className="text-xs font-sans text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1">
-                  View center <span>&rarr;</span>
+                  {t('providers.viewProfile', 'View center')} <span className="inline-block rtl:rotate-180">&rarr;</span>
                 </span>
               </div>
             </div>

@@ -7,10 +7,12 @@ import {
 import { Breadcrumb } from '../components'
 import { PROVIDERS_DATA } from '../data/providersData'
 import { providerService } from '../services/providerService'
+import { useTranslation } from '../i18n'
 
 export function ProviderDetailPage({ onCreateCase }) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const [provider, setProvider] = useState(
     () => PROVIDERS_DATA.find((p) => p.id === id) || PROVIDERS_DATA[0]
@@ -34,8 +36,8 @@ export function ProviderDetailPage({ onCreateCase }) {
     <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16 space-y-12 text-left">
       <Breadcrumb
         items={[
-          { label: 'Marketplace', href: '/' },
-          { label: 'Providers', href: '/providers' },
+          { label: t('nav.marketplace', 'Marketplace'), href: '/' },
+          { label: t('providers.title', 'Providers'), href: '/providers' },
           { label: provider.name, current: true },
         ]}
       />
@@ -67,15 +69,15 @@ export function ProviderDetailPage({ onCreateCase }) {
               {provider.name}
             </h1>
             <p className="text-xs font-sans text-[var(--text-muted)] mt-1">
-              {provider.city}, {provider.country} · Established {provider.establishedYear}
+              {provider.city}, {provider.country} · {t('providers.established', 'Established')} {provider.establishedYear}
             </p>
           </div>
 
           <button
             onClick={() => onCreateCase ? onCreateCase() : navigate('/create-case')}
-            className="bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] px-6 py-2.5 text-xs font-medium font-sans tracking-[0.02em] shrink-0"
+            className="bg-[var(--green-cta)] text-[var(--text-inverse)] hover:bg-[var(--green-hover)] transition-colors duration-150 rounded-[3px] px-6 py-2.5 text-xs font-medium font-sans tracking-[0.02em] shrink-0 cursor-pointer"
           >
-            Request Institutional Quote
+            {t('providers.requestQuote', 'Request Institutional Quote')}
           </button>
         </div>
       </div>
@@ -85,7 +87,7 @@ export function ProviderDetailPage({ onCreateCase }) {
         {/* Left Column (7 Cols) */}
         <div className="lg:col-span-7 space-y-6">
           <div className="p-6 sm:p-8 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4">
-            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">Institutional Overview</h3>
+            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">{t('providers.overviewTitle', 'Institutional Overview')}</h3>
             <p className="text-sm font-light text-[var(--text-secondary)] font-sans leading-relaxed">
               {provider.overview}
             </p>
@@ -95,7 +97,7 @@ export function ProviderDetailPage({ onCreateCase }) {
           </div>
 
           <div className="p-6 sm:p-8 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] space-y-4">
-            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">Center Facilities & Care Amenities</h3>
+            <h3 className="text-xl font-serif font-light text-[var(--text-primary)]">{t('providers.facilitiesTitle', 'Center Facilities & Care Amenities')}</h3>
             <div className="space-y-2.5">
               {provider.facilities.map((fac, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 text-xs font-sans text-[var(--text-secondary)]">
@@ -109,12 +111,12 @@ export function ProviderDetailPage({ onCreateCase }) {
 
         {/* Right Column (5 Cols): International Patient Desk */}
         <div className="lg:col-span-5 bg-[var(--bg-card)] rounded-[4px] border border-[var(--border-default)] p-6 sm:p-8 space-y-5">
-          <h3 className="text-lg font-serif font-light text-[var(--text-primary)]">International Patient Concierge</h3>
+          <h3 className="text-lg font-serif font-light text-[var(--text-primary)]">{t('providers.conciergeTitle', 'International Patient Concierge')}</h3>
 
           <div className="space-y-4 text-xs font-sans">
             <div>
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Airport & Transit Service
+                {t('providers.airportTransit', 'Airport & Transit Service')}
               </span>
               <p className="text-[var(--text-secondary)] font-light leading-relaxed">
                 {provider.internationalSupport.airportConcierge}
@@ -123,7 +125,7 @@ export function ProviderDetailPage({ onCreateCase }) {
 
             <div className="pt-3 border-t border-[var(--border-hairline)]">
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Medical Visa (MED-V) Assistance
+                {t('providers.visaAssistance', 'Medical Visa (MED-V) Assistance')}
               </span>
               <p className="text-[var(--text-secondary)] font-light leading-relaxed">
                 {provider.internationalSupport.visaAssistance}
@@ -132,7 +134,7 @@ export function ProviderDetailPage({ onCreateCase }) {
 
             <div className="pt-3 border-t border-[var(--border-hairline)]">
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Translation & Interpretation
+                {t('providers.translationService', 'Translation & Interpretation')}
               </span>
               <p className="text-[var(--text-secondary)] font-light leading-relaxed">
                 {provider.internationalSupport.translators}
@@ -141,7 +143,7 @@ export function ProviderDetailPage({ onCreateCase }) {
 
             <div className="pt-3 border-t border-[var(--border-hairline)]">
               <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
-                Languages Supported
+                {t('providers.languagesSupported', 'Languages Supported')}
               </span>
               <p className="text-[var(--text-secondary)] font-light">
                 {provider.languages.join(', ')}
@@ -156,10 +158,10 @@ export function ProviderDetailPage({ onCreateCase }) {
         <div>
           <p className="text-[11px] font-normal uppercase tracking-[0.12em] text-[var(--green-rich)] mb-2 flex items-center gap-2.5 font-sans">
             <span className="inline-block w-6 h-[1px] bg-[var(--green-rich)]" />
-            Specialist Faculty
+            {t('providers.facultyBadge', 'Specialist Faculty')}
           </p>
           <h3 className="text-2xl font-serif font-light text-[var(--text-primary)]">
-            Chief Department Surgeons & Specialists
+            {t('providers.facultyTitle', 'Chief Department Surgeons & Specialists')}
           </h3>
         </div>
 
@@ -180,7 +182,7 @@ export function ProviderDetailPage({ onCreateCase }) {
               <div className="space-y-1">
                 <h4 className="text-base font-medium text-[var(--text-primary)] font-sans">{doc.name}</h4>
                 <div className="text-xs font-normal text-[var(--copper)] font-sans">{doc.title}</div>
-                <div className="text-xs text-[var(--text-muted)] font-sans">{doc.specialty} · {doc.experienceYears} Years Practice</div>
+                <div className="text-xs text-[var(--text-muted)] font-sans">{doc.specialty} · {doc.experienceYears} {t('providers.yearsPractice', 'Years Practice')}</div>
                 <p className="text-xs font-light text-[var(--text-secondary)] font-sans pt-1 leading-relaxed">
                   {doc.education}
                 </p>

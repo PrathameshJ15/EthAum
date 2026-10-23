@@ -31,9 +31,11 @@ import {
 } from '../../components'
 
 import { caseService } from '../../services/caseService'
+import { useTranslation } from '../../i18n'
 import { recordService } from '../../services/recordService'
 
 export function PatientDashboardPage() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const navigate = useNavigate()
   const { addToast } = useToast()

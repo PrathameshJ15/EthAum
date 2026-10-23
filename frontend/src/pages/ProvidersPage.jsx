@@ -5,9 +5,11 @@ import { Breadcrumb, Button, StatusBadge } from '../components'
 import { PROVIDERS_DATA } from '../data/providersData'
 import { DESTINATIONS_DATA } from '../data/destinationsData'
 import { providerService } from '../services/providerService'
+import { useTranslation } from '../i18n'
 
 export function ProvidersPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [providersList, setProvidersList] = useState(PROVIDERS_DATA)
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
@@ -67,26 +69,26 @@ export function ProvidersPage() {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto px-6 sm:px-8 py-10 sm:py-16 space-y-10 text-left">
+    <div className="max-w-[1200px] mx-auto px-6 sm:px-8 py-10 sm:py-16 space-y-10 text-left rtl:text-right">
       <Breadcrumb
         items={[
-          { label: 'Marketplace', href: '/' },
-          { label: 'Providers Directory', current: true },
+          { label: t('nav.marketplace', 'Marketplace'), href: '/' },
+          { label: t('providers.title', 'Providers Directory'), current: true },
         ]}
       />
 
       {/* Editorial Header */}
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--action)] mb-3">
-          Accredited Global Hospitals
+          {t('providers.badge', 'Accredited Global Hospitals')}
         </p>
 
         <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-heading font-extrabold text-[var(--text-heading)] tracking-[-0.02em] leading-[1.15] max-w-2xl">
-          Verified Quaternary Healthcare Centers
+          {t('providers.heading', 'Verified Quaternary Healthcare Centers')}
         </h1>
 
         <p className="mt-3 text-base font-normal text-[var(--text-muted)] max-w-xl leading-relaxed">
-          Explore medical facilities credentialed under Joint Commission International (JCI) standards, featuring fellowship-trained surgical chiefs and dedicated international patient concierges.
+          {t('providers.subtitle', 'Explore medical facilities credentialed under Joint Commission International (JCI) standards, featuring fellowship-trained surgical chiefs and dedicated international patient concierges.')}
         </p>
       </div>
 
@@ -98,7 +100,7 @@ export function ProvidersPage() {
             <Search className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
             <input
               type="text"
-              placeholder="Search hospitals or cities (e.g. Apex Joint, Bangkok, Istanbul)..."
+              placeholder={t('providers.searchPlaceholder', 'Search hospitals or cities (e.g. Apex Joint, Bangkok, Istanbul)...')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder-[var(--text-muted)]/70"
@@ -122,7 +124,9 @@ export function ProvidersPage() {
               onChange={(e) => setSelectedCountry(e.target.value)}
               className="w-full bg-transparent text-xs text-[var(--text-heading)] font-medium outline-none cursor-pointer"
             >
-              <option value="all" className="bg-[var(--surface)]">All Countries</option>
+              <option value="all" className="bg-[var(--surface)]">
+                {t('providers.filterCountry', 'All Countries')}
+              </option>
               {DESTINATIONS_DATA.map((d) => (
                 <option key={d.id} value={d.name} className="bg-[var(--surface)]">
                   {d.name}
@@ -139,19 +143,19 @@ export function ProvidersPage() {
               onChange={(e) => setOnlyJci(e.target.checked)}
               className="rounded accent-[var(--action)]"
             />
-            <span>JCI Accredited Only</span>
+            <span>{t('providers.jciOnly', 'JCI Accredited Only')}</span>
           </label>
         </div>
 
         {(search || selectedCountry !== 'all' || onlyJci) && (
           <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border)]">
-            <span>Filters active</span>
+            <span>{t('common.filtersActive', 'Filters active')}</span>
             <button
               type="button"
               onClick={clearFilters}
               className="font-semibold text-[var(--action-text)] hover:underline cursor-pointer"
             >
-              Reset Filters
+              {t('treatments.resetFilters', 'Reset Filters')}
             </button>
           </div>
         )}
@@ -192,11 +196,11 @@ export function ProvidersPage() {
 
             <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between">
               <span className="text-xs font-semibold text-[var(--action-text)] group-hover:underline inline-flex items-center gap-1">
-                <span>View accredited center</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>{t('providers.viewProfile', 'View accredited center')}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
               </span>
               <span className="text-xs text-[var(--text-muted)]">
-                Est. {provider.establishedYear}
+                {t('providers.established', 'Est.')} {provider.establishedYear}
               </span>
             </div>
           </div>

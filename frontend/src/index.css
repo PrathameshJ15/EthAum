@@ -291,3 +291,26 @@ h4 {
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================================
+   RTL & Multilingual Typography Support
+   ========================================================================= */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .nav-link-refined::after {
+  left: auto;
+  right: 0;
+}
+
+/* Arabic typography fallback for legible editorial rendering */
+[dir="rtl"], [lang="ar"], .rtl-mode {
+  font-family: 'DM Sans', 'Noto Sans Arabic', 'Cairo', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Cyrillic font fallback */
+[lang="ru"] {
+  font-family: 'DM Sans', 'Noto Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
